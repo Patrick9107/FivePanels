@@ -1,0 +1,155 @@
+@startuml
+
+class Medicalcase {
+  - title : String
+  - owner : User
+  - items : List<String>
+  - members : Set<User>
+  - reactions : Set<User>
+  - hashtags : Set<Hashtag>
+  - votingOptions : LinkedHashSet<String>
+  + react(user : User) : void
+  + addMember(user : User) : void
+  + edit() : void
+  + viewVotes() : void
+  + viewMembers() : void
+  + castVote(user : User) : void
+  + evaluateVotes() : void
+  + openChat() : void
+}
+
+class User {
+  - profile : UserProfile
+  - socials : UserSocials
+  - tags : Set<Hashtag>
+  - memberOfMedicalcases : List<Medicalcase>
+  - HIER IRGTENDWAS ANDERES MNACHEBN IDK WASownerOfMedicalcases : List<Medicalcase>
+  - rating : Integer
+  - verified : boolean
+  - messenger : Messenger
+  + verify() : void
+  + handleRequest() : void
+  + setter/getter()
+}
+
+class UserSocials {
+  - relation : Map<Integer, Relation>
+}
+
+enum Relation {
+  FRIENDS, INCOMING, OUTGOING
+}
+
+class UserProfile {
+  - name : String
+  - email : Email
+  - hashedPassword : Password
+  - title : String
+  - location : String
+  - language : String
+}
+
+abstract class Hashtag {
+  - name
+}
+
+class Specialization {
+
+}
+
+class CaseTags {
+
+}
+
+class Media {
+  - path : String
+  - mime : String
+  - fileSize : Integer
+}
+
+class Image {
+  - width : int
+  - height : int
+  - alternativeText : String
+}
+
+class Email {
+  - address : String
+}
+
+class Password {
+  - hashedPassword : char[]
+  + hashPassword(String password) : String
+  + checkPasswords(String password, String password2) : String
+}
+
+class Messenger{
+ - chats : List<Chat>
+ + openChat(id : Integer) : void
+ + addChat(user... : User) : void
+}
+
+class Chat {
+  - id : Integer
+  - name : String
+  - members : Set<User>
+  - history : List<Message>
+  + sendMessage(content : String, attachments : List<Media>) : voi
+  + reply(message : Message) : void
+  + viewMembers() : void
+}
+
+class Message {
+  - sender : User
+  - timestamp : Instant
+  - content : String
+  - attachments : List<Media>
+  - status : Status
+}
+
+enum Status {
+  SENT, RECEIVED, DELIEVERED, SEEN
+}
+
+class BaseEntity {
+
+  - id : Integer
+  - createdAt : Instant
+  - updatedAt : Instant
+}
+
+User -- Medicalcase
+
+UserProfile -- Email
+
+UserProfile -- Password
+
+User -- UserProfile
+
+User -- UserSocials
+
+User -- Messenger
+
+Chat -- Message
+
+Messenger -- Chat
+
+Message -- Status
+
+BaseEntity <|-- User
+
+BaseEntity <|-- Chat
+
+BaseEntity <|-- Medicalcase
+
+BaseEntity <|-- Media
+
+Media <|-- Image
+
+UserSocials -- Relation
+
+Hashtag <|-- CaseTags
+
+Hashtag <|-- Specialization
+
+@enduml
