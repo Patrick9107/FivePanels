@@ -19,21 +19,23 @@ class Medicalcase {
 }
 
 class User {
+  - email : Email
+  - hashedPassword : Password
   - profile : UserProfile
   - socials : UserSocials
   - tags : Set<Hashtag>
-  - memberOfMedicalcases : List<Medicalcase>
-  - HIER IRGTENDWAS ANDERES MNACHEBN IDK WASownerOfMedicalcases : List<Medicalcase>
   - rating : Integer
   - verified : boolean
   - messenger : Messenger
   + verify() : void
-  + handleRequest() : void
   + setter/getter()
 }
 
 class UserSocials {
   - relation : Map<Integer, Relation>
+  + add(user : User) : User
+  + accept(user : User) : User
+  + deny(user : User) : User
 }
 
 enum Relation {
@@ -42,23 +44,20 @@ enum Relation {
 
 class UserProfile {
   - name : String
-  - email : Email
-  - hashedPassword : Password
   - title : String
   - location : String
   - language : String
 }
 
 abstract class Hashtag {
-  - name
+  - static tags : Set<String>
+  + readTags() : void
 }
 
 class Specialization {
-
 }
 
 class CaseTags {
-
 }
 
 class Media {
@@ -120,9 +119,9 @@ class BaseEntity {
 
 User -- Medicalcase
 
-UserProfile -- Email
+User -- Email
 
-UserProfile -- Password
+User -- Password
 
 User -- UserProfile
 
@@ -151,5 +150,9 @@ UserSocials -- Relation
 Hashtag <|-- CaseTags
 
 Hashtag <|-- Specialization
+
+Hashtag -- User
+
+Hashtag -- Medicalcase
 
 @enduml
