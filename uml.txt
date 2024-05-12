@@ -3,7 +3,8 @@
 class Medicalcase {
   - title : String
   - owner : User
-  - items : List<String>
+  - textContent : List<String>
+  - attachments : Set<Media>
   - members : Set<User>
   - reactions : Set<User>
   - hashtags : Set<Hashtag>
@@ -23,12 +24,20 @@ class User {
   - hashedPassword : Password
   - profile : UserProfile
   - socials : UserSocials
-  - tags : Set<Hashtag>
-  - rating : Integer
   - verified : boolean
   - messenger : Messenger
   + verify() : void
   + setter/getter()
+}
+
+class UserProfile {
+  - name : String
+  - title : String
+  - location : String
+  - language : String
+  - tags : Set<Hashtag>
+  - rating : Integer
+  - avatar : Image
 }
 
 class UserSocials {
@@ -40,13 +49,6 @@ class UserSocials {
 
 enum Relation {
   FRIENDS, INCOMING, OUTGOING
-}
-
-class UserProfile {
-  - name : String
-  - title : String
-  - location : String
-  - language : String
 }
 
 abstract class Hashtag {
@@ -107,7 +109,7 @@ class Message {
 }
 
 enum Status {
-  SENT, RECEIVED, DELIEVERED, SEEN
+  SENT, RECEIVED, DELIVERED, SEEN
 }
 
 class BaseEntity {
@@ -115,6 +117,9 @@ class BaseEntity {
   - id : Integer
   - createdAt : Instant
   - updatedAt : Instant
+}
+
+interface IRepository {
 }
 
 User -- Medicalcase
