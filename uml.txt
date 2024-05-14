@@ -1,13 +1,14 @@
 @startuml
 
-class Medicalcase {
+class Medicalcase extends BaseEntity {
   - title : String
   - owner : User
-  - items : List<String>
+  - content : List<Content>
   - members : Set<User>
   - reactions : Set<User>
-  - hashtags : Set<Hashtag>
+  - tags : Set<CaseTag>
   - votingOptions : LinkedHashSet<String>
+  - votes : Set<Vote>
   + react(user : User) : void
   + addMember(user : User) : void
   + edit() : void
@@ -18,20 +19,34 @@ class Medicalcase {
   + openChat() : void
 }
 
-class User {
+class Vote {
+  - user : Integer
+  - answers : Map<String, Integer>
+}
+
+class User extends BaseEntity {
   - email : Email
   - hashedPassword : Password
-  - profile : UserProfile
-  - socials : UserSocials
-  - tags : Set<Hashtag>
-  - rating : Integer
+  - profile : Profile
+  - socials : Socials
   - verified : boolean
-  - messenger : Messenger
+  - chats : List<Chat>
+  - partOfMedicalcase : Set<Medicalcase>
   + verify() : void
   + setter/getter()
 }
 
-class UserSocials {
+class Profile {
+  - name : String
+  - title : String
+  - location : String
+  - language : String
+  - tags : Set<Specialization>
+  - rating : Integer
+  - avatar : Image
+}
+
+class Socials {
   - relation : Map<Integer, Relation>
   + add(user : User) : User
   + accept(user : User) : User
@@ -42,34 +57,35 @@ enum Relation {
   FRIENDS, INCOMING, OUTGOING
 }
 
-class UserProfile {
-  - name : String
-  - title : String
-  - location : String
-  - language : String
-}
-
 abstract class Hashtag {
   - static tags : Set<String>
   + readTags() : void
 }
 
-class Specialization {
+class Specialization extends Hashtag {
 }
 
-class CaseTags {
+class CaseTag extends Hashtag {
 }
 
-class Media {
+class Media extends Content {
   - path : String
   - mime : String
   - fileSize : Integer
 }
 
-class Image {
+class Image extends Media {
   - width : int
   - height : int
   - alternativeText : String
+}
+
+class Content {
+
+}
+
+class TextContent extends Content {
+  - text : String
 }
 
 class Email {
@@ -79,17 +95,10 @@ class Email {
 class Password {
   - hashedPassword : char[]
   + hashPassword(String password) : String
-  + checkPasswords(String password, String password2) : String
+  + checkPasswords(String password, String password2) : boolean
 }
 
-class Messenger{
- - chats : List<Chat>
- + openChat(id : Integer) : void
- + addChat(user... : User) : void
-}
-
-class Chat {
-  - id : Integer
+class Chat extends BaseEntity {
   - name : String
   - members : Set<User>
   - history : List<Message>
@@ -107,52 +116,46 @@ class Message {
 }
 
 enum Status {
-  SENT, RECEIVED, DELIEVERED, SEEN
+  SENT, RECEIVED, SEEN
 }
 
-class BaseEntity {
-
+abstract BaseEntity {
   - id : Integer
   - createdAt : Instant
   - updatedAt : Instant
 }
 
-User -- Medicalcase
+interface IRepository {
+  + save(entity : BaseEntity) : void
+  + findById(id : Integer) : BaseEntity
+  + findAll() : List<BaseEntity>
+  + delete(entity : BaseEntity) : void
+}
 
-User -- Email
+User "1" -- "n" Medicalcase
 
-User -- Password
+User "1" -- "1" Email
 
-User -- UserProfile
+User "1" -- "1" Password
 
-User -- UserSocials
+User "1" -- "1" Profile
 
-User -- Messenger
+User "1" -- "1" Socials
 
-Chat -- Message
+User "1" -- "1" Chat
 
-Messenger -- Chat
+Chat "1" -- "n" Message
 
 Message -- Status
 
-BaseEntity <|-- User
-
-BaseEntity <|-- Chat
-
-BaseEntity <|-- Medicalcase
-
-BaseEntity <|-- Media
-
-Media <|-- Image
-
 UserSocials -- Relation
 
-Hashtag <|-- CaseTags
+Hashtag "n" -- "1" User
 
-Hashtag <|-- Specialization
+Hashtag "n" -- "1" Medicalcase
 
-Hashtag -- User
+Medicalcase "1" -- "n" Vote
 
-Hashtag -- Medicalcase
+Medicalcase "1" -- "n" Content
 
 @enduml
