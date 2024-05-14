@@ -3,12 +3,12 @@
 class Medicalcase extends BaseEntity {
   - title : String
   - owner : User
-  - textContent : List<String>
-  - attachments : Set<Media>
+  - content : List<Content>
   - members : Set<User>
   - reactions : Set<User>
-  - hashtags : Set<Hashtag>
+  - hashtags : Set<CaseTags>
   - votingOptions : LinkedHashSet<String>
+  - votes : Set<Vote>
   + react(user : User) : void
   + addMember(user : User) : void
   + edit() : void
@@ -19,13 +19,19 @@ class Medicalcase extends BaseEntity {
   + openChat() : void
 }
 
+class Vote {
+  - user : Integer
+  - answers : Map<String, Integer>
+}
+
 class User extends BaseEntity {
   - email : Email
   - hashedPassword : Password
   - profile : UserProfile
   - socials : UserSocials
   - verified : boolean
-  - messenger : Messenger
+  - chats : List<Chat>
+  - partOfMedicalcase : Set<Medicalcase>
   + verify() : void
   + setter/getter()
 }
@@ -62,7 +68,7 @@ class Specialization extends Hashtag {
 class CaseTags extends Hashtag {
 }
 
-class Media extends BaseEntity {
+class Media extends Content {
   - path : String
   - mime : String
   - fileSize : Integer
@@ -72,6 +78,14 @@ class Image extends Media {
   - width : int
   - height : int
   - alternativeText : String
+}
+
+class Content {
+
+}
+
+class TextContent extends Content {
+  - text : String
 }
 
 class Email {
@@ -84,14 +98,7 @@ class Password {
   + checkPasswords(String password, String password2) : boolean
 }
 
-class Messenger{
- - chats : List<Chat>
- + openChat(id : Integer) : void
- + addChat(user... : User) : void
-}
-
 class Chat extends BaseEntity {
-  - id : Integer
   - name : String
   - members : Set<User>
   - history : List<Message>
@@ -109,11 +116,10 @@ class Message {
 }
 
 enum Status {
-  SENT, RECEIVED, DELIVERED, SEEN
+  SENT, RECEIVED, SEEN
 }
 
 class BaseEntity {
-
   - id : Integer
   - createdAt : Instant
   - updatedAt : Instant
@@ -136,11 +142,9 @@ User -- UserProfile
 
 User -- UserSocials
 
-User -- Messenger
+User -- Chat
 
 Chat -- Message
-
-Messenger -- Chat
 
 Message -- Status
 
@@ -149,5 +153,9 @@ UserSocials -- Relation
 Hashtag -- User
 
 Hashtag -- Medicalcase
+
+Medicalcase -- Vote
+
+Medicalcase -- Content
 
 @enduml
