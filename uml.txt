@@ -1,6 +1,6 @@
 @startuml
 
-class Medicalcase {
+class Medicalcase extends BaseEntity {
   - title : String
   - owner : User
   - textContent : List<String>
@@ -19,7 +19,7 @@ class Medicalcase {
   + openChat() : void
 }
 
-class User {
+class User extends BaseEntity {
   - email : Email
   - hashedPassword : Password
   - profile : UserProfile
@@ -56,19 +56,19 @@ abstract class Hashtag {
   + readTags() : void
 }
 
-class Specialization {
+class Specialization extends Hashtag {
 }
 
-class CaseTags {
+class CaseTags extends Hashtag {
 }
 
-class Media {
+class Media extends BaseEntity {
   - path : String
   - mime : String
   - fileSize : Integer
 }
 
-class Image {
+class Image extends Media {
   - width : int
   - height : int
   - alternativeText : String
@@ -81,7 +81,7 @@ class Email {
 class Password {
   - hashedPassword : char[]
   + hashPassword(String password) : String
-  + checkPasswords(String password, String password2) : String
+  + checkPasswords(String password, String password2) : boolean
 }
 
 class Messenger{
@@ -90,7 +90,7 @@ class Messenger{
  + addChat(user... : User) : void
 }
 
-class Chat {
+class Chat extends BaseEntity {
   - id : Integer
   - name : String
   - members : Set<User>
@@ -120,6 +120,10 @@ class BaseEntity {
 }
 
 interface IRepository {
+  + save(entity : BaseEntity) : void
+  + findById(id : Integer) : BaseEntity
+  + findAll() : List<BaseEntity>
+  + delete(entity : BaseEntity) : void
 }
 
 User -- Medicalcase
@@ -140,21 +144,7 @@ Messenger -- Chat
 
 Message -- Status
 
-BaseEntity <|-- User
-
-BaseEntity <|-- Chat
-
-BaseEntity <|-- Medicalcase
-
-BaseEntity <|-- Media
-
-Media <|-- Image
-
 UserSocials -- Relation
-
-Hashtag <|-- CaseTags
-
-Hashtag <|-- Specialization
 
 Hashtag -- User
 
