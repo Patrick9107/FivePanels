@@ -14,4 +14,36 @@ public class Medicalcase extends BaseEntity {
     private Set<CaseTag> tags;
     private LinkedHashSet<String> votingOptions;
     private Set<Vote> votes;
+
+    public void react(User user){
+
+    }
+
+    public void addMember(User user){
+
+    }
+
+    public void edit(){
+
+    }
+
+    public void viewVotes(){
+
+    }
+
+    public void viewMembers(){
+
+    }
+
+    public void castVote(User user){
+
+    }
+
+    public void evaluateVotes(){
+
+    }
+
+    public void openChat(){
+
+    }
 }

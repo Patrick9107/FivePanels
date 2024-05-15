@@ -6,4 +6,17 @@ import java.util.UUID;
 public class Socials {
 
     private Map<UUID, Relation> relation;
+
+    public User add(User user){
+        return null;
+    }
+
+    public User accept(User user){
+        return null;
+    }
+
+    public User deny(User user){
+        return null;
+    }
+
 }
