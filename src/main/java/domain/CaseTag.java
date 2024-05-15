@@ -1,4 +1,10 @@
 package domain;
 
-public class CaseTag extends Hashtag {
+import java.util.HashSet;
+
+public abstract class CaseTag extends Hashtag {
+//    static {
+//        tags = new HashSet<>();
+//        readTagsFromFile("src/main/resources/casetags.txt");
+//    }
 }
