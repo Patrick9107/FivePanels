@@ -94,6 +94,7 @@ class Email {
 
 class Password {
   - hashedPassword : char[]
+  + isPasswordStrong(String Password) : boolean
   + hashPassword(String password) : String
   + checkPasswords(String password, String password2) : boolean
 }
