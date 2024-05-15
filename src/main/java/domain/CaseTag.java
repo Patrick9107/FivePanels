@@ -5,16 +5,16 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public abstract class CaseTag {
 
-    public static Set<String> caseTag;
+    // not null
+    private static Set<String> caseTags;
 
-    public static Set<String> caseTags() {
+    public static Set<String> getCaseTags() {
 
-        return caseTag;
+        return caseTags;
     }
 
     public static void readTagsFromFile(String filename) {
@@ -24,7 +24,7 @@ public abstract class CaseTag {
             String line;
             while ((line = br.readLine()) != null) {
 
-                caseTag.add(line);
+                caseTags.add(line);
             }
         } catch (FileNotFoundException e) {
             throw new MedicalcaseException(STR."\{e.getMessage()}: file was not found");
@@ -33,4 +33,8 @@ public abstract class CaseTag {
         }
     }
 
+    static {
+        caseTags = new HashSet<>();
+        readTagsFromFile("src/main/resources/casetags.txt");
+    }
 }

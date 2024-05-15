@@ -5,6 +5,7 @@ import java.util.UUID;
 
 public class Socials {
 
+    // not null
     private Map<UUID, Relation> relation;
 
     public User add(User user){

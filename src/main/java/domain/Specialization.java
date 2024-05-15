@@ -8,7 +8,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class Specialization {
-    public static Set<String> specializations;
+
+    // not null
+    private static Set<String> specializations;
 
     public static Set<String> getSpecializations() {
 
@@ -29,5 +31,9 @@ public abstract class Specialization {
         } catch (IOException e) {
             throw new MedicalcaseException(STR."\{e.getMessage()}: error reading file");
         }
+    }
+    static {
+        specializations = new HashSet<>();
+        readSpecializationsFromFile("src/main/resources/specializations.txt");
     }
 }
