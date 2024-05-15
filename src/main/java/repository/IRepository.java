@@ -1,8 +1,7 @@
 package repository;
 
-import domain.BaseEntity;
+import domain.common.BaseEntity;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.List;
 
 public interface IRepository {
