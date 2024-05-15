@@ -17,7 +17,7 @@ public abstract class CaseTag {
         return caseTags;
     }
 
-    public static void readTagsFromFile(String filename) {
+    public static void readCaseTagsFromFile(String filename) {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
 
@@ -35,6 +35,6 @@ public abstract class CaseTag {
 
     static {
         caseTags = new HashSet<>();
-        readTagsFromFile("src/main/resources/casetags.txt");
+        readCaseTagsFromFile("src/main/resources/casetags.txt");
     }
 }

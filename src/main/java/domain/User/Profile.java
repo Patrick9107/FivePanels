@@ -16,4 +16,13 @@ public class Profile {
     private Set<Specialization> tags;
     private Integer rating;
     private Image avatar;
+
+    public Profile(String name, String title, String location, Set<Specialization> tags, Integer rating, Image avatar) {
+        this.name = name; // TODO
+        this.title = title; // TODO
+        this.location = location; // TODO
+        this.tags = tags; // TODO
+        this.rating = rating; // TODO
+        this.avatar = avatar; // TODO
+    }
 }

@@ -57,15 +57,14 @@ enum Relation {
   FRIENDS, INCOMING, OUTGOING
 }
 
-abstract class Hashtag {
-  - static tags : Set<String>
-  + readTags() : void
+abstract class Specialization {
+    - static specializations : Set<String>
+    + static readCaseTagsFromFile(String filename) : void
 }
 
-class Specialization extends Hashtag {
-}
-
-class CaseTag extends Hashtag {
+abstract class CaseTag {
+    - static caseTags : Set<String>
+    + readSpecializationsFromFile(String filename) : void
 }
 
 class Media extends Content {
@@ -95,7 +94,7 @@ class Email {
 class Password {
   - hashedPassword : char[]
   + isPasswordStrong(String Password) : boolean
-  + hashPassword(String password) : String
+  + hashPassword(String password) : char[]
   + checkPasswords(String password, String password2) : boolean
 }
 
@@ -151,9 +150,9 @@ Message -- Status
 
 UserSocials -- Relation
 
-Hashtag "n" -- "1" User
+Specialization "n" -- "1" User
 
-Hashtag "n" -- "1" Medicalcase
+CaseTags "n" -- "1" Medicalcase
 
 Medicalcase "1" -- "n" Vote
 
