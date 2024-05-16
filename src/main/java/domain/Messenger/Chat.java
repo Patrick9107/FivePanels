@@ -2,10 +2,9 @@ package domain.Messenger;
 
 import domain.common.BaseEntity;
 import domain.common.Media;
+import foundation.Assert;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class Chat extends BaseEntity {
 
@@ -16,9 +15,36 @@ public class Chat extends BaseEntity {
     // not null
     private List<Message> history;
 
-    public void sendMessage(String content, List<Media> attachments){
-
+    public Chat(String name, Set<UUID> members, List<Message> history) {
+        this.name = name;
+        this.members = members;
+        this.history = history;
     }
+
+    public void setName(String name) {
+        Assert.isNotNull(name, "name");
+        Assert.hasMaxLength(name,513, "name");
+        Assert.isNotBlank(name, "name");
+        this.name = name;
+    }
+
+    public void setMembers(Set<UUID> members) {
+        Assert.isNotNull(members, "members");
+        Assert.hasMaxSize(members,513, "members");
+        Assert.isNotBlank(name, "name");
+        this.members = members;
+    }
+
+    public void setHistory(List<Message> history) {
+        Assert.isNotNull(history, "history");
+        this.history = history;
+    }
+
+    public void addToHistory(Message message){
+        Assert.isNotNull(message,"message");
+        history.add(message);
+    }
+
 
     public void reply(Message message){
 
