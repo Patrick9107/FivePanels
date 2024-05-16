@@ -13,9 +13,9 @@ public class Image extends Media {
 
     public Image(int width, int height, String alternativeText, String path, String mime, Integer fileSize) {
         super(path, mime, fileSize);
-        this.width = width;
-        this.height = height;
-        this.alternativeText = alternativeText;
+        setWidth(width);
+        setHeight(height);
+        setAlternativeText(alternativeText);
     }
 
     public void setWidth(int width) {
@@ -26,7 +26,7 @@ public class Image extends Media {
 
     public void setHeight(int height) {
         Assert.isGreaterThanOrEqual(height,"height",0 , "0");
-        Assert.isLowerThanOrEqual(height, "height", 1080, "1920");
+        Assert.isLowerThanOrEqual(height, "height", 1080, "1080");
         this.height = height;
     }
 

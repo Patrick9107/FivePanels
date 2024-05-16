@@ -12,9 +12,9 @@ public class Media extends Content {
     private Integer fileSize;
 
     public Media(String path, String mime, Integer fileSize) {
-        this.path = path;
-        this.mime = mime;
-        this.fileSize = fileSize;
+        setPath(path);
+        setMime(mime);
+        setFileSize(fileSize);
     }
 
     public void setPath(String path) {

@@ -15,10 +15,10 @@ public class Chat extends BaseEntity {
     // not null
     private List<Message> history;
 
-    public Chat(String name, Set<UUID> members, List<Message> history) {
-        this.name = name;
-        this.members = members;
-        this.history = history;
+    public Chat(String name, Set<UUID> members) {
+        setName(name);
+        setMembers(members);
+        history = new ArrayList<>();
     }
 
     public void setName(String name) {
@@ -33,11 +33,6 @@ public class Chat extends BaseEntity {
         Assert.hasMaxSize(members,513, "members");
         Assert.isNotBlank(name, "name");
         this.members = members;
-    }
-
-    public void setHistory(List<Message> history) {
-        Assert.isNotNull(history, "history");
-        this.history = history;
     }
 
     public void addToHistory(Message message){
