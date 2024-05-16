@@ -19,7 +19,7 @@ public class Medicalcase extends BaseEntity {
     private Set<User> members;
     // not null, max 512 entries
     private Set<User> reactions;
-    // not null, TODO max
+    // not null, max 512 entries
     private Set<CaseTag> tags;
     // not null, max 8 entries
     private /*LinkedHash*/Set<String> votingOptions;
