@@ -17,6 +17,16 @@ public class Profile {
     private Integer rating;
     private Image avatar;
 
+    // TODO NUR ZUM TESTEN KANN WIEDER GELÖSCHT WERDEN
+    public Profile() {
+        name = "admin";
+        title = null;
+        location = null;
+        tags = null;
+        rating = null;
+        avatar = null;
+    }
+
     public Profile(String name, String title, String location, Set<Specialization> tags, Integer rating, Image avatar) {
         this.name = name; // TODO
         this.title = title; // TODO

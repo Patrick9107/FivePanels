@@ -6,14 +6,12 @@ import domain.Messenger.Status;
 import domain.common.BaseEntity;
 import domain.Messenger.Chat;
 import domain.Medicalcase.Medicalcase;
-import domain.common.Content;
 import domain.common.Media;
 import domain.common.TextContent;
 import foundation.Assert;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class User extends BaseEntity {
     // not null
@@ -27,8 +25,19 @@ public class User extends BaseEntity {
     private boolean verified;
     // not null
     private /*LinkedHash*/Set<Chat> chats;
-    // not null
-    private Set<Medicalcase> partOfMedicalcase; // Diese Variable vllt noch ändern weil man ja owner oder member sein kann. Also eventuell eine Map. Und der name der Variable ist auch nicht elegant
+    // not null, exactly 2 entries
+    private Map<Ownership, Set<Medicalcase>> medicalcases;
+
+    // TODO NUR ZUM TESTEN, KANN WIEDER GELÖSCHT WERDEN
+    public User() {
+        this.email = new Email("admin@admin.com");
+        this.hashedPassword = new Password("admin".toCharArray());
+        this.profile = new Profile();
+        this.socials = new Socials();
+        verified = false;
+        chats = new LinkedHashSet<>();
+        setMedicalcases();
+    }
 
     public void verify() {
     }
@@ -41,17 +50,21 @@ public class User extends BaseEntity {
         this.email = email;
     }
 
+    public void setMedicalcases() {
+        medicalcases = new HashMap<>();
+        medicalcases.put(Ownership.OWNER, new HashSet<>());
+        medicalcases.put(Ownership.MEMBER, new HashSet<>());
+    }
+
     public void sendMessage(Chat chat, TextContent content, List<Media> attachments){
         Assert.isNotNull(chat, "chat");
         Assert.isNotNull(attachments, "attachments");
         Assert.isNotNull(content, "content");
 
-
-        if(chats.contains(chat)){
+        if(chats.contains(chat)) {
             chat.addToHistory(new Message(this, Instant.now(), content, attachments, Status.SENT));
-        }else{
+        } else {
             throw new MessengerException("sendMessage: chat doesnt exist");
         }
     }
-
 }
