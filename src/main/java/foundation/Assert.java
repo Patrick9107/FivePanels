@@ -1,7 +1,9 @@
 package foundation;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.Set;
 import java.util.function.Supplier;
 
 
@@ -119,15 +121,17 @@ public abstract class Assert {
         return value;
     }
 
-//    public static <T extends Number & Comparable<T>, V extends Number & Comparable<V>> T isGreaterThanOrEqual(T value, String valueName, V valueToProof, String proofName) {
-//
-//        isNotNull(value, valueName);
-//        isNotNull(valueToProof, proofName);
-//        int result = compare(value, valueToProof);
-//
-//        if (result < 0)
-//            throw new AssertException(STR."\{value} is lower than or not equal to \{valueToProof}")
-//    }
+    // Collection Assertions -------------------------------------------------------
+
+    public static <T extends Collection<?>> T hasMaxSize(T values, int maxLength, String valueName) {
+        isNotNull(values, valueName);
+        if (values.size() > maxLength) {
+            throw new AssertException(STR."\{values} has more number of elements than \{maxLength}");
+        }
+        return values;
+    }
+
+
 
 
     // Expression Assertions -------------------------------------------------------

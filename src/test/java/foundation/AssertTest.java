@@ -1,7 +1,9 @@
 package foundation;
 
-import foundation.AssertException;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.HashSet;
 
 import static foundation.Assert.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -371,6 +373,81 @@ class AssertTest {
             int value2 = 5;
 
             assertThrows(AssertException.class, () -> isLowerThan(value, "value", value2, "value2"));
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void hasMaxSize_shouldThrow_WhenSizeIsGreaterThanMaxLength() {
+        try {
+            HashSet<Integer> value = new HashSet<>();
+            value.add(1);
+            value.add(2);
+            value.add(3);
+            value.add(4);
+            value.add(5);
+            value.add(6);
+
+            assertThrows(AssertException.class, () -> hasMaxSize(value, 5, "hashset"));
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void hasMaxSize_shouldThrow_WhenNullIsPassed() {
+        try {
+            HashSet<Integer> value = null;
+
+            assertThrows(AssertException.class, () -> hasMaxSize(value, 5, "hashset"));
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void hasMaxSize_shouldReturnValues_WhenSizeIsEqualToMaxLength() {
+        try {
+            HashSet<Integer> values = new HashSet<>();
+            values.add(1);
+            values.add(2);
+            values.add(3);
+            values.add(4);
+            values.add(5);
+
+            assertEquals(values, hasMaxSize(values, 5, "hashset"));
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void hasMaxSize_shouldReturnValues_WhenSizeIsLowerThanMaxLength() {
+        try {
+            HashSet<Integer> values = new HashSet<>();
+            values.add(1);
+            values.add(2);
+            values.add(3);
+            values.add(4);
+
+            assertEquals(values, hasMaxSize(values, 5, "hashset"));
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void hasMaxSize_shouldReturnValues_WhenValueIsEmpty() {
+        try {
+            HashSet<Integer> values = new HashSet<>();
+
+            assertEquals(values, hasMaxSize(values, 5, "hashset"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
