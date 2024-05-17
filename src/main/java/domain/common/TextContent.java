@@ -12,8 +12,8 @@ public class TextContent extends Content {
 
     public void setText(String text) {
         Assert.isNotNull(text, "text");
-        Assert.hasMaxLength(text,1025, "text");
         Assert.isNotBlank(text, "text");
+        Assert.hasMaxLength(text,1025, "text");
         this.text = text;
     }
 }
