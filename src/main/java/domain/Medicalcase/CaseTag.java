@@ -1,11 +1,11 @@
 package domain.Medicalcase;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashSet;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class CaseTag {
 
@@ -17,24 +17,13 @@ public abstract class CaseTag {
         return caseTags;
     }
 
-    public static void readCaseTagsFromFile(String filename) {
-
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-
-            String line;
-            while ((line = br.readLine()) != null) {
-
-                caseTags.add(line);
-            }
-        } catch (FileNotFoundException e) {
-            throw new MedicalcaseException(STR."\{e.getMessage()}: file was not found");
-        } catch (IOException e) {
-            throw new MedicalcaseException(STR."\{e.getMessage()}: error reading file");
-        }
-    }
-
     static {
-        caseTags = new HashSet<>();
-        readCaseTagsFromFile("src/main/resources/casetags.txt");
+        String path = "src/main/resources/casetags.txt";
+        try (Stream<String> stream = Files.lines(Paths.get(path))) {
+            caseTags = stream.collect(Collectors.toSet());
+
+        } catch (IOException e) {
+            throw new MedicalcaseException(e.getMessage() + STR."error reading file \{path}");
+        }
     }
 }
