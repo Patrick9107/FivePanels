@@ -7,6 +7,7 @@ import foundation.Assert;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 public class Message {
 
@@ -52,5 +53,18 @@ public class Message {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message = (Message) o;
+        return Objects.equals(timestamp, message.timestamp);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(timestamp);
     }
 }

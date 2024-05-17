@@ -10,6 +10,12 @@ public abstract class BaseEntity {
     private Instant createdAt;
     private Instant updatedAt;
 
+    public BaseEntity() {
+        this.id = UUID.randomUUID();
+        this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

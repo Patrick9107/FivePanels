@@ -26,8 +26,4 @@ public abstract class Specialization {
             throw new UserException(e.getMessage() + STR."error reading file \{path}");
         }
     }
-
-    public static void main(String[] args) {
-        System.out.println(specializations);
-    }
 }
