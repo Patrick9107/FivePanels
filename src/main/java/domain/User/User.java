@@ -67,4 +67,8 @@ public class User extends BaseEntity {
             throw new MessengerException("sendMessage: chat doesnt exist");
         }
     }
+
+    public Socials getSocials() {
+        return socials;
+    }
 }
