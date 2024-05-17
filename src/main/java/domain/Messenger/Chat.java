@@ -1,7 +1,6 @@
 package domain.Messenger;
 
 import domain.common.BaseEntity;
-import domain.common.Media;
 import foundation.Assert;
 
 import java.util.*;
