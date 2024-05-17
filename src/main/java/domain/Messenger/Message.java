@@ -60,11 +60,11 @@ public class Message {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Message message = (Message) o;
-        return Objects.equals(timestamp, message.timestamp);
+        return Objects.equals(sender, message.sender) && Objects.equals(timestamp, message.timestamp) && Objects.equals(content, message.content) && Objects.equals(attachments, message.attachments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(timestamp);
+        return Objects.hash(sender, timestamp, content, attachments);
     }
 }
