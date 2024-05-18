@@ -11,7 +11,7 @@ public class Profile {
     private String name;
     // not null, min 1 character, max 128 characters
     private String title;
-    // not null, not blank, TODO maybe have all countries listed in a set loaded from a txt file
+    // not null, not blank
     private Country location;
     // not null, TODO max
     private Set<Specialization> tags;
@@ -35,5 +35,41 @@ public class Profile {
         this.tags = tags; // TODO
         this.rating = rating; // TODO
         this.avatar = avatar; // TODO
+    }
+
+    public void setName(String name) {
+        isNotNull(name, "name");
+        isGreaterThanOrEqual(name.length(), "name", 1, "1");
+        hasMaxLength(name, 129, "name");
+        this.name = name;
+    }
+
+    public void setTitle(String title) {
+        isNotNull(title, "title");
+        isGreaterThanOrEqual(title.length(), "title", 1, "1");
+        hasMaxLength(title, 129, "title");
+        this.title = title;
+    }
+
+    public void setLocation(String location) {
+        isNotNull(location, "location");
+        isNotBlank(location, "location");
+
+        this.location = new Country(location);
+    }
+
+    public void setTags(String tags) {
+        isNotNull(tags, "tags");
+        //TODO Max assertion
+        //TODO Talk about a solution of this method. Should setTags only do this.tags = new Hashset<>() or also add Objects to the set? How do we want to solve this Problem
+    }
+
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public void setAvatar(Image avatar) {
+        this.avatar = avatar;
     }
 }
