@@ -3,7 +3,10 @@ package domain.User;
 import domain.common.Image;
 import static foundation.Assert.*;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Profile {
 
@@ -58,8 +61,13 @@ public class Profile {
         this.location = new Country(location);
     }
 
-    public void setTags(String tags) {
+    //TODO finish and test and implement add method
+    public void setTags(String ... tags) {
         isNotNull(tags, "tags");
+
+        Set<String> safeTags = Arrays.stream(tags).filter(tag -> Specialization.getSpecializations().contains(tag)).collect(Collectors.toSet());
+        safeTags.forEach(tag -> this.tags.add(new Specialization(tag)));
+
         //TODO Max assertion
         //TODO Talk about a solution of this method. Should setTags only do this.tags = new Hashset<>() or also add Objects to the set? How do we want to solve this Problem
     }
