@@ -6,6 +6,7 @@ import domain.common.TextContent;
 import foundation.Assert;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,5 +67,14 @@ public class Message {
     @Override
     public int hashCode() {
         return Objects.hash(sender, timestamp, content, attachments);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(sender.getProfile().getName()).append(" ").append(timestamp.atZone(ZoneId.systemDefault()).toLocalDateTime().toString()).append("\n").append(content).append("\n");
+        attachments.forEach(sb::append);
+        sb.append("\n").append(status.toString()).append("\n");
+        return sb.toString();
     }
 }

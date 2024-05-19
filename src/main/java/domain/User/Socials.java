@@ -1,7 +1,10 @@
 package domain.User;
 
+import domain.Messenger.Chat;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import static foundation.Assert.*;
@@ -33,7 +36,9 @@ public class Socials {
             throw new UserException(STR."addFriend(): User already has a Relation with \{userToAdd}");
         relation.put(userToAdd.getId(), Relation.OUTGOING);
         userToAdd.getSocials().relation.put(user.getId(), Relation.INCOMING);
-
+        Chat chat = new Chat(userToAdd.getProfile().getName(), Set.of(userToAdd.getId(), user.getId())); // TODO der chat heißt bei jedem gleich? auch bei dm
+        user.addChat(chat);
+        userToAdd.addChat(chat);
     }
 
     public void acceptFriendRequest(User user, User userToAccept){
@@ -70,5 +75,12 @@ public class Socials {
             throw new UserException(STR."removeFriend(): User is not friends with \{userToRemove}");
         relation.remove(userToRemove.getId());
         userToRemove.getSocials().getRelation().remove(user.getId());
+
+        // Deletes the chat between the 2 Users
+        user.getChats().stream().filter(chat ->
+                chat.getMembers().contains(userToRemove.getId()) && !chat.isGroupChat()).forEach(chat -> {
+                    user.removeChat(chat);
+                    userToRemove.removeChat(chat);
+                });
     }
 }

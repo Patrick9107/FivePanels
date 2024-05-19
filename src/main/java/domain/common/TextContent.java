@@ -16,4 +16,9 @@ public class TextContent extends Content {
         Assert.hasMaxLength(text,1025, "text");
         this.text = text;
     }
+
+    @Override
+    public String toString() {
+        return text;
+    }
 }

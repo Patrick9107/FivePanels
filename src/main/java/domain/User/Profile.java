@@ -72,6 +72,9 @@ public class Profile {
         //TODO Talk about a solution of this method. Should setTags only do this.tags = new Hashset<>() or also add Objects to the set? How do we want to solve this Problem
     }
 
+    public String getName() {
+        return name;
+    }
 
     public void setRating(Integer rating) {
         this.rating = rating;

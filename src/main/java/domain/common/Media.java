@@ -37,4 +37,11 @@ public class Media extends Content {
         Assert.isLowerThanOrEqual(fileSize, "fileSize", 50000000, "50000000");
         this.fileSize = fileSize;
     }
+
+    @Override
+    public String toString() {
+        if (path.contains("/"))
+            return path.substring(path.lastIndexOf("/"));
+        return path;
+    }
 }

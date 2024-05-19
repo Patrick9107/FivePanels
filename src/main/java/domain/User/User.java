@@ -63,7 +63,21 @@ public class User extends BaseEntity {
         medicalcases.put(Ownership.MEMBER, new HashSet<>());
     }
 
-//    public void sendMessage(Chat chat, TextContent content, List<Media> attachments){
+    public void addChat(Chat chat) {
+        isNotNull(chat, "chat");
+        chats.add(chat);
+    }
+
+    public void removeChat(Chat chat) {
+        isNotNull(chat, "chat");
+        chats.remove(chat);
+    }
+
+    public Set<Chat> getChats() {
+        return chats;
+    }
+
+    //    public void sendMessage(Chat chat, TextContent content, List<Media> attachments){
 //        isNotNull(chat, "chat");
 //        isNotNull(attachments, "attachments");
 //        isNotNull(content, "content");
@@ -77,8 +91,16 @@ public class User extends BaseEntity {
         chat.sendMessage(this, chat, content, attachments);
     }
 
+    public void viewChat(Chat chat) {
+        chat.getHistory().forEach(System.out::println);
+    }
+
     public Socials getSocials() {
         return socials;
+    }
+
+    public Profile getProfile() {
+        return profile;
     }
 
     public void addFriend(User user) {
