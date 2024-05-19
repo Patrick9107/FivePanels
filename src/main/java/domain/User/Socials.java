@@ -20,7 +20,7 @@ public class Socials {
         isNotNull(userToAdd, "userToAdd");
         isNotNull(user, "user");
 
-        if (!(relation.containsKey(userToAdd.getId())))
+        if (user.getSocials().relation.containsKey(userToAdd.getId()))
             throw new UserException("addFriend(): User already exists in Map");
         relation.put(userToAdd.getId(), Relation.OUTGOING);
         userToAdd.getSocials().relation.put(user.getId(), Relation.INCOMING);
@@ -31,9 +31,9 @@ public class Socials {
         isNotNull(userToAccept, "userToAcceptRequest");
         isNotNull(user, "user");
 
-        if (!(relation.get(userToAccept.getId()) == Relation.INCOMING))
+        if (!(user.getSocials().relation.get(userToAccept.getId()) == Relation.INCOMING))
             throw new UserException(STR."acceptFriendRequest(): User does not have an incoming friend request from \{userToAccept}");
-        relation.put(userToAccept.getId(), Relation.FRIENDS);
+        user.getSocials().relation.put(userToAccept.getId(), Relation.FRIENDS);
         userToAccept.getSocials().relation.put(user.getId(), Relation.FRIENDS);
     }
 
@@ -44,7 +44,7 @@ public class Socials {
 
         if (!(relation.get(userToDeny.getId()) == Relation.INCOMING))
             throw new UserException(STR."denyFriendRequest(): User does not have an incoming friend request from \{userToDeny}");
-        relation.remove(userToDeny.getId());
+        user.getSocials().relation.remove(userToDeny.getId());
         userToDeny.getSocials().relation.remove(user.getId());
     }
 

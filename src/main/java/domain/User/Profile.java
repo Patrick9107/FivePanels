@@ -18,6 +18,7 @@ public class Profile {
     private Country location;
     // not null, TODO max
     private Set<Specialization> tags;
+    // not null
     private Integer rating;
     private Image avatar;
 
@@ -31,13 +32,12 @@ public class Profile {
         avatar = null;
     }
 
-    public Profile(String name, String title, Country location, Set<Specialization> tags, Integer rating, Image avatar) {
-        this.name = name; // TODO
-        this.title = title; // TODO
-        this.location = location; // TODO
-        this.tags = tags; // TODO
-        this.rating = rating; // TODO
-        this.avatar = avatar; // TODO
+    public Profile(String name, String title, String location) {
+        setName(name);
+        setTitle(title);
+        setLocation(location);
+        this.tags = new HashSet<>();
+        this.rating = 0;
     }
 
     public void setName(String name) {

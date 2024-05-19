@@ -6,12 +6,14 @@ import domain.Messenger.Status;
 import domain.common.BaseEntity;
 import domain.Messenger.Chat;
 import domain.Medicalcase.Medicalcase;
+import domain.common.Image;
 import domain.common.Media;
 import domain.common.TextContent;
-import foundation.Assert;
 
 import java.time.Instant;
 import java.util.*;
+
+import static foundation.Assert.*;
 
 public class User extends BaseEntity {
     // not null
@@ -24,7 +26,7 @@ public class User extends BaseEntity {
     private Socials socials;
     private boolean verified;
     // not null
-    private /*LinkedHash*/Set<Chat> chats;
+    private Set<Chat> chats;
     // not null, exactly 2 entries
     private Map<Ownership, Set<Medicalcase>> medicalcases;
 
@@ -39,15 +41,20 @@ public class User extends BaseEntity {
         setMedicalcases();
     }
 
+    public User(String email, /*TODO probably need to change String to something different*/String password, String name, String title, String location) {
+        this.email = new Email(email);
+        this.hashedPassword = new Password(password.toCharArray());
+        this.profile = new Profile(name, title, location);
+        this.socials = new Socials();
+        this.chats = new LinkedHashSet<>();
+        setMedicalcases();
+    }
+
     public void verify() {
     }
 
     public Email getEmail() {
         return email;
-    }
-
-    public void setEmail(Email email) {
-        this.email = email;
     }
 
     public void setMedicalcases() {
@@ -57,15 +64,13 @@ public class User extends BaseEntity {
     }
 
     public void sendMessage(Chat chat, TextContent content, List<Media> attachments){
-        Assert.isNotNull(chat, "chat");
-        Assert.isNotNull(attachments, "attachments");
-        Assert.isNotNull(content, "content");
+        isNotNull(chat, "chat");
+        isNotNull(attachments, "attachments");
+        isNotNull(content, "content");
 
-        if(chats.contains(chat)) {
-            chat.addToHistory(new Message(this, Instant.now(), content, attachments, Status.SENT));
-        } else {
-            throw new MessengerException("sendMessage(): chat doesnt exist");
-        }
+        if(!(chats.contains(chat)))
+            throw new MessengerException("sendMessage(): chat does not exist");
+        chat.addToHistory(new Message(this, Instant.now(), content, attachments, Status.SENT));
     }
 
     public Socials getSocials() {
