@@ -5,6 +5,7 @@ import static foundation.Assert.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,11 +33,11 @@ public class Profile {
         avatar = null;
     }
 
-    public Profile(String name, String title, String location) {
+    public Profile(String name, String title, String location, String... tags) {
         setName(name);
         setTitle(title);
         setLocation(location);
-        this.tags = new HashSet<>();
+        setTags(tags);
         this.rating = 0;
     }
 
@@ -61,15 +62,14 @@ public class Profile {
         this.location = new Country(location);
     }
 
-    //TODO finish and test and implement add method
-    public void setTags(String ... tags) {
-        isNotNull(tags, "tags");
+    public void setTags(String... tags) {
+        this.tags = new HashSet<>();
+        Arrays.stream(tags).forEach(this::addTag);
+    }
 
-        Set<String> safeTags = Arrays.stream(tags).filter(tag -> Specialization.getSpecializations().contains(tag)).collect(Collectors.toSet());
-        safeTags.forEach(tag -> this.tags.add(new Specialization(tag)));
-
-        //TODO Max assertion
-        //TODO Talk about a solution of this method. Should setTags only do this.tags = new Hashset<>() or also add Objects to the set? How do we want to solve this Problem
+    public void addTag(String tag) {
+        isNotNull(tag, "tag");
+        tags.add(new Specialization(tag));
     }
 
     public String getName() {
@@ -82,5 +82,17 @@ public class Profile {
 
     public void setAvatar(Image avatar) {
         this.avatar = avatar;
+    }
+
+    @Override
+    public String toString() {
+        return "Profile{" +
+                "name='" + name + '\'' +
+                ", title='" + title + '\'' +
+                ", location=" + location +
+                ", tags=" + tags +
+                ", rating=" + rating +
+                ", avatar=" + avatar +
+                '}';
     }
 }
