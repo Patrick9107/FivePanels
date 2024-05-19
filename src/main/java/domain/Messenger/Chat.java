@@ -1,9 +1,15 @@
 package domain.Messenger;
 
+import domain.User.User;
 import domain.common.BaseEntity;
+import domain.common.Media;
+import domain.common.TextContent;
 import foundation.Assert;
 
+import java.time.Instant;
 import java.util.*;
+
+import static foundation.Assert.*;
 
 public class Chat extends BaseEntity {
 
@@ -21,22 +27,32 @@ public class Chat extends BaseEntity {
     }
 
     public void setName(String name) {
-        Assert.isNotNull(name, "name");
-        Assert.hasMaxLength(name,513, "name");
-        Assert.isNotBlank(name, "name");
+        isNotNull(name, "name");
+        hasMaxLength(name,513, "name");
+        isNotBlank(name, "name");
         this.name = name;
     }
 
     public void setMembers(Set<UUID> members) {
-        Assert.isNotNull(members, "members");
-        Assert.hasMaxSize(members,513, "members");
-        Assert.isNotBlank(name, "name");
+        isNotNull(members, "members");
+        hasMaxSize(members,513, "members");
         this.members = members;
     }
 
     public void addToHistory(Message message){
-        Assert.isNotNull(message,"message");
+        isNotNull(message,"message");
         history.add(message);
+    }
+
+    public void sendMessage(User user, Chat chat, TextContent content, List<Media> attachments){
+        isNotNull(chat, "chat");
+        isNotNull(attachments, "attachments");
+        isNotNull(content, "content");
+        isNotNull(user, "user");
+
+        if(!(members.contains(user.getId())))
+            throw new MessengerException("sendMessage(): User is not a member of this chat");
+        chat.addToHistory(new Message(user, Instant.now(), content, attachments, Status.SENT));
     }
 
 
@@ -45,6 +61,6 @@ public class Chat extends BaseEntity {
     }
 
     public void view(){
-
+        history.forEach(System.out::println);
     }
 }

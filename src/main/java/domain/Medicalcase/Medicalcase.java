@@ -23,7 +23,7 @@ public class Medicalcase extends BaseEntity {
     private Set<CaseTag> tags;
     // not null, max 8 entries
     private /*LinkedHash*/Set<String> votingOptions;
-    // not null, max entries = number of members * votingOptions
+    // not null, max entries = number of members * votingOptions -> total max 4096
     private Set<Vote> votes;
 
     public void react(User user){
