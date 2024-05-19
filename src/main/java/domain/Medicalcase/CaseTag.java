@@ -40,4 +40,9 @@ public class CaseTag {
             throw new MedicalcaseException(e.getMessage() + STR."error reading file \{path}");
         }
     }
+
+    @Override
+    public String toString() {
+        return tag;
+    }
 }

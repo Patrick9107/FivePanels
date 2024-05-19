@@ -41,4 +41,9 @@ public class Specialization {
             throw new UserException(e.getMessage() + STR."error reading file \{path}");
         }
     }
+
+    @Override
+    public String toString() {
+        return tag;
+    }
 }
