@@ -63,17 +63,37 @@ public class User extends BaseEntity {
         medicalcases.put(Ownership.MEMBER, new HashSet<>());
     }
 
-    public void sendMessage(Chat chat, TextContent content, List<Media> attachments){
-        isNotNull(chat, "chat");
-        isNotNull(attachments, "attachments");
-        isNotNull(content, "content");
+//    public void sendMessage(Chat chat, TextContent content, List<Media> attachments){
+//        isNotNull(chat, "chat");
+//        isNotNull(attachments, "attachments");
+//        isNotNull(content, "content");
+//
+//        if(!(chats.contains(chat)))
+//            throw new MessengerException("sendMessage(): chat does not exist");
+//        chat.addToHistory(new Message(this, Instant.now(), content, attachments, Status.SENT));
+//    }
 
-        if(!(chats.contains(chat)))
-            throw new MessengerException("sendMessage(): chat does not exist");
-        chat.addToHistory(new Message(this, Instant.now(), content, attachments, Status.SENT));
+    public void sendMessage(Chat chat, TextContent content, List<Media> attachments) {
+        chat.sendMessage(this, chat, content, attachments);
     }
 
     public Socials getSocials() {
         return socials;
+    }
+
+    public void addFriend(User user) {
+        this.socials.addFriend(this, user);
+    }
+
+    public void acceptFriendRequest(User user) {
+        this.socials.acceptFriendRequest(this, user);
+    }
+
+    public void denyFriendRequest(User user) {
+        this.socials.denyFriendRequest(this, user);
+    }
+
+    public void removeFriend(User user) {
+        this.socials.removeFriend(this, user);
     }
 }
