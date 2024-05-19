@@ -21,7 +21,7 @@ public class Socials {
         isNotNull(user, "user");
 
         if (!(relation.containsKey(userToAdd.getId())))
-            throw new UserException("add(): User already exists in Map");
+            throw new UserException("addFriend(): User already exists in Map");
         relation.put(userToAdd.getId(), Relation.OUTGOING);
         userToAdd.getSocials().relation.put(user.getId(), Relation.INCOMING);
     }

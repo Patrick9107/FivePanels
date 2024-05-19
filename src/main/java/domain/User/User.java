@@ -64,7 +64,7 @@ public class User extends BaseEntity {
         if(chats.contains(chat)) {
             chat.addToHistory(new Message(this, Instant.now(), content, attachments, Status.SENT));
         } else {
-            throw new MessengerException("sendMessage: chat doesnt exist");
+            throw new MessengerException("sendMessage(): chat doesnt exist");
         }
     }
 
