@@ -14,6 +14,7 @@ class SocialsTest {
     @BeforeEach
     void setup() {
         // Given
+        // TODO Tests brauchen viel zu lange weil das Passwort Verfahren solange dauert
         homer = new User("homer@simpson.com", "password", "Homer Simpson", "Rh.D.", "United Kingdom");
         bart = new User("bart@simpson.com", "password", "Bart Simpson", "Ph.D.", "United States");
     }
