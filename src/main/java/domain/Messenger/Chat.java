@@ -22,10 +22,11 @@ public class Chat extends BaseEntity {
     // not null
     private List<Message> history;
 
-    public Chat(String name, Set<UUID> members) {
+    public Chat(String name, Set<UUID> members, boolean groupChat) {
         setName(name);
         setMembers(members);
         history = new ArrayList<>();
+        this.groupChat = groupChat;
     }
 
     public void setName(String name) {

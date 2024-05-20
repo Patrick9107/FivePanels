@@ -36,7 +36,7 @@ public class Socials {
             throw new UserException(STR."addFriend(): User already has a Relation with \{userToAdd}");
         relation.put(userToAdd.getId(), Relation.OUTGOING);
         userToAdd.getSocials().relation.put(user.getId(), Relation.INCOMING);
-        Chat chat = new Chat(userToAdd.getProfile().getName(), Set.of(userToAdd.getId(), user.getId())); // TODO der chat heißt bei jedem gleich? auch bei dm
+        Chat chat = new Chat(userToAdd.getProfile().getName(), Set.of(userToAdd.getId(), user.getId()), false); // TODO der chat heißt bei jedem gleich? auch bei dm
         user.addChat(chat);
         userToAdd.addChat(chat);
     }
