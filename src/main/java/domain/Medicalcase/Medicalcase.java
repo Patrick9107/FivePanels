@@ -105,7 +105,7 @@ public class Medicalcase extends BaseEntity {
     public void removeContent(Content contentToRemove) {
         isNotNull(contentToRemove, "contentId");
 
-        content.stream().filter(content1 -> content1.equals(contentToRemove)).findFirst().ifPresent((content1 -> content.remove(content1));
+        content.stream().filter(content1 -> content1.equals(contentToRemove)).findFirst().ifPresent(content1 -> content.remove(content1));
     }
 
     public void edit(){
