@@ -3,13 +3,12 @@ package repository;
 import domain.common.BaseEntity;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface IRepository {
+public interface IRepository<T> {
 
-    void save(BaseEntity entity);
-    BaseEntity findById(Integer id);
-    List<BaseEntity> findAll();
-    void delete(BaseEntity entity);
-
-
+    void save(T entity);
+    T findById(UUID id);
+    List<T> findAll();
+    void delete(T entity);
 }

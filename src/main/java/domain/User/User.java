@@ -92,6 +92,12 @@ public class User extends BaseEntity {
     }
 
     public void viewChat(Chat chat) {
+        if (!(chat.isGroupChat())) {
+            Optional<UUID> id = chat.getMembers().stream().filter(uuid -> this.getId() != uuid).findFirst();
+            if (id.isPresent()) {
+            // TODO how do you get User from UUID?
+            }
+        }
         chat.getHistory().forEach(System.out::println);
     }
 
