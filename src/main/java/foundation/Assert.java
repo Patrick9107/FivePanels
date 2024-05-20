@@ -123,10 +123,10 @@ public abstract class Assert {
 
     // Collection Assertions -------------------------------------------------------
 
-    public static <T extends Collection<?>> T hasMaxSize(T values, int maxLength, String valueName) {
+    public static <T extends Collection<?>> T hasMaxSize(T values, int maxSize, String valueName) {
         isNotNull(values, valueName);
-        if (values.size() > maxLength) {
-            throw new AssertException(STR."\{values} has more number of elements than \{maxLength}");
+        if (values.size() > maxSize) {
+            throw new AssertException(STR."\{values} has more number of elements than \{maxSize}");
         }
         return values;
     }
