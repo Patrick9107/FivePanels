@@ -72,6 +72,11 @@ public class Profile {
         tags.add(new Specialization(tag));
     }
 
+    public void removeTag(String tag) {
+        isNotNull(tag, "tag");
+        tags.remove(new Specialization(tag));
+    }
+
     public String getName() {
         return name;
     }
