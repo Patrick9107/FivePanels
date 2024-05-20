@@ -124,4 +124,8 @@ public class User extends BaseEntity {
     public void removeFriend(User user) {
         this.socials.removeFriend(this, user);
     }
+
+    public void createMedicalcase(String title, String... tags) {
+        medicalcases.get(Ownership.OWNER).add(new Medicalcase(title, this, tags));
+    }
 }
