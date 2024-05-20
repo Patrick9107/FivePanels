@@ -42,6 +42,33 @@ public class Chat extends BaseEntity {
         this.members = members;
     }
 
+    public void addMember(User user) {
+        isNotNull(user, "user");
+        hasMaxSize(members, 513, "members");
+
+        if (!groupChat) {
+            // todo somehow get name from user based on id
+            String groupName = members.stream().map(UUID::toString).toString() + user.getProfile().getName();
+            Chat chat = new Chat(groupName, new HashSet<UUID>(members), true);
+            user.addChat(chat);
+            // todo other members also have to add the chat (again get user from uuid)
+        }
+        if (members.contains(user.getId()))
+            throw new MessengerException(STR."addMember(): user is already a member of this chat");
+        members.add(user.getId());
+    }
+
+    public void removeMember(User user) {
+        if (!groupChat)
+            throw new MessengerException(STR."removeMember(): can not remove a member from a direct chat");
+        isNotNull(user, "user");
+        hasMaxSize(members, 513, "members");
+
+        if (!(members.contains(user.getId())))
+            throw new MessengerException(STR."removeMember(): user is not a member of this chat");
+        members.remove(user.getId());
+    }
+
     public void addToHistory(Message message){
         isNotNull(message,"message");
         history.add(message);
