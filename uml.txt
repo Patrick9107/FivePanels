@@ -5,7 +5,7 @@ class Medicalcase extends BaseEntity {
   - owner : User
   - content : List<Content>
   - members : Set<User>
-  - reactions : Set<User>
+  - reactions : Set<UUID>
   - tags : Set<CaseTag>
   - votingOptions : LinkedHashSet<String>
   - votes : Set<Vote>
@@ -30,53 +30,96 @@ class User extends BaseEntity {
   - profile : Profile
   - socials : Socials
   - verified : boolean
-  - chats : List<Chat>
-  - partOfMedicalcase : Set<Medicalcase>
-  + verify() : void
-  + setter/getter()
+  - chats : Set<Chat>
+  - medicalcases : Map<Ownership, Set<Medicalcase>
+  + setMedicalcases() : void
+  + getChats() : Set<Chat>
+  + getSocials() : Socials
+  + getProfile() : Profile
+  + addFriend(user : User) : void
+  + acceptFriendRequest(user : User) : void
+  + denyFriendRequest(user : User) : void
+  + removeFriend(user : User) : void
+  + addChat(chat : Chat) : void
+  + removeChat(chat : Chat) : void
+  + sendMessage(chat : Chat, content : TextContent, attachments : List<Media>) : void
+  + viewChat(chat : Chat) : void
+}
+
+enum Ownership {
+  OWNER, MEMBER
 }
 
 class Profile {
   - name : String
   - title : String
   - location : String
-  - language : String
+  - language : Country
   - tags : Set<Specialization>
   - rating : Integer
   - avatar : Image
+  + setName(name : String) : void
+  + setTitle(title : String) : void
+  + setLocation(location : String) : void
+  + setTags(tags : String...) : void
+  + setAvatar(avatar : Image) : void
+  + addTag(tag : String) : void
+  + addRating(rating : int) : void
+  + getName() : String
 }
 
 class Socials {
-  - relation : Map<Integer, Relation>
-  + add(user : User) : User
-  + accept(user : User) : User
-  + deny(user : User) : User
+  - relation : Map<UUID, Relation>
+  + getRelation() : Map<UUID, Relation>
+  + addFriend(user : User, userToAdd : User) : void
+  + acceptFriendRequest(user : User, userToAccept : User) : void
+  + denyFriendRequest(user : User, userToDeny : User) : void
+  + removeFriend(user : User, userToRemove : User) : void
 }
 
 enum Relation {
   FRIENDS, INCOMING, OUTGOING
 }
 
-abstract class Specialization {
-    - static specializations : Set<String>
-    + static readCaseTagsFromFile(String filename) : void
+class Specialization {
+  - static specializations : Set<String>
+  - tag : String
+  + setTag(tag : String) : void
+  + static getSpecializations() : Set<String>
 }
 
-abstract class CaseTag {
-    - static caseTags : Set<String>
-    + readSpecializationsFromFile(String filename) : void
+class CaseTag {
+  - static caseTags : Set<String>
+  - tag : String
+  + setTag(tag : String) : void
+  + static getCaseTags() : Set<String>
+}
+
+class Country {
+  - static countries : Set<String>
+  - country : String
+  + setCountry(country : String) : void
+  + static getCountries() : Set<String>
 }
 
 class Media extends Content {
   - path : String
   - mime : String
   - fileSize : Integer
+  + setter() : void
+  + getPath() : String
+  + getMime() : String
+  + getFileSize : Integer
 }
 
 class Image extends Media {
   - width : int
   - height : int
   - alternativeText : String
+  + setter() : void
+  + getWidth() : int
+  + getHeight() : int
+  + getAlternativeText() : String
 }
 
 class Content {
@@ -85,34 +128,43 @@ class Content {
 
 class TextContent extends Content {
   - text : String
+  + setText(string : String) : void
 }
 
 class Email {
   - address : String
+  + setAddress(address : String) : void
 }
 
 class Password {
   - hashedPassword : char[]
-  + isPasswordStrong(String Password) : boolean
-  + hashPassword(String password) : char[]
-  + checkPasswords(String password, String password2) : boolean
+  + isPasswordStrong(password : CharSequence) : boolean
+  + hashPassword(password : char[]) : char[]
+  + checkPasswords(password : char[], password2 : char[]) : boolean
 }
 
 class Chat extends BaseEntity {
   - name : String
+  - groupChat : boolean
   - members : Set<User>
   - history : List<Message>
-  + sendMessage(content : String, attachments : List<Media>) : voi
-  + reply(message : Message) : void
-  + viewMembers() : void
+  + setName(name : String) : void
+  + setMembers(members : Set<UUID>) :void
+  + getMembers() : Set<UUID>
+  + getHistory() : List<Message>
+  + isGroupChat() : boolean
+  + addToHistory(message : Message) : void
+  + sendMessage(user : User, chat : Chat, content : TextContent, attachments : List<Media>) : void
 }
 
 class Message {
   - sender : User
   - timestamp : Instant
-  - content : String
+  - content : TextContent
   - attachments : List<Media>
   - status : Status
+  + setter() : void
+  + equals() / hashCode()
 }
 
 enum Status {
@@ -120,7 +172,7 @@ enum Status {
 }
 
 abstract BaseEntity {
-  - id : Integer
+  - id : UUID
   - createdAt : Instant
   - updatedAt : Instant
 }
@@ -146,7 +198,13 @@ User "1" -- "1" Chat
 
 Chat "1" -- "n" Message
 
+Profile "1" -- "1" Country
+
 Message -- Status
+
+Message "1" -- "n" Media
+
+Message "1" -- "1" TextContent
 
 UserSocials -- Relation
 

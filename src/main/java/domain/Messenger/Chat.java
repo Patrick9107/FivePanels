@@ -69,10 +69,6 @@ public class Chat extends BaseEntity {
         return groupChat;
     }
 
-    public void reply(Message message){
-
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

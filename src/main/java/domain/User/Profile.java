@@ -17,7 +17,7 @@ public class Profile {
     private String title;
     // not null, not blank
     private Country location;
-    // not null, TODO max
+    // not null
     private Set<Specialization> tags;
     // not null
     private Integer rating;
@@ -76,14 +76,15 @@ public class Profile {
         return name;
     }
 
-    public void setRating(Integer rating) {
-        this.rating = rating;
+    public void addRating(int rating) {
+        this.rating += rating;
     }
-
+    // TODO
     public void setAvatar(Image avatar) {
         this.avatar = avatar;
     }
 
+    // TODO rewrite
     @Override
     public String toString() {
         return "Profile{" +

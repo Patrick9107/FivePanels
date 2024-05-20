@@ -32,7 +32,7 @@ public class Password {
         return hashedPassword;
     }
 
-    public boolean checkPasswords(String password, char[] hashedPassword){
-        return BCrypt.verifyer().verify(password.toCharArray(), hashedPassword).verified;
+    public boolean checkPasswords(char[] password, char[] hashedPassword){
+        return BCrypt.verifyer().verify(password, hashedPassword).verified;
     }
 }

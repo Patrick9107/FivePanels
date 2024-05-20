@@ -6,6 +6,7 @@ import domain.User.User;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class Medicalcase extends BaseEntity {
 
@@ -18,7 +19,7 @@ public class Medicalcase extends BaseEntity {
     // not null, max 512 members
     private Set<User> members;
     // not null, max 512 entries
-    private Set<User> reactions;
+    private Set<UUID> reactions;
     // not null, max 512 entries
     private Set<CaseTag> tags;
     // not null, max 8 entries
