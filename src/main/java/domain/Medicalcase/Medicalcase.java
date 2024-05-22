@@ -33,6 +33,8 @@ public class Medicalcase extends BaseEntity {
     // not null, all members of medicalcase are automatically in this chat
     private Chat chat;
 
+    // TODO irgendwie speichern welcher chat zu welchem medicalcase gehört, probably im repository
+
     public Medicalcase(String title, User owner, String... tags) {
         setTitle(title);
         setOwner(owner);
