@@ -4,6 +4,7 @@ import domain.Messenger.Chat;
 import domain.common.BaseEntity;
 import domain.common.Content;
 import domain.User.User;
+import repository.UserRepository;
 
 import static foundation.Assert.*;
 
@@ -26,6 +27,8 @@ public class Medicalcase extends BaseEntity {
     private Set<CaseTag> tags;
     // not null, max 8 entries
     private Set<Answer> votingOptions;
+    //can be null -> not null only when evaluating Votes
+    private Answer correctAnswer;
     // not null, max entries = number of members * votingOptions -> total max 4096
     private Map<UUID, Set<Vote>> votes;
     // true if medicalcase is published, false otherwise
@@ -45,6 +48,7 @@ public class Medicalcase extends BaseEntity {
         this.votingOptions = new LinkedHashSet<>();
         this.votes = new HashMap<>();
         this.chat = new Chat(title, Set.of(owner.getId()), true);
+        this.correctAnswer = null;
     }
 
     public void setTitle(String title) {
@@ -67,6 +71,14 @@ public class Medicalcase extends BaseEntity {
         Arrays.stream(tags).forEach(this::addTag);
     }
 
+    public void setCorrectAnswer(Answer correctAnswer) {
+        isNotNull(correctAnswer,"correctAnswer");
+        if(!votingOptions.contains(correctAnswer)) {
+            this.correctAnswer = correctAnswer;
+            throw new MedicalcaseException("setCorrectAnswer: correctAnswer has to be in the votingOption!");
+        }
+    }
+
     public void addTag(String tag) {
         if (published)
             throw new MedicalcaseException(STR."addTag(): can not add tag to a published medicalcase");
@@ -79,7 +91,6 @@ public class Medicalcase extends BaseEntity {
             throw new MedicalcaseException(STR."react(): can only react to a published medicalcase");
         isNotNull(user , "user");
         hasMaxSize(reactions, 513, "reactions");
-
         reactions.add(user.getId());
     }
 
@@ -96,9 +107,9 @@ public class Medicalcase extends BaseEntity {
     public void publish() {
         this.published = true;
     }
-
     // TODO "Der Owner kann Antworten beim Erstellen vorgeben"
     // heißt das er kann keine antworten mehr hinzufügen/entfernen nachdem den case erstellt hat? oder machen wir ein zustätzliches attribut, welches sagt ob der case pubic ist oder nicht. Und solange er nicht public ist kann er noch antwortmöglichkeiten hinzufügen/entfernen.
+
     public void addVotingOption(String option) {
         if (published)
             throw new MedicalcaseException(STR."addVotingOption(): can not add votingOption to a published medicalcase");
@@ -144,7 +155,6 @@ public class Medicalcase extends BaseEntity {
     public void edit(){
 
     }
-
     // TODO Der Owner kann immer das aktuelle Voting-Resultat anzeigen lassen
     public void viewVotes(){
         // mit votes.values() bekommt man eine collection mit allen listen von votes
@@ -154,7 +164,6 @@ public class Medicalcase extends BaseEntity {
     public void viewMembers(){
 
     }
-
     // TODO Die Members können mittels prozentual Verteilung auf die Antworten voten.
     // ka ob das so passt aber das ist mein erster ansatz LG
     public void castVote(User user, String answer, int percentage) {

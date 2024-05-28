@@ -5,6 +5,7 @@ import domain.common.BaseEntity;
 import domain.common.Media;
 import domain.common.TextContent;
 import foundation.Assert;
+import repository.UserRepository;
 
 import java.time.Instant;
 import java.util.*;
@@ -14,7 +15,7 @@ import static foundation.Assert.*;
 
 public class Chat extends BaseEntity {
 
-    // not null, not blank, max 64 characters
+    // if groupchat not null, if not null, not blank, max 64 characters
     private String name;
     private boolean groupChat;
     // not null, max 512 members, not empty
@@ -23,17 +24,19 @@ public class Chat extends BaseEntity {
     private List<Message> history;
 
     public Chat(String name, Set<UUID> members, boolean groupChat) {
+        this.groupChat = groupChat;
         setName(name);
         setMembers(members);
         history = new ArrayList<>();
-        this.groupChat = groupChat;
     }
 
     public void setName(String name) {
         isNotNull(name, "name");
         hasMaxLength(name,513, "name");
         isNotBlank(name, "name");
-        this.name = name;
+        if (groupChat)
+            this.name = name;
+
     }
 
     public void setMembers(Set<UUID> members) {
@@ -85,6 +88,10 @@ public class Chat extends BaseEntity {
         chat.addToHistory(new Message(user, Instant.now(), content, attachments, Status.SENT));
     }
 
+    public String getName() {
+        return name;
+    }
+
     public Set<UUID> getMembers() {
         return members;
     }
@@ -104,17 +111,22 @@ public class Chat extends BaseEntity {
         return sb.toString();
     }
 
-// Test for sending Messages between 2 Users (it actually works) pls dont delete i need this code
+ //Test for sending Messages between 2 Users (it actually works) pls dont delete i need this code
 //    public static void main(String[] args) {
 //        User homer = new User("homer@simpson.com", "password", "Homer Simpson", "Rh.D.", "United Kingdom");
+//        UserRepository.save(homer);
 //        User bart = new User("bart@simpson.com", "password", "Bart Simpson", "Ph.D.", "United States");
+//        UserRepository.save(bart);
+//        User lisa = new User("lisa@simpson.com", "password", "Lisa Simpson", "Ph.D.", "United States");
+//        UserRepository.save(lisa);
 //        homer.addFriend(bart);
 //        bart.acceptFriendRequest(homer);
 //
+//        lisa.addChat(new Chat("theCoolOnes", Set.of(bart.getId(), lisa.getId(), homer.getId()), true));
+//        lisa.sendMessage();
 //        Optional<Chat> sendMessage = homer.getChats().stream().filter(chat -> !chat.isGroupChat() && chat.getMembers().contains(bart.getId())).findFirst();
 //        sendMessage.ifPresent(chat -> homer.sendMessage(chat, new TextContent("Das ist Homer Message test test"), List.of(new Media("hallo.txt", "sdhjgvbfd", 100))));
 //        sendMessage.ifPresent(chat -> bart.sendMessage(chat, new TextContent("Das ist Bart Message hallo 123 Test"), List.of(new Media("hallo.txt", "sdhjgvbfd", 100))));
 //        sendMessage.ifPresent(homer::viewChat);
-//        sendMessage.ifPresent(bart::viewChat);
 //    }
 }

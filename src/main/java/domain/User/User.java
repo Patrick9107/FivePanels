@@ -9,6 +9,7 @@ import domain.Medicalcase.Medicalcase;
 import domain.common.Image;
 import domain.common.Media;
 import domain.common.TextContent;
+import repository.UserRepository;
 
 import java.time.Instant;
 import java.util.*;
@@ -96,7 +97,10 @@ public class User extends BaseEntity {
             Optional<UUID> id = chat.getMembers().stream().filter(uuid -> this.getId() != uuid).findFirst();
             if (id.isPresent()) {
             // TODO how do you get User from UUID?
+                System.out.println(UserRepository.findById(id.get()).getProfile().getName());
             }
+        }else{
+            System.out.println(chat.getName());
         }
         chat.getHistory().forEach(System.out::println);
     }
