@@ -1,17 +1,13 @@
 package domain.User;
 
-import domain.Messenger.Message;
-import domain.Messenger.MessengerException;
-import domain.Messenger.Status;
 import domain.common.BaseEntity;
 import domain.Messenger.Chat;
 import domain.Medicalcase.Medicalcase;
-import domain.common.Image;
 import domain.common.Media;
 import domain.common.TextContent;
+import repository.ChatRepository;
 import repository.UserRepository;
 
-import java.time.Instant;
 import java.util.*;
 
 import static foundation.Assert.*;
@@ -32,15 +28,15 @@ public class User extends BaseEntity {
     private Map<Ownership, Set<Medicalcase>> medicalcases;
 
     // TODO NUR ZUM TESTEN, KANN WIEDER GELÖSCHT WERDEN
-    public User() {
-        this.email = new Email("admin@admin.com");
-        this.hashedPassword = new Password("admin".toCharArray());
-        this.profile = new Profile();
-        this.socials = new Socials();
-        verified = false;
-        chats = new LinkedHashSet<>();
-        setMedicalcases();
-    }
+//    public User() {
+//        this.email = new Email("admin@admin.com");
+//        this.hashedPassword = new Password("admin".toCharArray());
+//        this.profile = new Profile();
+//        this.socials = new Socials();
+//        verified = false;
+//        chats = new LinkedHashSet<>();
+//        setMedicalcases();
+//    }
 
     public User(String email, /*TODO probably need to change String to something different*/String password, String name, String title, String location) {
         this.email = new Email(email);
@@ -78,33 +74,24 @@ public class User extends BaseEntity {
         return chats;
     }
 
-    //    public void sendMessage(Chat chat, TextContent content, List<Media> attachments){
-//        isNotNull(chat, "chat");
-//        isNotNull(attachments, "attachments");
-//        isNotNull(content, "content");
-//
-//        if(!(chats.contains(chat)))
-//            throw new MessengerException("sendMessage(): chat does not exist");
-//        chat.addToHistory(new Message(this, Instant.now(), content, attachments, Status.SENT));
-//    }
-
     public void sendMessage(Chat chat, TextContent content, List<Media> attachments) {
         chat.sendMessage(this, chat, content, attachments);
     }
 
     public void viewChat(Chat chat) {
         if (!(chat.isGroupChat())) {
-            Optional<UUID> id = chat.getMembers().stream().filter(uuid -> this.getId() != uuid).findFirst();
-            if (id.isPresent()) {
-            // TODO how do you get User from UUID?
-                System.out.println(UserRepository.findById(id.get()).getProfile().getName());
-            }
-        }else{
+            chat.getMembers().stream().filter(uuid ->
+                    this.getId() != uuid).findFirst().flatMap(UserRepository::findById).ifPresent(user ->
+                    System.out.println(user.getProfile().getName()));
+        } else {
             System.out.println(chat.getName());
         }
         chat.getHistory().forEach(System.out::println);
     }
 
+    public Chat getDirectChat(UUID userId) {
+        return ChatRepository.findAll().stream().filter(chat -> !chat.isGroupChat() && chat.getMembers().contains(userId)).findFirst().get();
+    }
     public Socials getSocials() {
         return socials;
     }

@@ -1,5 +1,6 @@
 package repository;
 
+import domain.Messenger.Chat;
 import domain.User.User;
 
 import java.util.*;
@@ -7,19 +8,19 @@ import java.util.*;
 /**
  * A repository class for managing user entities.
  */
-public class UserRepository {
+public class ChatRepository {
 
     /**
      * A hashmap for storing user entities with their uuid as the key
      */
-    private static final HashMap<UUID, User> map = new HashMap<>();
+    private static final HashMap<UUID, Chat> map = new HashMap<>();
 
     /**
      * Finds an entity by its ID.
      * @param id the ID of the entity to find
      * @return an Optional containing the entity if found, or an empty Optional if no entity is found
      */
-    public static Optional<User> findById(UUID id) {
+    public static Optional<Chat> findById(UUID id) {
         return Optional.ofNullable(map.get(id));
     }
 
@@ -27,7 +28,7 @@ public class UserRepository {
      * Retrieves all entities stored in the repository.
      * @return a list of all entities
      */
-    public static List<User> findAll() {
+    public static List<Chat> findAll() {
         return new ArrayList<>(map.values());
     }
     /**
@@ -36,7 +37,7 @@ public class UserRepository {
      * @param entity the entity to save or update
      * @return the saved or updated entity
      */
-    public static User save(User entity) {
+    public static Chat save(Chat entity) {
         map.put(entity.getId(), entity);
         return entity;
     }
@@ -64,16 +65,5 @@ public class UserRepository {
      */
     public static boolean existsById(UUID id) {
         return map.get(id) != null;
-    }
-
-    /**
-     * Finds a user by their email address.
-     *
-     * @param email the email address to search for.
-     * @return an Optional containing the found user if a user with the given email exists,
-     *         otherwise an empty Optional.
-     */
-    public Optional<User> findByEmail(String email) {
-        return findAll().stream().filter(user -> user.getEmail().getAddress().equals(email)).findFirst();
     }
 }

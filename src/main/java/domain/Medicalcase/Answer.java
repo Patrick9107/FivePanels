@@ -11,6 +11,10 @@ public class Answer {
         setAnswer(answer);
     }
 
+    public String getAnswer() {
+        return answer;
+    }
+
     public void setAnswer(String answer) {
         hasMaxLength(answer, 256, "answer");
         this.answer = answer;

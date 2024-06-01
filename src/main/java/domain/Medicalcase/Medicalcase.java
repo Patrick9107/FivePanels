@@ -4,12 +4,10 @@ import domain.Messenger.Chat;
 import domain.common.BaseEntity;
 import domain.common.Content;
 import domain.User.User;
-import repository.UserRepository;
 
 import static foundation.Assert.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Medicalcase extends BaseEntity {
 
@@ -107,8 +105,6 @@ public class Medicalcase extends BaseEntity {
     public void publish() {
         this.published = true;
     }
-    // TODO "Der Owner kann Antworten beim Erstellen vorgeben"
-    // heißt das er kann keine antworten mehr hinzufügen/entfernen nachdem den case erstellt hat? oder machen wir ein zustätzliches attribut, welches sagt ob der case pubic ist oder nicht. Und solange er nicht public ist kann er noch antwortmöglichkeiten hinzufügen/entfernen.
 
     public void addVotingOption(String option) {
         if (published)
@@ -119,7 +115,7 @@ public class Medicalcase extends BaseEntity {
         votingOptions.add(new Answer(option));
     }
 
-    public void removeVotingOption(String option) {
+    public void removeVotingOption(Answer option) {
         if (published)
             throw new MedicalcaseException(STR."removeVotingOption(): can not remove votingOption from a published medicalcase");
         isNotNull(option, "votingOption");
@@ -136,10 +132,21 @@ public class Medicalcase extends BaseEntity {
         this.content.add(content);
     }
 
+    public void addContent(Content content, int index) {
+        if (published)
+            throw new MedicalcaseException(STR."addContent(): can not add content to a published medicalcase");
+        isNotNull(content, "content");
+        try {
+            this.content.add(index, content);
+        } catch (IndexOutOfBoundsException e) {
+            throw new MedicalcaseException(STR."addContent(): Index out of bounds (\{index})");
+        }
+    }
+
     public void removeContent(int index) {
         if (published)
             throw new MedicalcaseException(STR."removeContent(): can not remove content from a published medicalcase");
-        if (content.size() <= index)
+        if (content.size() <= index || index < 0)
             throw new MedicalcaseException(STR."removeContent(): Index out of bound");
         content.remove(index);
     }
@@ -152,9 +159,6 @@ public class Medicalcase extends BaseEntity {
         content.stream().filter(content1 -> content1.equals(contentToRemove)).findFirst().ifPresent(content1 -> content.remove(content1));
     }
 
-    public void edit(){
-
-    }
     // TODO Der Owner kann immer das aktuelle Voting-Resultat anzeigen lassen
     public void viewVotes(){
         // mit votes.values() bekommt man eine collection mit allen listen von votes
@@ -169,6 +173,7 @@ public class Medicalcase extends BaseEntity {
     public void castVote(User user, String answer, int percentage) {
         isNotNull(user, "user");
         isNotBlank(answer, "answer");
+        isGreaterThanOrEqual(percentage, "percentage", 0, "zero");
 
         if (votes.get(user.getId()).stream().mapToInt(Vote::getPercentage).sum() + percentage > 100)
             throw new MedicalcaseException(STR."castVote(): can not vote with more than 100 percent");
@@ -179,7 +184,9 @@ public class Medicalcase extends BaseEntity {
 
         if (!(votes.containsKey(user.getId())))
             votes.put(user.getId(), new HashSet<>());
-        // todo ich glaube man muss noch prüfen ob der user nicht schon diese Antwort gevotet hat
+
+        if (votes.get(user.getId()).stream().noneMatch(vote -> vote.getAnswer().getAnswer().equals(answer)))
+            throw new MedicalcaseException(STR."castVote(): can not vote same answer twice");
         votes.get(user.getId()).add(new Vote(percentage, newAnswer));
     }
 

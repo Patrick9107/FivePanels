@@ -1,6 +1,7 @@
 package domain.User;
 
 import domain.Messenger.Chat;
+import repository.ChatRepository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,9 +37,6 @@ public class Socials {
             throw new UserException(STR."addFriend(): User already has a Relation with \{userToAdd}");
         relation.put(userToAdd.getId(), Relation.OUTGOING);
         userToAdd.getSocials().relation.put(user.getId(), Relation.INCOMING);
-        Chat chat = new Chat(userToAdd.getProfile().getName(), Set.of(userToAdd.getId(), user.getId()), false); // TODO der chat heißt bei jedem gleich? auch bei dm
-        user.addChat(chat);
-        userToAdd.addChat(chat);
     }
 
     public void acceptFriendRequest(User user, User userToAccept){
@@ -51,6 +49,10 @@ public class Socials {
             throw new UserException(STR."acceptFriendRequest(): User does not have an incoming friend request from \{userToAccept}");
         relation.put(userToAccept.getId(), Relation.FRIENDS);
         userToAccept.getSocials().relation.put(user.getId(), Relation.FRIENDS);
+        Chat chat = new Chat(null, Set.of(userToAccept.getId(), user.getId()), false);
+        user.addChat(chat);
+        userToAccept.addChat(chat);
+        ChatRepository.save(chat);
     }
 
     public void denyFriendRequest(User user, User userToDeny){
@@ -81,6 +83,7 @@ public class Socials {
                 chat.getMembers().contains(userToRemove.getId()) && !chat.isGroupChat()).forEach(chat -> {
                     user.removeChat(chat);
                     userToRemove.removeChat(chat);
+                    ChatRepository.deleteById(chat.getId());
                 });
     }
 }

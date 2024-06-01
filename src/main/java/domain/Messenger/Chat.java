@@ -4,18 +4,17 @@ import domain.User.User;
 import domain.common.BaseEntity;
 import domain.common.Media;
 import domain.common.TextContent;
-import foundation.Assert;
+import repository.ChatRepository;
 import repository.UserRepository;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static foundation.Assert.*;
 
 public class Chat extends BaseEntity {
 
-    // if groupchat not null, if not null, not blank, max 64 characters
+    // can be null if groupchat false - not null otherwise, not blank, max 64 characters
     private String name;
     private boolean groupChat;
     // not null, max 512 members, not empty
@@ -31,12 +30,12 @@ public class Chat extends BaseEntity {
     }
 
     public void setName(String name) {
-        isNotNull(name, "name");
-        hasMaxLength(name,513, "name");
-        isNotBlank(name, "name");
-        if (groupChat)
+        if (groupChat) {
+            isNotNull(name, "name");
+            hasMaxLength(name, 513, "name");
+            isNotBlank(name, "name");
             this.name = name;
-
+        }
     }
 
     public void setMembers(Set<UUID> members) {
@@ -88,6 +87,8 @@ public class Chat extends BaseEntity {
         chat.addToHistory(new Message(user, Instant.now(), content, attachments, Status.SENT));
     }
 
+    //todo vielleicht viewChat methode?
+
     public String getName() {
         return name;
     }
@@ -123,10 +124,10 @@ public class Chat extends BaseEntity {
 //        bart.acceptFriendRequest(homer);
 //
 //        lisa.addChat(new Chat("theCoolOnes", Set.of(bart.getId(), lisa.getId(), homer.getId()), true));
-//        lisa.sendMessage();
-//        Optional<Chat> sendMessage = homer.getChats().stream().filter(chat -> !chat.isGroupChat() && chat.getMembers().contains(bart.getId())).findFirst();
-//        sendMessage.ifPresent(chat -> homer.sendMessage(chat, new TextContent("Das ist Homer Message test test"), List.of(new Media("hallo.txt", "sdhjgvbfd", 100))));
-//        sendMessage.ifPresent(chat -> bart.sendMessage(chat, new TextContent("Das ist Bart Message hallo 123 Test"), List.of(new Media("hallo.txt", "sdhjgvbfd", 100))));
-//        sendMessage.ifPresent(homer::viewChat);
+//
+//        Chat chat = homer.getDirectChat(bart.getId());
+//        homer.sendMessage(chat, new TextContent("Das ist Homer Message test test"), List.of(new Media("hallo.txt", "sdhjgvbfd", 100)));
+//        bart.sendMessage(chat, new TextContent("Das ist Bart Message hallo 123 Test"), List.of(new Media("hallo.txt", "sdhjgvbfd", 100)));
+//        bart.viewChat(chat);
 //    }
 }

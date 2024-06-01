@@ -13,6 +13,10 @@ public class Email {
         setAddress(address);
     }
 
+    public String getAddress() {
+        return address;
+    }
+
     public void setAddress(String address) {
 
         if (!(EmailValidator.getInstance().isValid(address)))
