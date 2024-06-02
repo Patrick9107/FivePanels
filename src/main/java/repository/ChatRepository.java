@@ -3,6 +3,7 @@ package repository;
 import domain.Messenger.Chat;
 import domain.User.User;
 
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -39,6 +40,7 @@ public class ChatRepository {
      */
     public static Chat save(Chat entity) {
         map.put(entity.getId(), entity);
+        entity.setUpdatedAt(Instant.now());
         return entity;
     }
 
@@ -65,5 +67,9 @@ public class ChatRepository {
      */
     public static boolean existsById(UUID id) {
         return map.get(id) != null;
+    }
+
+    public static List<Chat> findByName(String name) {
+        return map.values().stream().filter(chat -> name.equals(chat.getName())).toList();
     }
 }

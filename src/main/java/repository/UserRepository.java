@@ -2,6 +2,7 @@ package repository;
 
 import domain.User.User;
 
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -38,6 +39,7 @@ public class UserRepository {
      */
     public static User save(User entity) {
         map.put(entity.getId(), entity);
+        entity.setUpdatedAt(Instant.now());
         return entity;
     }
 

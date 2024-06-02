@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public abstract class BaseEntity {
 
-    private UUID id;
+    private final UUID id;
     private final Instant createdAt;
     private Instant updatedAt;
 
@@ -20,6 +20,10 @@ public abstract class BaseEntity {
         return id;
     }
 
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public Instant getCreatedAt() {
         return createdAt;
     }
@@ -27,6 +31,8 @@ public abstract class BaseEntity {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
+
+    public abstract void save();
 
     @Override
     public boolean equals(Object o) {

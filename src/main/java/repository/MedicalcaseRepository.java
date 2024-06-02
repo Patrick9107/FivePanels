@@ -2,6 +2,7 @@ package repository;
 
 import domain.Medicalcase.Medicalcase;
 
+import java.time.Instant;
 import java.util.*;
 
 public class MedicalcaseRepository {
@@ -34,6 +35,7 @@ public class MedicalcaseRepository {
      */
     public static Medicalcase save(Medicalcase entity) {
         map.put(entity.getId(), entity);
+        entity.setUpdatedAt(Instant.now());
         return entity;
     }
 
