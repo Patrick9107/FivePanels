@@ -57,8 +57,13 @@ public class Medicalcase extends BaseEntity {
             throw new MedicalcaseException(STR."setTitle(): can not change title for a published medicalcase");
         hasMaxLength(title, 129, "title");
         this.title = title;
-        chat.setName(title);
+        if (chat != null)
+            chat.setName(title);
         save();
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public void setOwner(User owner) {
@@ -75,11 +80,13 @@ public class Medicalcase extends BaseEntity {
     }
 
     public void setCorrectAnswer(Answer correctAnswer) {
+        if (!published)
+            throw new MedicalcaseException(STR."setCorrectAnswer(): can not set correctAnswer in non public medicalcase");
         isNotNull(correctAnswer,"correctAnswer");
-        if(!votingOptions.contains(correctAnswer)) {
-            this.correctAnswer = correctAnswer;
-            throw new MedicalcaseException("setCorrectAnswer(): correctAnswer has to be in the votingOption!");
+        if(!(votingOptions.contains(correctAnswer))) {
+            throw new MedicalcaseException(STR."setCorrectAnswer(): correctAnswer has to be in the votingOption!");
         }
+        this.correctAnswer = correctAnswer;
         save();
     }
 
@@ -175,6 +182,9 @@ public class Medicalcase extends BaseEntity {
         save();
     }
 
+    /* todo @jakob es soll nicht die votes zählen sondern die prozente zusammenzählen.
+        Wenn einer mit 50 prozent votet und der andere nur mit 2 prozent, soll das ja nicht das gleiche gewicht haben
+    */
     public void viewVotes(){
         // mit votes.values() bekommt man eine collection mit allen listen von votes
         //gibt dir alle Votes zurück
@@ -191,15 +201,20 @@ public class Medicalcase extends BaseEntity {
 
     }
 
-    public void viewMembers(){
-
+    public Set<User> getMembers(){
+        return members;
     }
-    // TODO Die Members können mittels prozentual Verteilung auf die Antworten voten.
-    // ka ob das so passt aber das ist mein erster ansatz LG
+
     public void castVote(User user, String answer, int percentage) {
         isNotNull(user, "user");
         isNotBlank(answer, "answer");
         isGreaterThanOrEqual(percentage, "percentage", 0, "zero");
+
+        if (user.equals(owner))
+            throw new MedicalcaseException(STR."castVote(): owner can not vote");
+
+        if (!(votes.containsKey(user.getId())))
+            votes.put(user.getId(), new HashSet<>());
 
         if (votes.get(user.getId()).stream().mapToInt(Vote::getPercentage).sum() + percentage > 100)
             throw new MedicalcaseException(STR."castVote(): can not vote with more than 100 percent");
@@ -208,10 +223,10 @@ public class Medicalcase extends BaseEntity {
         if (!(votingOptions.contains(newAnswer)))
             throw new MedicalcaseException(STR."castVote(): answer does not exist");
 
-        if (!(votes.containsKey(user.getId())))
-            votes.put(user.getId(), new HashSet<>());
-
-        if (votes.get(user.getId()).stream().noneMatch(vote -> vote.getAnswer().getAnswer().equals(answer)))
+        // derzeit ist es so, dass wenn ein user bereits auf eine Antwortmöglichkeit gevotet hat,
+        // dass er garnicht mehr diese antwort voten kann, sprich er kann sich auch nicht ändern oder so
+        // aber man kann es ändern wenn man lustig ist
+        if (votes.get(user.getId()).stream().anyMatch(vote -> vote.getAnswer().getAnswer().equals(answer)))
             throw new MedicalcaseException(STR."castVote(): can not vote same answer twice");
         votes.get(user.getId()).add(new Vote(percentage, newAnswer));
         save();
@@ -223,7 +238,7 @@ public class Medicalcase extends BaseEntity {
     }
 
     public void viewChat(){
-
+        System.out.println(chat.toString());
     }
 
     @Override
