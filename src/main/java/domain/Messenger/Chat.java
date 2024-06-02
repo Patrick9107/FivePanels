@@ -1,10 +1,13 @@
 package domain.Messenger;
 
+import domain.Medicalcase.Medicalcase;
+import domain.User.Ownership;
 import domain.User.User;
 import domain.common.BaseEntity;
 import domain.common.Media;
 import domain.common.TextContent;
 import repository.ChatRepository;
+import repository.MedicalcaseRepository;
 import repository.UserRepository;
 
 import java.time.Instant;
@@ -147,15 +150,25 @@ public class Chat extends BaseEntity {
 ////        bart.viewChat(chat);
         User homer = new User("homer@simpson.com", "password", "Homer Simpson", "Rh.D.", "United Kingdom");
         User bart = new User("bart@simpson.com", "password", "Bart Simpson", "Ph.D.", "United States");
-        homer.addFriend(bart);
-        bart.acceptFriendRequest(homer);
-        homer.createGroupChat("homer and bart", Set.of(bart.getId()));
-
-        Optional<Chat> chat = ChatRepository.findByName("homer and bart").stream().findFirst();
-        if (chat.isPresent()) {
-
-            homer.sendMessage(chat.get(), new TextContent("This is a message of Homer"), null);
-            homer.viewChat(chat.get());
-        }
+//        homer.addFriend(bart);
+//        bart.acceptFriendRequest(homer);
+//        homer.createGroupChat("homer and bart", Set.of(bart.getId()));
+//
+//        Optional<Chat> chat = ChatRepository.findByName("homer and bart").stream().findFirst();
+//        if (chat.isPresent()) {
+//
+//            homer.sendMessage(chat.get(), new TextContent("This is a message of Homer"), null);
+//            homer.viewChat(chat.get());
+//        }
+        homer.createMedicalcase("Test", "Addiction Medicine");
+        Medicalcase medicalcase = MedicalcaseRepository.findAll().stream().findFirst().get();
+        medicalcase.addVotingOption("aids");
+        medicalcase.addVotingOption("cancer");
+        medicalcase.addVotingOption("idk");
+        medicalcase.publish();
+        medicalcase.addMember(bart);
+        medicalcase.castVote(bart, "aids", 90);
+        medicalcase.castVote(bart, "cancer", 10);
+        medicalcase.viewVotes();
     }
 }
