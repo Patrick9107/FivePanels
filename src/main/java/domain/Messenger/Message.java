@@ -48,7 +48,6 @@ public class Message {
     }
 
     public void setAttachments(List<Media> attachments) {
-        Assert.isNotNull(attachments, "attachments");
         this.attachments = attachments;
     }
 
@@ -72,9 +71,16 @@ public class Message {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(sender.getProfile().getName()).append(" ").append(timestamp.atZone(ZoneId.systemDefault()).toLocalDateTime().toString()).append("\n").append(content).append("\n");
-        attachments.forEach(sb::append);
-        sb.append("\n").append(status.toString()).append("\n");
+        sb.append(sender.getProfile().getName()).append(" ").append(timestamp.atZone(ZoneId.systemDefault()).toLocalDateTime().toString()).append("\n");
+        sb.append(content).append("\n");
+        if (attachments != null) {
+            attachments.forEach(media -> sb.append(media).append(", "));
+            for (int i = 0; i < 2; i++) {
+                sb.deleteCharAt(sb.length()-1);
+            }
+            sb.append("\n");
+        }
+        sb.append(status.toString()).append("\n");
         return sb.toString();
     }
 }

@@ -11,15 +11,15 @@ public class Password {
     // max 100 characters
     private char[] hashedPassword;
 
-    public Password(char[] rawPassword) {
+    public Password(String rawPassword) {
         setHashedPassword(rawPassword);
     }
 
-    public void setHashedPassword(char[] rawPassword) {
-        this.hashedPassword = hashPassword(rawPassword);
+    public void setHashedPassword(String rawPassword) {
+        this.hashedPassword = hashPassword(rawPassword.toCharArray());
     }
 
-    public boolean isPasswordStrong(CharSequence password) { // we have to look into CharSequence
+    public boolean isPasswordStrong(String password) { // we have to look into CharSequence
         // found that CharSequence is not necessarily immutable (which means its internal state, unlike Strings, can change) which makes it a good candidate in this case for the password to not have anyone catch traces of it in the heap space
         Zxcvbn zxcvbn = new Zxcvbn();
         Strength strength = zxcvbn.measure(password);
