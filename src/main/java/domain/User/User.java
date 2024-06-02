@@ -85,7 +85,15 @@ public class User extends BaseEntity {
         return chats;
     }
 
+    /**
+     * Creates a new group chat with the specified name and members.
+     *
+     * @param name the name of the group chat
+     * @param members a set of UUIDs representing the members to be added to the group chat
+     */
     public void createGroupChat(String name, Set<UUID> members) {
+        isNotNull(name, "name");
+        isNotEmpty(members, "members");
         Chat chat = new Chat(name, members,true);
         members.forEach(uuid -> UserRepository.findById(uuid).ifPresent(user -> user.getChats().add(chat)));
     }
@@ -247,6 +255,11 @@ public class User extends BaseEntity {
     public void createMedicalcase(String title, String... tags) {
         medicalcases.get(Ownership.OWNER).add(new Medicalcase(title, this, tags));
     }
+
+    /**
+     * Saves the current user instance to the {@link UserRepository}
+     *
+     */
     @Override
     public void save() {
         UserRepository.save(this);
