@@ -63,4 +63,15 @@ public class MedicalcaseRepository {
     public static boolean existsById(UUID id) {
         return map.get(id) != null;
     }
+
+    /**
+     * Finds and returns a list of medicalcases with the specified name.
+     *
+     * @param name the name of the medicalcases to be searched.
+     * @return a list of medicalcases that have the specified name. If no medicalcases with the given name are found,
+     * an empty list is returned.
+     */
+    public static List<Medicalcase> findByName(String name) {
+        return map.values().stream().filter(medicalcase -> name.equals(medicalcase.getTitle())).toList();
+    }
 }

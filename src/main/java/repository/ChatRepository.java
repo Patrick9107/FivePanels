@@ -69,6 +69,13 @@ public class ChatRepository {
         return map.get(id) != null;
     }
 
+    /**
+     * Finds and returns a list of chats with the specified name.
+     *
+     * @param name the name of the chats to be searched.
+     * @return a list of chats that have the specified name. If no chats with the given name are found,
+     * an empty list is returned.
+     */
     public static List<Chat> findByName(String name) {
         return map.values().stream().filter(chat -> name.equals(chat.getName())).toList();
     }
