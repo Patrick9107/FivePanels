@@ -50,8 +50,8 @@ public class Socials {
         relation.put(userToAccept.getId(), Relation.FRIENDS);
         userToAccept.getSocials().relation.put(user.getId(), Relation.FRIENDS);
         Chat chat = new Chat(null, Set.of(userToAccept.getId(), user.getId()), false);
-        user.addChat(chat);
-        userToAccept.addChat(chat);
+        user.getChats().add(chat);
+        userToAccept.getChats().add(chat);
         ChatRepository.save(chat);
     }
 
@@ -81,8 +81,8 @@ public class Socials {
         // Deletes the chat between the 2 Users
         user.getChats().stream().filter(chat ->
                 chat.getMembers().contains(userToRemove.getId()) && !chat.isGroupChat()).forEach(chat -> {
-                    user.removeChat(chat);
-                    userToRemove.removeChat(chat);
+                    user.getChats().remove(chat);
+                    userToRemove.getChats().remove(chat);
                     ChatRepository.deleteById(chat.getId());
                 });
     }
