@@ -90,12 +90,16 @@ public class User extends BaseEntity {
      *
      * @param name the name of the group chat
      * @param members a set of UUIDs representing the members to be added to the group chat
+     * @return the chat that has been created
      */
-    public void createGroupChat(String name, Set<UUID> members) {
-        isNotNull(name, "name");
+    public Chat createGroupChat(String name, Set<UUID> members) {
+        isNotBlank(name, "name");
         isNotEmpty(members, "members");
-        Chat chat = new Chat(name, members,true);
+        HashSet<UUID> set = new HashSet<>(members);
+        set.add(getId());
+        Chat chat = new Chat(name, set,true);
         members.forEach(uuid -> UserRepository.findById(uuid).ifPresent(user -> user.getChats().add(chat)));
+        return chat;
     }
 
     /**
