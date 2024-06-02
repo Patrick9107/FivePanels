@@ -43,7 +43,7 @@ public class Chat extends BaseEntity {
     public void setMembers(Set<UUID> members) {
         isNotNull(members, "members");
         hasMaxSize(members,513, "members");
-        this.members = members;
+        this.members = new HashSet<>(members);
     }
 
     public void addMember(User user) {
@@ -124,26 +124,38 @@ public class Chat extends BaseEntity {
 
  //Test for sending Messages between 2 Users (it actually works) pls dont delete i need this code
     public static void main(String[] args) {
+//        User homer = new User("homer@simpson.com", "password", "Homer Simpson", "Rh.D.", "United Kingdom");
+//        User bart = new User("bart@simpson.com", "password", "Bart Simpson", "Ph.D.", "United States");
+//        User lisa = new User("lisa@simpson.com", "password", "Lisa Simpson", "Ph.D.", "United States");
+//        User test = new User("test@simpson.com", "password", "test Simpson", "Ph.D.", "United States");
+//        homer.addFriend(bart);
+//        bart.acceptFriendRequest(homer);
+//
+//        lisa.createGroupChat("theCoolOnes", Set.of(bart.getId(), homer.getId()));
+//
+//        if (homer.getDirectChat(bart.getId()).isPresent()) {
+//            Chat chat = homer.getDirectChat(bart.getId()).get();
+//            homer.sendMessage(chat, new TextContent("Das ist Homer Message test test"), List.of(new Media("hallo.txt", "sdhjgvbfd", 100), new Media("test.txt", "sdhjgvbfd", 100)));
+//            bart.sendMessage(chat, new TextContent("Das ist Bart Message hallo 123 Test"), List.of(new Media("hallo.txt", "sdhjgvbfd", 100)));
+//            homer.viewChat(chat);
+//        }
+//
+//        Chat chat = ChatRepository.findByName("theCoolOnes").get(0);
+//        homer.sendMessage(chat, new TextContent("Das ist Homer Message hallo 123 Test"), null);
+//        lisa.viewChat(chat);
+////        homer.viewChat(chat);
+////        bart.viewChat(chat);
         User homer = new User("homer@simpson.com", "password", "Homer Simpson", "Rh.D.", "United Kingdom");
         User bart = new User("bart@simpson.com", "password", "Bart Simpson", "Ph.D.", "United States");
-        User lisa = new User("lisa@simpson.com", "password", "Lisa Simpson", "Ph.D.", "United States");
-        User test = new User("test@simpson.com", "password", "test Simpson", "Ph.D.", "United States");
         homer.addFriend(bart);
         bart.acceptFriendRequest(homer);
+        homer.createGroupChat("homer and bart", Set.of(bart.getId()));
 
-        lisa.createGroupChat("theCoolOnes", Set.of(bart.getId(), lisa.getId(), homer.getId()));
+        Optional<Chat> chat = ChatRepository.findByName("homer and bart").stream().findFirst();
+        if (chat.isPresent()) {
 
-        if (homer.getDirectChat(bart.getId()).isPresent()) {
-            Chat chat = homer.getDirectChat(bart.getId()).get();
-            homer.sendMessage(chat, new TextContent("Das ist Homer Message test test"), List.of(new Media("hallo.txt", "sdhjgvbfd", 100), new Media("test.txt", "sdhjgvbfd", 100)));
-            bart.sendMessage(chat, new TextContent("Das ist Bart Message hallo 123 Test"), List.of(new Media("hallo.txt", "sdhjgvbfd", 100)));
-            homer.viewChat(chat);
+            homer.sendMessage(chat.get(), new TextContent("This is a message of Homer"), null);
+            homer.viewChat(chat.get());
         }
-
-        Chat chat = ChatRepository.findByName("theCoolOnes").get(0);
-        homer.sendMessage(chat, new TextContent("Das ist Homer Message hallo 123 Test"), null);
-        lisa.viewChat(chat);
-//        homer.viewChat(chat);
-//        bart.viewChat(chat);
     }
 }

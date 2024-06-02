@@ -67,6 +67,14 @@ public class Socials {
         userToDeny.getSocials().relation.remove(user.getId());
     }
 
+    /**
+     * Removes a friend from a user's friend list.
+     * Throws an exception if the user tries to remove themselves or if they are not friends with the specified user.
+     *
+     * @param user         the user performing the removal
+     * @param userToRemove the user to be removed from the friend list
+     * @throws UserException if the user tries to remove themselves or if they are not friends with the specified user
+     */
     public void removeFriend(User user, User userToRemove) {
         isNotNull(user, "user");
         isNotNull(userToRemove, "userToRemove");
