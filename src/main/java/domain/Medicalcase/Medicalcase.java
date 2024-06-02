@@ -8,6 +8,7 @@ import domain.User.User;
 import static foundation.Assert.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Medicalcase extends BaseEntity {
 
@@ -159,10 +160,20 @@ public class Medicalcase extends BaseEntity {
         content.stream().filter(content1 -> content1.equals(contentToRemove)).findFirst().ifPresent(content1 -> content.remove(content1));
     }
 
-    // TODO Der Owner kann immer das aktuelle Voting-Resultat anzeigen lassen
     public void viewVotes(){
         // mit votes.values() bekommt man eine collection mit allen listen von votes
-//        votes.values().forEach(votes1 -> votes1.stream().forEach(vote -> vote.getPercentage()));
+        //gibt dir alle Votes zurück
+        List<Vote> allVotes = votes.values().stream()
+                                            .flatMap(Set::stream)
+                                            .toList();
+
+        //Zählt alle votes und gruppiert das Ergebnis nach den antworten
+        Map<String, Long> voteCounts = allVotes.stream()
+                                                .collect(Collectors.groupingBy(vote -> vote.getAnswer().getAnswer(), Collectors.counting()));
+
+        //gibt die antworten und die anzahl der votes für jede antwort aus
+        voteCounts.forEach((option, count) -> System.out.println(option + ": " + count + " votes"));
+
     }
 
     public void viewMembers(){
