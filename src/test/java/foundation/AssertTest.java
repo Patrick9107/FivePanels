@@ -257,7 +257,7 @@ class AssertTest {
     void isTrue_shouldNotThrow_WhenExpressionPassedIsTrue() {
         try {
             boolean bool = true;
-            isTrue(bool, () -> STR."\{bool} is not true");
+            isTrue(bool, bool + "is not true");
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -268,7 +268,29 @@ class AssertTest {
     void isTrue_shouldThrow_WhenExpressionPassedIsFalse() {
         try {
             boolean bool = false;
-            assertThrows(AssertException.class, () -> isTrue(bool, () -> STR."\{bool} is not true"));
+            assertThrows(AssertException.class, () -> isTrue(bool, STR."\{bool} is not true"));
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void isFalse_shouldNotThrow_WhenExpressionPassedIsFalse() {
+        try {
+            boolean bool = false;
+            isFalse(false, bool + "is true");
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void isFalse_shouldThrow_WhenExpressionPassedIsTrue() {
+        try {
+            boolean bool = true;
+            assertThrows(AssertException.class, () -> isFalse(bool, STR."\{bool} is is not false"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -448,6 +470,44 @@ class AssertTest {
             HashSet<Integer> values = new HashSet<>();
 
             assertEquals(values, hasMaxSize(values, 5, "hashset"));
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void isNotEmpty_shouldThrow_WhenNullIsPassed() {
+        try {
+            HashSet<Integer> values = new HashSet<>();
+
+            assertThrowsExactly(AssertException.class , () -> isNotEmpty(null, "values"), STR."values is null");
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void isNotEmpty_shouldReturnValues_WhenCollectionIsNotEmpty() {
+        try {
+            HashSet<Integer> values = new HashSet<>();
+
+            values.add(2);
+
+            assertThrowsExactly(AssertException.class , () -> isNotEmpty(null, "values"), STR."values is null");
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void isNotEmpty_shouldThrow_WhenCollectionIsEmpty() {
+        try {
+            HashSet<Integer> values = new HashSet<>();
+
+            assertThrowsExactly(AssertException.class , () -> isNotEmpty(values, "values"), STR."values is empty");
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
