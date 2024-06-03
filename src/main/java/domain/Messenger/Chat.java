@@ -169,9 +169,9 @@ public class Chat extends BaseEntity {
         medicalcase.castVote(lisa, "cancer", 50);
 //        medicalcase.castVote(bart, "aids", 0);
         medicalcase.castVote(bart, "cancer", 90);
-        medicalcase.viewVotes();
+//        medicalcase.viewVotes();
 //        bart.sendMessage(medicalcase.getChat(), "bart message in medicalcase", null);
 //        bart.sendMessage(medicalcase.getChat(), "bart message in medicalcase", null);
-//        medicalcase.viewChat();
+        medicalcase.viewChat();
     }
 }
