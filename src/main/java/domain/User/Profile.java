@@ -21,6 +21,7 @@ public class Profile {
     private Set<Specialization> tags;
     // not null
     private Integer rating;
+    //not null
     private Image avatar;
 
     // TODO NUR ZUM TESTEN KANN WIEDER GELÖSCHT WERDEN
@@ -89,8 +90,9 @@ public class Profile {
     public void addRating(int rating) {
         this.rating += rating;
     }
-    // TODO
+
     public void setAvatar(Image avatar) {
+        isNotNull(avatar, "avatar");
         this.avatar = avatar;
     }
 

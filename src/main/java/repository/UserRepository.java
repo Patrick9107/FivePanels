@@ -1,6 +1,7 @@
 package repository;
 
 import domain.User.User;
+import domain.User.UserException;
 
 import java.time.Instant;
 import java.util.*;
@@ -32,8 +33,8 @@ public class UserRepository {
         return new ArrayList<>(map.values());
     }
     /**
-     * Saves or updates an entity in the repository.
-     * If the entity already exists, it is updated in the repository.
+     * Saves an entity in the repository.
+     * If the entity already exists, it throws an UserException.
      * @param entity the entity to save or update
      * @return the saved or updated entity
      */
