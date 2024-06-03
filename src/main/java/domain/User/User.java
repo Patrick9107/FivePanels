@@ -112,7 +112,6 @@ public class User extends BaseEntity {
      */
     public void sendMessage(Chat chat, String content, List<Media> attachments) {
         chat.sendMessage(this, chat, new TextContent(content), attachments);
-        save();
     }
 
     /**
