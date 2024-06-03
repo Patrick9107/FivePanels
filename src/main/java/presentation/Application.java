@@ -71,25 +71,19 @@ public class Application {
         Optional<User> user = UserRepository.findByEmail(email);
         if (user.isPresent()) {
             if (user.get().getPassword().checkPasswords(password.toCharArray(), user.get().getPassword().getHashedPassword())) {
-
+                loggedInAsUser = user.get();
                 System.out.println("Successfully logged in");
                 userAction();
             } else {
                 System.out.println("Email or Password is not correct. Please try again");
                 System.out.println("You will be redirected shortly");
-                try {
-                    TimeUnit.SECONDS.sleep(3);
-                } catch (InterruptedException _) {
-                }
+                sleep(2);
                 login();
             }
         } else {
             System.out.println("Email or Password is not correct. Please try again");
             System.out.println("You will be redirected shortly");
-            try {
-                TimeUnit.SECONDS.sleep(3);
-            } catch (InterruptedException _) {
-            }
+            sleep(2);
             login();
         }
     }
@@ -126,20 +120,28 @@ public class Application {
         try {
             User user = new User(email, password, name, title, location);
             loggedInAsUser = user;
+            System.out.println();
             System.out.println("User creation successful!");
+            System.out.println("You will be redirected shortly");
+            sleep(2);
             userAction();
         } catch (Exception e) {
             System.out.println("User creation unsuccessful. Please try again");
             System.out.println("You will be redirected shortly");
-            try {
-                TimeUnit.SECONDS.sleep(3);
-            } catch (InterruptedException _) {
-            }
+            e.printStackTrace();
+            sleep(2);
             register();
         }
     }
 
     private static void userAction() {
+        System.out.println("\n\n\n");
+        System.out.println("########################################");
+        System.out.println("Hello " + loggedInAsUser.getProfile().getTitle() + " " + loggedInAsUser.getProfile().getName() + "!");
+        System.out.println("########################################");
+        System.out.println("\n\n\n");
+        System.out.println("What would you like to do?");
+        System.out.println();
         System.out.println("1 - Logout");
         if (sc.hasNextLine()) {
             String input = sc.nextLine();
@@ -147,12 +149,16 @@ public class Application {
                 loggedInAsUser = null;
                 System.out.println("Successfully logged out!");
                 System.out.println("You will be redirected shortly");
-                try {
-                    TimeUnit.SECONDS.sleep(3);
-                } catch (InterruptedException _) {
-                }
+                sleep(2);
                 start();
             }
+        }
+    }
+
+    private static void sleep(int seconds) {
+        try {
+            TimeUnit.SECONDS.sleep(seconds);
+        } catch (InterruptedException _) {
         }
     }
 }

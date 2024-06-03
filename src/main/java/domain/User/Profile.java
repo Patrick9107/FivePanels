@@ -61,6 +61,10 @@ public class Profile {
         this.title = title;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
     public void setLocation(String location) {
         isNotNull(location, "location");
         isNotBlank(location, "location");
