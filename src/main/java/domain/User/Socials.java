@@ -3,10 +3,9 @@ package domain.User;
 import domain.Messenger.Chat;
 import repository.ChatRepository;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.security.Key;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static foundation.Assert.*;
 
@@ -93,5 +92,10 @@ public class Socials {
                     userToRemove.getChats().remove(chat);
                     ChatRepository.deleteById(chat.getId());
                 });
+    }
+
+    public List<UUID> listFriendRequests() {
+        return relation.entrySet().stream().filter(uuidRelationEntry -> uuidRelationEntry.getValue().equals(Relation.INCOMING))
+                                            .map(Map.Entry::getKey).toList();
     }
 }
