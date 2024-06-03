@@ -29,7 +29,7 @@ public class Chat extends BaseEntity {
         setName(name);
         setMembers(members);
         history = new ArrayList<>();
-        save();
+        ChatRepository.save(this);
     }
 
     public void setName(String name) {
@@ -38,7 +38,6 @@ public class Chat extends BaseEntity {
             hasMaxLength(name, 513, "name");
             isNotBlank(name, "name");
             this.name = name;
-            save();
         }
     }
 
@@ -48,25 +47,25 @@ public class Chat extends BaseEntity {
         this.members = new HashSet<>(members);
     }
 
-    public void addMember(User user) {
+    public Chat addMember(User user) {
         isNotNull(user, "user");
         hasMaxSize(members, 513, "members");
 
         // if the chat is a direct chat (non-groupchat), create a new groupchat
         if (!groupChat) {
-            // todo somehow get name from user based on id and also change the statement to output this: memberName1, memberName2, etc.
             StringBuilder sb = new StringBuilder();
-            members.forEach(uuid -> UserRepository.findById(uuid).ifPresent(user1 -> sb.append(user1).append(", ")));
-            String groupName = sb.toString();
-            Chat chat = new Chat(groupName, new HashSet<UUID>(members), true);
+            members.forEach(uuid -> UserRepository.findById(uuid).ifPresent(user1 -> sb.append(user1.getProfile().getName()).append(", ")));
+            sb.append(user.getProfile().getName());
+            Chat chat = new Chat(sb.toString(), new HashSet<UUID>(members), true);
             user.getChats().add(chat);
             members.forEach(uuid -> UserRepository.findById(uuid).ifPresent(user1 -> user1.getChats().add(chat)));
+            return chat;
         }
         if (members.contains(user.getId()))
             throw new MessengerException(STR."addMember(): user is already a member of this chat");
         members.add(user.getId());
         user.getChats().add(this);
-        save();
+        return this;
     }
 
     public void removeMember(User user) {
@@ -80,7 +79,6 @@ public class Chat extends BaseEntity {
         // you can not create a chat with only yourself, but you can remove a member from a groupchat with only 2 members
         members.remove(user.getId());
         user.getChats().remove(this);
-        save();
     }
 
     public void addToHistory(Message message){
@@ -96,7 +94,6 @@ public class Chat extends BaseEntity {
         if(!(members.contains(user.getId())))
             throw new MessengerException("sendMessage(): User is not a member of this chat");
         chat.addToHistory(new Message(user, Instant.now(), content, attachments, Status.SENT));
-        save();
     }
 
     public String getName() {
@@ -120,11 +117,6 @@ public class Chat extends BaseEntity {
         StringBuilder sb = new StringBuilder();
         history.forEach(sb::append);
         return sb.toString();
-    }
-
-    @Override
-    public void save() {
-        ChatRepository.save(this);
     }
 
  //Test for sending Messages between 2 Users (it actually works) pls dont delete i need this code

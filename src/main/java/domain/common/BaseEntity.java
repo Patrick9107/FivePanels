@@ -32,8 +32,6 @@ public abstract class BaseEntity {
         return updatedAt;
     }
 
-    public abstract void save();
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,9 +1,12 @@
 package domain.User;
 
+import domain.Medicalcase.Answer;
+import domain.Medicalcase.MedicalcaseException;
 import domain.Messenger.MessengerException;
 import domain.common.BaseEntity;
 import domain.Messenger.Chat;
 import domain.Medicalcase.Medicalcase;
+import domain.common.Content;
 import domain.common.Media;
 import domain.common.TextContent;
 import repository.ChatRepository;
@@ -50,7 +53,7 @@ public class User extends BaseEntity {
         this.socials = new Socials();
         this.chats = new LinkedHashSet<>();
         setMedicalcases();
-        save();
+        UserRepository.save(this);
     }
 
     /**
@@ -64,7 +67,6 @@ public class User extends BaseEntity {
         if (verified)
             throw new UserException(STR."verify(): user is already verified");
         this.verified = true;
-        save();
     }
 
     /**
@@ -210,7 +212,6 @@ public class User extends BaseEntity {
      */
     public void addFriend(User user) {
         this.socials.addFriend(this, user);
-        save();
     }
 
     /**
@@ -222,7 +223,6 @@ public class User extends BaseEntity {
      */
     public void acceptFriendRequest(User user) {
         this.socials.acceptFriendRequest(this, user);
-        save();
     }
 
     /**
@@ -234,7 +234,6 @@ public class User extends BaseEntity {
      */
     public void denyFriendRequest(User user) {
         this.socials.denyFriendRequest(this, user);
-        save();
     }
 
     /**
@@ -246,7 +245,6 @@ public class User extends BaseEntity {
      */
     public void removeFriend(User user) {
         this.socials.removeFriend(this, user);
-        save();
     }
 
     /**
@@ -262,12 +260,89 @@ public class User extends BaseEntity {
         return medicalcase;
     }
 
-    /**
-     * Saves the current user instance to the {@link UserRepository}
-     *
-     */
-    @Override
-    public void save() {
-        UserRepository.save(this);
+    // Medicalcase methods ----------------------------------------------------
+
+
+    public void castVote(Medicalcase medicalcase, String answer, int percentage) {
+        if (!(medicalcases.get(Ownership.MEMBER).contains(medicalcase)))
+            throw new MedicalcaseException(STR."castVote(): user is not a member of this medicalcase");
+        medicalcase.castVote(this, answer, percentage);
+    }
+
+    public void removeContent(Medicalcase medicalcase, int index) {
+        isOwner(medicalcase);
+        medicalcase.removeContent(index);
+    }
+
+    public void removeContent(Medicalcase medicalcase, Content content) {
+        isOwner(medicalcase);
+        medicalcase.removeContent(content);
+    }
+
+    public void addContent(Medicalcase medicalcase, Content content, int index) {
+        isOwner(medicalcase);
+        medicalcase.addContent(content, index);
+
+    }
+
+    public void addContent(Medicalcase medicalcase, Content content) {
+        isOwner(medicalcase);
+        medicalcase.addContent(content);
+    }
+
+    public void removeVotingOption(Medicalcase medicalcase, Answer option) {
+        isOwner(medicalcase);
+        medicalcase.removeVotingOption(option);
+    }
+
+    public void addVotingOption(Medicalcase medicalcase, String option) {
+        isOwner(medicalcase);
+        medicalcase.addVotingOption(option);
+    }
+
+    public void publish(Medicalcase medicalcase) {
+        isOwner(medicalcase);
+        medicalcase.publish();
+    }
+
+    public void react(Medicalcase medicalcase) {
+        if (!(medicalcases.get(Ownership.MEMBER).contains(medicalcase)))
+            throw new MedicalcaseException(STR."react(): user is not a member of this medicalcase");
+        medicalcase.react(this);
+    }
+
+    public void addTag(Medicalcase medicalcase, String tag) {
+        isOwner(medicalcase);
+        medicalcase.addTag(tag);
+    }
+
+    public void setCorrectAnswer(Medicalcase medicalcase, Answer answer) {
+        isOwner(medicalcase);
+        medicalcase.setCorrectAnswer(answer);
+    }
+
+    public void setTags(Medicalcase medicalcase, String... tags) {
+        isOwner(medicalcase);
+        medicalcase.setTags(tags);
+    }
+
+    public void setTitle(Medicalcase medicalcase, String title) {
+        isOwner(medicalcase);
+        medicalcase.setTitle(title);
+    }
+
+    public void viewVotes(Medicalcase medicalcase) {
+        isOwner(medicalcase);
+        medicalcase.viewVotes();
+    }
+
+    public void addMember(Medicalcase medicalcase, User user) {
+        isOwner(medicalcase);
+        medicalcase.addMember(user);
+    }
+
+    private void isOwner(Medicalcase medicalcase) {
+        if (!(medicalcase.getOwner().equals(this)))
+            throw new MedicalcaseException(STR."action failed: user is not the owner of the medicalcase");
     }
 }

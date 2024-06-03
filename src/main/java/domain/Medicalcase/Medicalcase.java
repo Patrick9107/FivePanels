@@ -50,7 +50,7 @@ public class Medicalcase extends BaseEntity {
         this.votes = new HashMap<>();
         this.chat = new Chat(title, Set.of(owner.getId()), true);
         this.correctAnswer = null;
-        save();
+        MedicalcaseRepository.save(this);
     }
 
     public void setTitle(String title) {
@@ -60,14 +60,13 @@ public class Medicalcase extends BaseEntity {
         this.title = title;
         if (chat != null)
             chat.setName(title);
-        save();
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setOwner(User owner) {
+    private void setOwner(User owner) {
         isNotNull(owner, "owner");
         this.owner = owner;
     }
@@ -82,7 +81,6 @@ public class Medicalcase extends BaseEntity {
             throw new MedicalcaseException(STR."setTags(): can not set tags for a published medicalcase");
         this.tags = new HashSet<>();
         Arrays.stream(tags).forEach(this::addTag);
-        save();
     }
 
     public void setCorrectAnswer(Answer correctAnswer) {
@@ -93,7 +91,7 @@ public class Medicalcase extends BaseEntity {
             throw new MedicalcaseException(STR."setCorrectAnswer(): correctAnswer has to be in the votingOption!");
         }
         this.correctAnswer = correctAnswer;
-        save();
+        evaluateVotes();
     }
 
     public Chat getChat() {
@@ -105,7 +103,6 @@ public class Medicalcase extends BaseEntity {
             throw new MedicalcaseException(STR."addTag(): can not add tag to a published medicalcase");
         isNotNull(tag, "tag");
         tags.add(new CaseTag(tag));
-        save();
     }
 
     public void react(User user) {
@@ -114,7 +111,6 @@ public class Medicalcase extends BaseEntity {
         isNotNull(user , "user");
         hasMaxSize(reactions, 513, "reactions");
         reactions.add(user.getId());
-        save();
     }
 
     public void addMember(User user) {
@@ -125,12 +121,10 @@ public class Medicalcase extends BaseEntity {
 
         members.add(user);
         chat.addMember(user);
-        save();
     }
 
     public void publish() {
         this.published = true;
-        save();
     }
 
     public void addVotingOption(String option) {
@@ -140,7 +134,6 @@ public class Medicalcase extends BaseEntity {
         hasMaxSize(votingOptions, 9, "votingOptions");
 
         votingOptions.add(new Answer(option));
-        save();
     }
 
     public void removeVotingOption(Answer option) {
@@ -150,7 +143,6 @@ public class Medicalcase extends BaseEntity {
         if (!(votingOptions.contains(option)))
             throw new MedicalcaseException(STR."removeVotingOption(): no such option");
         votingOptions.remove(option);
-        save();
     }
 
     public void addContent(Content content) {
@@ -159,7 +151,6 @@ public class Medicalcase extends BaseEntity {
         isNotNull(content, "content");
 
         this.content.add(content);
-        save();
     }
 
     public void addContent(Content content, int index) {
@@ -171,7 +162,6 @@ public class Medicalcase extends BaseEntity {
         } catch (IndexOutOfBoundsException e) {
             throw new MedicalcaseException(STR."addContent(): Index out of bounds (\{index})");
         }
-        save();
     }
 
     public void removeContent(int index) {
@@ -180,7 +170,6 @@ public class Medicalcase extends BaseEntity {
         if (content.size() <= index || index < 0)
             throw new MedicalcaseException(STR."removeContent(): Index out of bound");
         content.remove(index);
-        save();
     }
 
     public void removeContent(Content contentToRemove) {
@@ -189,7 +178,6 @@ public class Medicalcase extends BaseEntity {
         isNotNull(contentToRemove, "contentId");
 
         content.stream().filter(content1 -> content1.equals(contentToRemove)).findFirst().ifPresent(content1 -> content.remove(content1));
-        save();
     }
 
     public void viewVotes(){
@@ -221,9 +209,6 @@ public class Medicalcase extends BaseEntity {
         isNotBlank(answer, "answer");
         isGreaterThanOrEqual(percentage, "percentage", 0, "zero");
 
-        if (user.equals(owner))
-            throw new MedicalcaseException(STR."castVote(): owner can not vote");
-
         if (!(votes.containsKey(user.getId())))
             votes.put(user.getId(), new HashSet<>());
 
@@ -240,7 +225,6 @@ public class Medicalcase extends BaseEntity {
         if (votes.get(user.getId()).stream().anyMatch(vote -> vote.getAnswer().getAnswer().equals(answer)))
             throw new MedicalcaseException(STR."castVote(): can not vote same answer twice");
         votes.get(user.getId()).add(new Vote(percentage, newAnswer));
-        save();
     }
 
     public void evaluateVotes(){
@@ -256,18 +240,12 @@ public class Medicalcase extends BaseEntity {
       //userAndCorrectAnswer.entrySet().forEach(value -> UserRepository.findById(value.getKey()).ifPresent(user -> user.getProfile().setRating(value.getValue().getPercentage())));
         //Verbessert durch IDE
       userAndCorrectAnswer.forEach((key, value1) -> UserRepository.findById(key).ifPresent(user -> user.getProfile().setRating(value1.getPercentage())));
-
-
     }
+
 
     public void viewChat(){
         System.out.println(STR."""
 \{title}
 \{chat.toString()}""");
-    }
-
-    @Override
-    public void save() {
-        MedicalcaseRepository.save(this);
     }
 }
