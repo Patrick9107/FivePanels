@@ -75,7 +75,7 @@ public class UserRepository {
      * @return an Optional containing the found user if a user with the given email exists,
      *         otherwise an empty Optional.
      */
-    public Optional<User> findByEmail(String email) {
+    public static Optional<User> findByEmail(String email) {
         return findAll().stream().filter(user -> user.getEmail().getAddress().equals(email)).findFirst();
     }
 }

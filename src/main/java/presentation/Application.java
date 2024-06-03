@@ -1,7 +1,9 @@
 package presentation;
 
 import domain.User.User;
+import repository.UserRepository;
 
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -16,7 +18,7 @@ public class Application {
     }
 
     private static void start() {
-        if (loggedInAsUser != null) {
+        if (loggedInAsUser == null) {
             System.out.println("########################################");
             System.out.println("Welcome to FivePanels");
             System.out.println("########################################");
@@ -49,7 +51,47 @@ public class Application {
     }
 
     private static void login() {
-        System.out.println("login");
+        String email = null, password = null;
+        System.out.println("\n\n\n");
+        System.out.println("########################################");
+        System.out.println("Login");
+        System.out.println("########################################");
+        System.out.println("\n\n\n");
+        System.out.println("Please enter credentials");
+        System.out.println();
+        System.out.print("Email: ");
+        if (sc.hasNextLine()) {
+            email = sc.nextLine();
+        }
+        System.out.print("Password: ");
+        if (sc.hasNextLine()) {
+            password = sc.nextLine();
+        }
+
+        Optional<User> user = UserRepository.findByEmail(email);
+        if (user.isPresent()) {
+            if (user.get().getPassword().checkPasswords(password.toCharArray(), user.get().getPassword().getHashedPassword())) {
+
+                System.out.println("Successfully logged in");
+                userAction();
+            } else {
+                System.out.println("Email or Password is not correct. Please try again");
+                System.out.println("You will be redirected shortly");
+                try {
+                    TimeUnit.SECONDS.sleep(3);
+                } catch (InterruptedException _) {
+                }
+                login();
+            }
+        } else {
+            System.out.println("Email or Password is not correct. Please try again");
+            System.out.println("You will be redirected shortly");
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException _) {
+            }
+            login();
+        }
     }
 
     private static void register() {
@@ -98,5 +140,19 @@ public class Application {
     }
 
     private static void userAction() {
+        System.out.println("1 - Logout");
+        if (sc.hasNextLine()) {
+            String input = sc.nextLine();
+            if (input.equals("1")) {
+                loggedInAsUser = null;
+                System.out.println("Successfully logged out!");
+                System.out.println("You will be redirected shortly");
+                try {
+                    TimeUnit.SECONDS.sleep(3);
+                } catch (InterruptedException _) {
+                }
+                start();
+            }
+        }
     }
 }

@@ -19,6 +19,10 @@ public class Password {
         this.hashedPassword = hashPassword(rawPassword.toCharArray());
     }
 
+    public char[] getHashedPassword() {
+        return hashedPassword;
+    }
+
     public boolean isPasswordStrong(String password) { // we have to look into CharSequence
         // found that CharSequence is not necessarily immutable (which means its internal state, unlike Strings, can change) which makes it a good candidate in this case for the password to not have anyone catch traces of it in the heap space
         Zxcvbn zxcvbn = new Zxcvbn();

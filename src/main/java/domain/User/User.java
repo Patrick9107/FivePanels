@@ -185,6 +185,10 @@ public class User extends BaseEntity {
         return email;
     }
 
+    public Password getPassword() {
+        return hashedPassword;
+    }
+
     /**
      * Returns a map of the user's medicalcases categorized by ownership.
      *
