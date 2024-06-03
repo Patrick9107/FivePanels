@@ -201,12 +201,17 @@ public class Medicalcase extends BaseEntity {
                                             .flatMap(Set::stream)
                                             .toList();
 
-        //Zählt alle votes und gruppiert das Ergebnis nach den antworten
-        Map<String, Long> voteCounts = allVotes.stream()
-                                                .collect(Collectors.groupingBy(vote -> vote.getAnswer().getAnswer(), Collectors.counting()));
+
+        double percentSum = allVotes.stream().mapToDouble(Vote::getPercentage).sum();
+
+        //addiert alle percentages und grupperit sie nach antworten
+        Map<String, Double> voteCounts = allVotes.stream()
+                                                .collect(Collectors.groupingBy(vote -> vote.getAnswer().getAnswer(), Collectors.summingDouble(Vote::getPercentage)));
+
+        Map<String, Double> votePercentagePerVote =  voteCounts.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue() / voteCounts.size()));
 
         //gibt die antworten und die anzahl der votes für jede antwort aus
-        voteCounts.forEach((option, count) -> System.out.println(option + ": " + count + " votes"));
+        votePercentagePerVote.forEach((option, count) -> System.out.println(option + ": " + count + " votes"));
 
     }
 
