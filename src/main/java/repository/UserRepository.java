@@ -78,4 +78,14 @@ public class UserRepository {
     public static Optional<User> findByEmail(String email) {
         return findAll().stream().filter(user -> user.getEmail().getAddress().equals(email)).findFirst();
     }
+
+    /**
+     * Finds a user by their name.
+     *
+     * @param name the name to search for.
+     * @return a list containing the found users.
+     */
+    public static List<User> findByName(String name){
+        return findAll().stream().filter(user -> user.getProfile().getName().equals(name)).toList();
+    }
 }
