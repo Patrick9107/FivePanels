@@ -97,6 +97,7 @@ public class User extends BaseEntity {
     public Chat createGroupChat(String name, Set<UUID> members) {
         isNotBlank(name, "name");
         isNotEmpty(members, "members");
+        // todo user that creates the groupchat has to be friends with the members
         HashSet<UUID> set = new HashSet<>(members);
         set.add(getId());
         Chat chat = new Chat(name, set,true);
