@@ -128,7 +128,6 @@ public class Application {
         } catch (Exception e) {
             System.out.println("User creation unsuccessful. Please try again");
             System.out.println("You will be redirected shortly");
-            e.printStackTrace();
             sleep(2);
             register();
         }

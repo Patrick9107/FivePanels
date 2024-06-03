@@ -80,7 +80,7 @@ public class Message {
             }
             sb.append("\n");
         }
-        sb.append(status.toString()).append("\n");
+//        sb.append(status.toString()).append("\n");
         return sb.toString();
     }
 }
