@@ -120,7 +120,7 @@ class UserTest {
 
             Optional<Chat> chat = ChatRepository.findByName("homer and bart").stream().findFirst();
             //When
-            homer.sendMessage(chat.get(), new TextContent("This is a message of Homer"), null);
+            homer.sendMessage(chat.get(), "This is a message of Homer", null);
             homer.viewChat(chat.get());
             // Then
             assertTrue(outContent.toString().contains(homer.getProfile().getName()));
@@ -143,7 +143,7 @@ class UserTest {
             //When
             Chat chat = homer.getDirectChat(bart.getId()).get();
             // bart sends a message
-            bart.sendMessage(chat, new TextContent("This is a message of Homer"), null);
+            bart.sendMessage(chat, "This is a message of Homer", null);
             homer.viewChat(chat);
             // Then
             // homer views the chat, therefore he should see the other user's name (bart) as the chat name

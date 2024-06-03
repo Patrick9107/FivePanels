@@ -90,6 +90,10 @@ public class Medicalcase extends BaseEntity {
         save();
     }
 
+    public Chat getChat() {
+        return chat;
+    }
+
     public void addTag(String tag) {
         if (published)
             throw new MedicalcaseException(STR."addTag(): can not add tag to a published medicalcase");
@@ -238,7 +242,9 @@ public class Medicalcase extends BaseEntity {
     }
 
     public void viewChat(){
-        System.out.println(chat.toString());
+        System.out.println(STR."""
+\{title}
+\{chat.toString()}""");
     }
 
     @Override

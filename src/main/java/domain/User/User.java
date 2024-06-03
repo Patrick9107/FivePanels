@@ -110,8 +110,8 @@ public class User extends BaseEntity {
      * @param content the text content of the message
      * @param attachments a list of media attachments to be included with the message
      */
-    public void sendMessage(Chat chat, TextContent content, List<Media> attachments) {
-        chat.sendMessage(this, chat, content, attachments);
+    public void sendMessage(Chat chat, String content, List<Media> attachments) {
+        chat.sendMessage(this, chat, new TextContent(content), attachments);
         save();
     }
 
