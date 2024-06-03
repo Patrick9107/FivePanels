@@ -7,6 +7,7 @@ import domain.common.Media;
 import domain.common.TextContent;
 import repository.ChatRepository;
 import repository.MedicalcaseRepository;
+import repository.UserRepository;
 
 import java.time.Instant;
 import java.util.*;
@@ -17,7 +18,7 @@ public class Chat extends BaseEntity {
 
     // can be null if groupchat false - not null otherwise, not blank, max 64 characters
     private String name;
-    private boolean groupChat;
+    private final boolean groupChat;
     // not null, max 512 members, not empty
     private Set<UUID> members;
     // not null
@@ -54,10 +55,12 @@ public class Chat extends BaseEntity {
         // if the chat is a direct chat (non-groupchat), create a new groupchat
         if (!groupChat) {
             // todo somehow get name from user based on id and also change the statement to output this: memberName1, memberName2, etc.
-            String groupName = members.stream().map(UUID::toString).toString() + user.getProfile().getName();
+            StringBuilder sb = new StringBuilder();
+            members.forEach(uuid -> UserRepository.findById(uuid).ifPresent(user1 -> sb.append(user1).append(", ")));
+            String groupName = sb.toString();
             Chat chat = new Chat(groupName, new HashSet<UUID>(members), true);
             user.getChats().add(chat);
-            // todo other members also have to add the chat (again get user from uuid)
+            members.forEach(uuid -> UserRepository.findById(uuid).ifPresent(user1 -> user1.getChats().add(chat)));
         }
         if (members.contains(user.getId()))
             throw new MessengerException(STR."addMember(): user is already a member of this chat");
@@ -128,7 +131,7 @@ public class Chat extends BaseEntity {
     public static void main(String[] args) {
 //        User homer = new User("homer@simpson.com", "password", "Homer Simpson", "Rh.D.", "United Kingdom");
 //        User bart = new User("bart@simpson.com", "password", "Bart Simpson", "Ph.D.", "United States");
-//        User lisa = new User("lisa@simpson.com", "password", "Lisa Simpson", "Ph.D.", "United States");
+        User lisa = new User("lisa@simpson.com", "password", "Lisa Simpson", "Ph.D.", "United States");
 //        User test = new User("test@simpson.com", "password", "test Simpson", "Ph.D.", "United States");
 //        homer.addFriend(bart);
 //        bart.acceptFriendRequest(homer);
@@ -151,6 +154,9 @@ public class Chat extends BaseEntity {
         User bart = new User("bart@simpson.com", "password", "Bart Simpson", "Ph.D.", "United States");
 //        homer.addFriend(bart);
 //        bart.acceptFriendRequest(homer);
+//        Chat chat = homer.getDirectChat(bart.getId()).get();
+//        chat.addMember(lisa);
+//        ChatRepository.findAll().forEach(System.out::println);
 //        homer.createGroupChat("homer and bart", Set.of(bart.getId()));
 //
 //        Optional<Chat> chat = ChatRepository.findByName("homer and bart").stream().findFirst();
@@ -166,11 +172,14 @@ public class Chat extends BaseEntity {
         medicalcase.addVotingOption("idk");
         medicalcase.publish();
         medicalcase.addMember(bart);
-        medicalcase.castVote(bart, "aids", 90);
-        medicalcase.castVote(bart, "cancer", 10);
+        medicalcase.addMember(lisa);
+        medicalcase.castVote(lisa, "aids", 20);
+        medicalcase.castVote(lisa, "cancer", 50);
+//        medicalcase.castVote(bart, "aids", 0);
+        medicalcase.castVote(bart, "cancer", 90);
         medicalcase.viewVotes();
-        bart.sendMessage(medicalcase.getChat(), "bart message in medicalcase", null);
-        bart.sendMessage(medicalcase.getChat(), "bart message in medicalcase", null);
-        medicalcase.viewChat();
+//        bart.sendMessage(medicalcase.getChat(), "bart message in medicalcase", null);
+//        bart.sendMessage(medicalcase.getChat(), "bart message in medicalcase", null);
+//        medicalcase.viewChat();
     }
 }

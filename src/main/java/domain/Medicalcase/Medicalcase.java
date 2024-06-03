@@ -191,9 +191,6 @@ public class Medicalcase extends BaseEntity {
         save();
     }
 
-    /* todo @jakob es soll nicht die votes zählen sondern die prozente zusammenzählen.
-        Wenn einer mit 50 prozent votet und der andere nur mit 2 prozent, soll das ja nicht das gleiche gewicht haben
-    */
     public void viewVotes(){
         // mit votes.values() bekommt man eine collection mit allen listen von votes
         //gibt dir alle Votes zurück
@@ -206,13 +203,12 @@ public class Medicalcase extends BaseEntity {
 
         //addiert alle percentages und grupperit sie nach antworten
         Map<String, Double> voteCounts = allVotes.stream()
-                                                .collect(Collectors.groupingBy(vote -> vote.getAnswer().getAnswer(), Collectors.summingDouble(Vote::getPercentage)));
+                                                .collect(Collectors.groupingBy(vote -> vote.getAnswer().getAnswer(), Collectors.averagingDouble(Vote::getPercentage)));
 
-        Map<String, Double> votePercentagePerVote =  voteCounts.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue() / voteCounts.size()));
+//        Map<String, Double> votePercentagePerVote =  voteCounts.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue() / members.size()));
 
         //gibt die antworten und die anzahl der votes für jede antwort aus
-        votePercentagePerVote.forEach((option, count) -> System.out.println(option + ": " + count + " votes"));
-
+        voteCounts.forEach((option, count) -> System.out.println(option + ": " + count));
     }
 
     public Set<User> getMembers(){
