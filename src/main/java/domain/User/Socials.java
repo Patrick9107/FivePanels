@@ -94,8 +94,19 @@ public class Socials {
                 });
     }
 
-    public List<UUID> listFriendRequests() {
-        return relation.entrySet().stream().filter(uuidRelationEntry -> uuidRelationEntry.getValue().equals(Relation.INCOMING))
+    public List<UUID> listRelation(Relation relation) {
+        return this.relation.entrySet().stream().filter(uuidRelationEntry -> uuidRelationEntry.getValue().equals(relation))
                                             .map(Map.Entry::getKey).toList();
+    }
+
+    public List<UUID> listIncomingFriendRequests() {
+        return listRelation(Relation.INCOMING);
+    }
+
+    public List<UUID> listFriends() {
+        return listRelation(Relation.FRIENDS);
+    }
+    public List<UUID> listOutgoingFriendRequests() {
+        return listRelation(Relation.OUTGOING);
     }
 }
