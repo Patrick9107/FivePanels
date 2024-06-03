@@ -71,7 +71,12 @@ public class Medicalcase extends BaseEntity {
         this.owner = owner;
     }
 
+    public User getOwner() {
+        return owner;
+    }
+
     public void setTags(String... tags) {
+        isNotNull(tags, "tags");
         if (published)
             throw new MedicalcaseException(STR."setTags(): can not set tags for a published medicalcase");
         this.tags = new HashSet<>();

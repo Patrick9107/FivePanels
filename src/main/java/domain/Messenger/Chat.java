@@ -1,14 +1,12 @@
 package domain.Messenger;
 
 import domain.Medicalcase.Medicalcase;
-import domain.User.Ownership;
 import domain.User.User;
 import domain.common.BaseEntity;
 import domain.common.Media;
 import domain.common.TextContent;
 import repository.ChatRepository;
 import repository.MedicalcaseRepository;
-import repository.UserRepository;
 
 import java.time.Instant;
 import java.util.*;
@@ -76,6 +74,7 @@ public class Chat extends BaseEntity {
 
         if (!(members.contains(user.getId())))
             throw new MessengerException(STR."removeMember(): user is not a member of this chat");
+        // you can not create a chat with only yourself, but you can remove a member from a groupchat with only 2 members
         members.remove(user.getId());
         user.getChats().remove(this);
         save();
@@ -160,7 +159,7 @@ public class Chat extends BaseEntity {
 //            homer.sendMessage(chat.get(), new TextContent("This is a message of Homer"), null);
 //            homer.viewChat(chat.get());
 //        }
-        homer.createMedicalcase("Test", "Addiction Medicine");
+        homer.createMedicalcase("Test");
         Medicalcase medicalcase = MedicalcaseRepository.findAll().stream().findFirst().get();
         medicalcase.addVotingOption("aids");
         medicalcase.addVotingOption("cancer");
