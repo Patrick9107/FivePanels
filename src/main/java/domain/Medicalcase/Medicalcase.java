@@ -244,8 +244,7 @@ public class Medicalcase extends BaseEntity {
 
 
     public void viewChat(){
-        System.out.println(STR."""
-\{title}
-\{chat.toString()}""");
+        StringBuilder sb = new StringBuilder(title).append("\n").append(chat.toString());
+        System.out.println(sb.toString());
     }
 }
