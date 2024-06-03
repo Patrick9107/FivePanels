@@ -28,8 +28,7 @@ public class MedicalcaseRepository {
         return new ArrayList<>(map.values());
     }
     /**
-     * Saves or updates an entity in the repository.
-     * If the entity already exists, it is updated in the repository.
+     * Saves an entity in the repository.
      * @param entity the entity to save or update
      * @return the saved or updated entity
      */

@@ -34,7 +34,6 @@ public class UserRepository {
     }
     /**
      * Saves an entity in the repository.
-     * If the entity already exists, it throws an UserException.
      * @param entity the entity to save or update
      * @return the saved or updated entity
      */
