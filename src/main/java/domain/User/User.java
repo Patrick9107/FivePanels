@@ -122,6 +122,7 @@ public class User extends BaseEntity {
      * It also prints the chat's history.
      *
      * @param chat the chat to be viewed
+     * @throws MessengerException if the user is not a member of specified chat
      */
     public void viewChat(Chat chat) {
         if (!(chat.getMembers().contains(this.getId())))
@@ -256,8 +257,10 @@ public class User extends BaseEntity {
      * @param title the title of the medical case
      * @param tags  an optional list of tags associated with the medical case
      */
-    public void createMedicalcase(String title, String... tags) {
-        medicalcases.get(Ownership.OWNER).add(new Medicalcase(title, this, tags));
+    public Medicalcase createMedicalcase(String title, String... tags) {
+        Medicalcase medicalcase = new Medicalcase(title, this, tags);
+        medicalcases.get(Ownership.OWNER).add(medicalcase);
+        return medicalcase;
     }
 
     /**

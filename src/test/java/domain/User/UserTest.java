@@ -1,9 +1,12 @@
 package domain.User;
 
 import domain.Medicalcase.Medicalcase;
+import domain.Medicalcase.MedicalcaseException;
 import domain.Messenger.Chat;
+import domain.Messenger.MessengerException;
 import domain.Messenger.Status;
 import domain.common.TextContent;
+import foundation.AssertException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repository.ChatRepository;
@@ -143,14 +146,14 @@ class UserTest {
             //When
             Chat chat = homer.getDirectChat(bart.getId()).get();
             // bart sends a message
-            bart.sendMessage(chat, "This is a message of Homer", null);
+            bart.sendMessage(chat, "This is a message of bart", null);
             homer.viewChat(chat);
             // Then
             // homer views the chat, therefore he should see the other user's name (bart) as the chat name
             assertTrue(outContent.toString().contains(bart.getProfile().getName()));
             // homer should not see his own name because he did not send a message nor does bart view the chat (which should display homer's name)
             assertFalse(outContent.toString().contains(homer.getProfile().getName()));
-            assertTrue(outContent.toString().contains("This is a message of Homer"));
+            assertTrue(outContent.toString().contains("This is a message of bart"));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -158,10 +161,137 @@ class UserTest {
     }
 
     @Test
-    void createMedicalcase_shouldAddMedicalcaseToOwner_WhenCalled() {
+    void viewChat_shouldThrow_WhenUserIsNotAMemberOfChat() {
+        try {
+            // Given
+            homer.addFriend(bart);
+            bart.acceptFriendRequest(homer);
+            //When
+            Chat chat = homer.createGroupChat("test", Set.of(bart.getId()));
+            // bart sends a message
+            bart.sendMessage(chat, "This is a message of bart", null);
+            chat.removeMember(bart);
+            assertThrowsExactly(MessengerException.class, () -> bart.viewChat(chat), STR."viewChat(): user is not part of this chat");
+            // Then
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void createMedicalcase_shouldCreateMedicalcase_WhenTagsParameterIsEmpty() {
+        try {
+            // When
+            Medicalcase medicalcase = homer.createMedicalcase("test");
+            // Then
+            // owner should be homer
+            assertEquals(homer, medicalcase.getOwner());
+            // the medicalcase should have 0 members
+            assertTrue(medicalcase.getMembers().isEmpty());
+            // homer should have his created medicalcase in his attribute
+            assertTrue(homer.getMedicalcases().get(Ownership.OWNER).contains(medicalcase));
+            // homer should not be a member of a medicalcase
+            assertTrue(homer.getMedicalcases().get(Ownership.MEMBER).isEmpty());
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void createMedicalcase_shouldCreateMedicalcase_WhenTitleAndCorrectTagsArePassed() {
+        try {
+            // When
+            Medicalcase medicalcase = homer.createMedicalcase("test", "Addiction Medicine", "Balneology");
+            // Then
+            // owner should be homer
+            assertEquals(homer, medicalcase.getOwner());
+            // the medicalcase should have 0 members
+            assertTrue(medicalcase.getMembers().isEmpty());
+            // homer should have his created medicalcase in his attribute
+            assertTrue(homer.getMedicalcases().get(Ownership.OWNER).contains(medicalcase));
+            // homer should not be a member of a medicalcase
+            assertTrue(homer.getMedicalcases().get(Ownership.MEMBER).isEmpty());
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void createMedicalcase_shouldCreateMedicalcase_WhenCreatingMultipleCases() {
+        try {
+            // When
+            // homer creates 2
+            Medicalcase medicalcase = homer.createMedicalcase("test");
+            Medicalcase medicalcase2 = homer.createMedicalcase("test2");
+            // bart creates 1
+            Medicalcase medicalcase3 = bart.createMedicalcase("test3");
+            // Then
+            // owner should be homer
+            assertEquals(homer, medicalcase.getOwner());
+            assertEquals(homer, medicalcase2.getOwner());
+            assertEquals(bart, medicalcase3.getOwner());
+            // the medicalcase should have 0 members
+            assertTrue(medicalcase.getMembers().isEmpty());
+            assertTrue(medicalcase2.getMembers().isEmpty());
+            assertTrue(medicalcase3.getMembers().isEmpty());
+            // homer should have his created medicalcase in his attribute
+            assertTrue(homer.getMedicalcases().get(Ownership.OWNER).contains(medicalcase));
+            assertTrue(homer.getMedicalcases().get(Ownership.OWNER).contains(medicalcase2));
+            assertTrue(bart.getMedicalcases().get(Ownership.OWNER).contains(medicalcase3));
+            // homer should not be a member of a medicalcase
+            assertTrue(homer.getMedicalcases().get(Ownership.MEMBER).isEmpty());
+            assertTrue(bart.getMedicalcases().get(Ownership.MEMBER).isEmpty());
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void createMedicalcase_shouldThrow_WhenTitleIsNull() {
         try {
             // When
             // Then
+            assertThrowsExactly(AssertException.class, () -> homer.createMedicalcase(null), STR."title is null");
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void createMedicalcase_shouldThrow_WhenATagIsNull() {
+        try {
+            // When
+            // Then
+            assertThrowsExactly(AssertException.class, () -> homer.createMedicalcase("test", "Addiction Medicine", null), STR."tag is null");
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void createMedicalcase_shouldThrow_WhenTagsIsNull() {
+        try {
+            // When
+            // Then
+            assertThrowsExactly(AssertException.class, () -> homer.createMedicalcase("test", null), STR."tags is null");
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void createMedicalcase_shouldThrow_WhenTryingToAddNonExistentTag() {
+        try {
+            // When
+            // Then
+            assertThrowsExactly(MedicalcaseException.class, () -> homer.createMedicalcase("test", "foobar"), STR."setTag(): tag does not exist");
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
