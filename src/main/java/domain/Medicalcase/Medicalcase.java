@@ -5,6 +5,7 @@ import domain.common.BaseEntity;
 import domain.common.Content;
 import domain.User.User;
 import repository.MedicalcaseRepository;
+import repository.UserRepository;
 
 import static foundation.Assert.*;
 
@@ -242,8 +243,20 @@ public class Medicalcase extends BaseEntity {
         save();
     }
 
-    // TODO Alle Voter, die auf die korrekte Antwort den höchsten prozentualen Wert gegeben haben, bekommen +X Score Punkte
     public void evaluateVotes(){
+        //gibt die User zurück die für die richtige antwort gevotet haben.
+      Map<UUID, Vote> userAndCorrectAnswer= votes.entrySet().stream()
+                                                            .flatMap(entry -> entry.getValue().stream()
+                                                                    .filter(vote -> correctAnswer.getAnswer().equals(vote.getAnswer().getAnswer()))
+                                                                    .map(vote -> Map.entry(entry.getKey(), vote)))
+                                                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+      //addiert die Prozentzahl die der user für die richtige antwort angegeben hat zu seinem rating.
+      // was ich gemacht habe:
+      //userAndCorrectAnswer.entrySet().forEach(value -> UserRepository.findById(value.getKey()).ifPresent(user -> user.getProfile().setRating(value.getValue().getPercentage())));
+        //Verbessert durch IDE
+      userAndCorrectAnswer.forEach((key, value1) -> UserRepository.findById(key).ifPresent(user -> user.getProfile().setRating(value1.getPercentage())));
+
 
     }
 

@@ -33,6 +33,11 @@ public class Profile {
         avatar = null;
     }
 
+    public void setRating(Integer rating) {
+        isNotNull(rating, "rating");
+        this.rating += rating;
+    }
+
     public Profile(String name, String title, String location, String... tags) {
         setName(name);
         setTitle(title);
