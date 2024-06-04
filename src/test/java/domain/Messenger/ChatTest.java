@@ -17,9 +17,9 @@ public class ChatTest {
 
     @BeforeEach
     void setup() {
-        homer = new User("homer@simpson.com", "password", "Homer Simpson", "Rh.D.", "United Kingdom");
-        bart = new User("bart@simpson.com", "password", "Bart Simpson", "Ph.D.", "United States");
-        lisa = new User("lisa@simpson.com", "password", "Lisa Simpson", "Ph.D.", "United States");
+        homer = new User("homer@simpson.com", "password".toCharArray(), "Homer Simpson", "Rh.D.", "United Kingdom");
+        bart = new User("bart@simpson.com", "password".toCharArray(), "Bart Simpson", "Ph.D.", "United States");
+        lisa = new User("lisa@simpson.com", "password".toCharArray(), "Lisa Simpson", "Ph.D.", "United States");
     }
 
     @Test

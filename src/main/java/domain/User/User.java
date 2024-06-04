@@ -47,13 +47,19 @@ public class User extends BaseEntity {
      * @param location the user's location
      */
     public User(String email, char[] password, String name, String title, String location) {
-        this.email = new Email(email);
-        this.hashedPassword = new Password(password);
-        this.profile = new Profile(name, title, location);
-        this.socials = new Socials();
-        this.chats = new LinkedHashSet<>();
-        setMedicalcases();
-        UserRepository.save(this);
+        try {
+            this.email = new Email(email);
+            this.hashedPassword = new Password(password);
+            this.profile = new Profile(name, title, location);
+            this.socials = new Socials();
+            this.chats = new LinkedHashSet<>();
+            setMedicalcases();
+            UserRepository.save(this);
+        } finally {
+            for (int i = 0; i < password.length; i++) {
+                password[i] = 0;
+            }
+        }
     }
 
     /**

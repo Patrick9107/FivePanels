@@ -26,8 +26,8 @@ class UserTest {
     @BeforeEach
     void setup() {
         // Given
-        homer = new User("homer@simpson.com", "password", "Homer Simpson", "Rh.D.", "United Kingdom");
-        bart = new User("bart@simpson.com", "password", "Bart Simpson", "Ph.D.", "United States");
+        homer = new User("homer@simpson.com", "password".toCharArray(), "Homer Simpson", "Rh.D.", "United Kingdom");
+        bart = new User("bart@simpson.com", "password".toCharArray(), "Bart Simpson", "Ph.D.", "United States");
     }
 
     @Test
