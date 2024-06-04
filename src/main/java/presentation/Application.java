@@ -1,13 +1,11 @@
 package presentation;
 
 import domain.User.User;
+import domain.User.UserException;
 import repository.UserRepository;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.Optional;
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class Application {
@@ -17,7 +15,8 @@ public class Application {
     private static User loggedInAsUser = null;
 
     public static void main(String[] args) {
-        User testUser = new User("Jakubwachal@gmail.com","test".toCharArray(), "Jakub", "Dr", "Austria");
+        new User("jakub@gmail.com","test".toCharArray(), "Jakub", "Dr", "Austria");
+        new User("patrick@gmail.com","test".toCharArray(), "Patrick", "Dr", "Austria");
         start();
     }
 
@@ -195,12 +194,34 @@ public class Application {
             if(input.equalsIgnoreCase("e")){
                 friends();
             }else {
-                if (UserRepository.findByName(input).isEmpty()){
+                List<User> userList = UserRepository.findByNameContains(input);
+                if (userList.isEmpty()){
                     System.out.println("No doctor with such name");
-                    sleep(2);
+                    sleep(1);
                     addFriend();
                 }else {
-                    UserRepository.findByName(input).forEach(user -> System.out.println(user.getProfile().getName() + " - " + user.getEmail().getAddress()));
+                    AtomicInteger counter = new AtomicInteger(1);
+                    userList.forEach(user -> System.out.println(counter.getAndIncrement() + " - " + user.getProfile().getTitleAndName() + " (" + user.getEmail().getAddress() + ")"));
+                    System.out.println("Which user do you want to add?");
+                    if (sc.hasNextLine()) {
+                        String action = sc.nextLine();
+                            try {
+                                if (Integer.parseInt(action) > 0 && Integer.parseInt(action) <= counter.get()) {
+                                    loggedInAsUser.addFriend(userList.get(Integer.parseInt(action) - 1));
+                                    System.out.println("User was successfully added as a friend");
+                                    sleep(1);
+                                    friends();
+                                }
+                            } catch (IndexOutOfBoundsException | NumberFormatException e) {
+                                System.out.println("Invalid action. Please try again");
+                                sleep(1);
+                                addFriend();
+                            } catch (UserException exc) {
+                                System.out.println("Can not add this user");
+                                sleep(1);
+                                addFriend();
+                            }
+                    }
                 }
             }
         }
@@ -214,10 +235,10 @@ public class Application {
         Map<Integer,User> counterWithUser = new HashMap<>();
 
         loggedInAsUser.getSocials().getIncomingFriendRequests().forEach(request -> {
-            System.out.println(counter.getAndIncrement() + " - ");
+            System.out.print(counter.get() + " - ");
             UserRepository.findById(request).ifPresent(user -> {
-                System.out.print(user.getProfile().getTitleAndName());
-                counterWithUser.put(counter.get(), user);
+                System.out.println(user.getProfile().getTitleAndName() + " (" + user.getEmail().getAddress() + ")");
+                counterWithUser.put(counter.getAndIncrement(), user);
             });
         });
 
@@ -236,13 +257,13 @@ public class Application {
                             switch (action) {
                                 case "1":
                                     loggedInAsUser.acceptFriendRequest(counterWithUser.get(Integer.parseInt(input)));
-                                    System.out.println("Friend request from " + counterWithUser.get(Integer.parseInt(input)).getProfile().getTitleAndName() + "was accepted.");
+                                    System.out.println("Friend request from " + counterWithUser.get(Integer.parseInt(input)).getProfile().getTitleAndName() + " was accepted.");
                                     sleep(2);
                                     friends();
                                     break;
                                 case "2":
                                     loggedInAsUser.denyFriendRequest(counterWithUser.get(Integer.parseInt(input)));
-                                    System.out.println("Friend request from " + counterWithUser.get(Integer.parseInt(input)).getProfile().getTitleAndName() + "was declined.");
+                                    System.out.println("Friend request from " + counterWithUser.get(Integer.parseInt(input)).getProfile().getTitleAndName() + " was declined.");
                                     sleep(2);
                                     friends();
                                     break;
@@ -269,12 +290,13 @@ public class Application {
     public static void friendList(){
         banner("Friend List");
         exitText();
+        loggedInAsUser.getSocials().getFriends().forEach(friend -> UserRepository.findById(friend).ifPresent(user -> System.out.println(user.getProfile().getTitleAndName())));
         if (sc.hasNextLine()){
             String input = sc.nextLine();
-            if (input.equalsIgnoreCase("e"))
+            if (input.equalsIgnoreCase("e")) {
                 friends();
+            }
         }
-        loggedInAsUser.getSocials().getFriends().forEach(friend -> UserRepository.findById(friend).ifPresent(System.out::println));
     }
 
     // profile ----------------------------------------------------------
@@ -308,12 +330,12 @@ public class Application {
         System.out.print("New Name: ");
         if (sc.hasNextLine()) {
             String input = sc.nextLine();
-            try {
-
-                loggedInAsUser.getProfile().setName(input);
-            } catch {
-
-            }
+//            try {
+//
+//                loggedInAsUser.getProfile().setName(input);
+//            } catch {
+//
+//            }
         }
     }
 
@@ -340,7 +362,6 @@ public class Application {
                 sleep(2);
                 start();
             }
-
             if (input.equals("2"))
                 chats();
 

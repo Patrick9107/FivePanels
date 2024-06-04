@@ -86,6 +86,16 @@ public class UserRepository {
      * @return a list containing the found users.
      */
     public static List<User> findByName(String name){
-        return findAll().stream().filter(user -> user.getProfile().getName().equals(name)).toList();
+        return findAll().stream().filter(user -> user.getProfile().getName().equalsIgnoreCase(name)).toList();
+    }
+
+    /**
+     * Finds a user containing the given parameter
+     *
+     * @param name the name to search for.
+     * @return a list containing the found users.
+     */
+    public static List<User> findByNameContains(String name){
+        return findAll().stream().filter(user -> user.getProfile().getName().toLowerCase().contains(name.toLowerCase())).toList();
     }
 }
