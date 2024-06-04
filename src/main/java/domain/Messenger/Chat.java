@@ -123,7 +123,7 @@ public class Chat extends BaseEntity {
     public static void main(String[] args) {
 //        User homer = new User("homer@simpson.com", "password", "Homer Simpson", "Rh.D.", "United Kingdom");
 //        User bart = new User("bart@simpson.com", "password", "Bart Simpson", "Ph.D.", "United States");
-        User lisa = new User("lisa@simpson.com", "password", "Lisa Simpson", "Ph.D.", "United States");
+        User lisa = new User("lisa@simpson.com", "password".toCharArray(), "Lisa Simpson", "Ph.D.", "United States");
 //        User test = new User("test@simpson.com", "password", "test Simpson", "Ph.D.", "United States");
 //        homer.addFriend(bart);
 //        bart.acceptFriendRequest(homer);
@@ -142,8 +142,8 @@ public class Chat extends BaseEntity {
 //        lisa.viewChat(chat);
 ////        homer.viewChat(chat);
 ////        bart.viewChat(chat);
-        User homer = new User("homer@simpson.com", "password", "Homer Simpson", "Rh.D.", "United Kingdom");
-        User bart = new User("bart@simpson.com", "password", "Bart Simpson", "Ph.D.", "United States");
+        User homer = new User("homer@simpson.com", "password".toCharArray(), "Homer Simpson", "Rh.D.", "United Kingdom");
+        User bart = new User("bart@simpson.com", "password".toCharArray(), "Bart Simpson", "Ph.D.", "United States");
 //        homer.addFriend(bart);
 //        bart.acceptFriendRequest(homer);
 //        Chat chat = homer.getDirectChat(bart.getId()).get();
