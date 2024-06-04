@@ -134,6 +134,15 @@ public class Application {
 
     //TODO finish this method after add friend interface and methods!
     private static void chats() {
+
+        /* funktionen:
+            chat erstellen (muss ein group chat sein weil die direct chats werden automatisch erstellt)
+            in einen chat hinein gehen (viewChat) (man hat möglichkeit eine message zu senden. wenn man nichts eintippt soll man aus dem chat rauskommen)
+            message senden (wenn man message eingibt konsole "clearen" und history neu ausgeben)
+            member adden
+            member removen? (vielleicht owner attribut in chat)
+            leave chat (removeMember dafür nutzen)
+         */
         banner("Chats");
         exitText();
         AtomicInteger counter = new AtomicInteger(1);
@@ -288,6 +297,7 @@ public class Application {
 
 
     public static void friendList() {
+        // todo maybe have the option to open direct chat with friend
         banner("Friend List");
         exitText();
         loggedInAsUser.getSocials().getFriends().forEach(friend -> UserRepository.findById(friend).ifPresent(user -> System.out.println(user.getProfile().getTitleAndName() + " (" + user.getEmail().getAddress() + ")")));
