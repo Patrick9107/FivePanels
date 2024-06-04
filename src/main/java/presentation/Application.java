@@ -429,7 +429,25 @@ public class Application {
     }
 
     private static void removeTagFromProfile() {
-
+        banner("Remove Tag");
+        exitText();
+        AtomicInteger counter = new AtomicInteger(1);
+        loggedInAsUser.getProfile().getTags().forEach(tag -> System.out.println(counter.getAndIncrement() + " - " + tag.toString()));
+        if (sc.hasNextLine()){
+            String input = sc.nextLine();
+            try {
+                if (Integer.parseInt(input) > 0 && Integer.parseInt(input) <= counter.get()) {
+                    //Um gottes willen frag nicht
+                   loggedInAsUser.getProfile().removeTag(loggedInAsUser.getProfile().getTags().stream().toList().get(Integer.parseInt(input)).toString());
+                    System.out.println("Tag was removed from your profile!");
+                    editSpecializations();
+                }
+            } catch(NumberFormatException e){
+                System.out.println("Invalid action. Please try again");
+                sleep(1);
+                removeTagFromProfile();
+            }
+        }
     }
 
     // handle user actions ----------------------------------------------------------
