@@ -120,29 +120,18 @@ public class User extends BaseEntity {
      * @param attachments a list of media attachments to be included with the message
      */
     public void sendMessage(Chat chat, String content, List<Media> attachments) {
+        isNotNull(chat, "chat");
         chat.sendMessage(this, chat, new TextContent(content), attachments);
     }
 
     /**
-     * Displays information about a chat.
-     * If the chat is not a group chat, it prints the name of the other member.
-     * If the chat is a group chat, it prints the chat's name.
-     * It also prints the chat's history.
+     * Calls the viewChat method in the specified chat
      *
      * @param chat the chat to be viewed
-     * @throws MessengerException if the user is not a member of specified chat
      */
     public void viewChat(Chat chat) {
-        if (!(chat.getMembers().contains(this.getId())))
-            throw new MessengerException(STR."viewChat(): user is not part of this chat");
-        if (!(chat.isGroupChat())) {
-            chat.getMembers().stream().filter(uuid ->
-                    this.getId() != uuid).findFirst().flatMap(UserRepository::findById).ifPresent(user ->
-                    System.out.println(user.getProfile().getName()));
-        } else {
-            System.out.println(chat.getName());
-        }
-        chat.getHistory().forEach(System.out::println);
+        isNotNull(chat, "chat");
+        chat.viewChat(this);
     }
 
     /**
@@ -344,9 +333,14 @@ public class User extends BaseEntity {
         medicalcase.setTitle(title);
     }
 
-    public void viewVotes(Medicalcase medicalcase) {
+    public void viewTotalPointsPerAnswer(Medicalcase medicalcase) {
         isOwner(medicalcase);
-        medicalcase.viewVotes();
+        medicalcase.viewTotalPointsPerAnswer();
+    }
+
+    public void viewAvgVotesPerAnswer(Medicalcase medicalcase) {
+        isOwner(medicalcase);
+        medicalcase.viewAvgVotesPerAnswer();
     }
 
     public void addMember(Medicalcase medicalcase, User user) {

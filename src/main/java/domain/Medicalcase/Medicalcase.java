@@ -180,7 +180,7 @@ public class Medicalcase extends BaseEntity {
         content.stream().filter(content1 -> content1.equals(contentToRemove)).findFirst().ifPresent(content1 -> content.remove(content1));
     }
 
-    public void viewVotes(){
+    public void viewAvgVotesPerAnswer(){
         // mit votes.values() bekommt man eine collection mit allen listen von votes
         //gibt dir alle Votes zurück
         List<Vote> allVotes = votes.values().stream()
@@ -198,6 +198,13 @@ public class Medicalcase extends BaseEntity {
 
         //gibt die antworten und die anzahl der votes für jede antwort aus
         voteCounts.forEach((option, count) -> System.out.println(option + ": " + count));
+    }
+
+    public void viewTotalPointsPerAnswer() {
+        List<Vote> allVotes = votes.values().stream().flatMap(Set::stream).toList();
+        Map<String, Double> voteCounts = allVotes.stream().collect(Collectors.groupingBy(vote ->
+                vote.getAnswer().getAnswer(), Collectors.summingDouble(Vote::getPercentage)));
+        voteCounts.forEach((option, count) -> System.out.println(STR."\{option}: \{count}"));
     }
 
     public Set<User> getMembers(){
@@ -239,12 +246,10 @@ public class Medicalcase extends BaseEntity {
       // was ich gemacht habe:
       //userAndCorrectAnswer.entrySet().forEach(value -> UserRepository.findById(value.getKey()).ifPresent(user -> user.getProfile().setRating(value.getValue().getPercentage())));
         //Verbessert durch IDE
-      userAndCorrectAnswer.forEach((key, value1) -> UserRepository.findById(key).ifPresent(user -> user.getProfile().setRating(value1.getPercentage())));
+      userAndCorrectAnswer.forEach((key, value1) -> UserRepository.findById(key).ifPresent(user -> user.getProfile().addRating(value1.getPercentage())));
     }
 
-
-    public void viewChat(){
-        StringBuilder sb = new StringBuilder(title).append("\n").append(chat.toString());
-        System.out.println(sb.toString());
+    public void viewChat(User user) {
+        chat.viewChat(user);
     }
 }

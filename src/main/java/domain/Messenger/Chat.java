@@ -96,6 +96,29 @@ public class Chat extends BaseEntity {
         chat.addToHistory(new Message(user, Instant.now(), content, attachments, Status.SENT));
     }
 
+    /**
+     * Displays information about a chat.
+     * If the chat is not a group chat, it prints the name of the other member.
+     * If the chat is a group chat, it prints the chat's name.
+     * It also prints the chat's history.
+     *
+     * @param user the user that wants to view the chat
+     * @throws MessengerException if the user is not a member of this chat
+     */
+    public void viewChat(User user) {
+        isNotNull(user, "user");
+        if (!(members.contains(user.getId())))
+            throw new MessengerException(STR."viewChat(): user is not part of this chat");
+        if (!(groupChat)) {
+            members.stream().filter(uuid ->
+                    user.getId() != uuid).findFirst().flatMap(UserRepository::findById).ifPresent(user1 ->
+                    System.out.println(user1.getProfile().getName()));
+        } else {
+            System.out.println(name);
+        }
+        history.forEach(System.out::println);
+    }
+
     public String getName() {
         return name;
     }
@@ -121,29 +144,29 @@ public class Chat extends BaseEntity {
 
  //Test for sending Messages between 2 Users (it actually works) pls dont delete i need this code
     public static void main(String[] args) {
-//        User homer = new User("homer@simpson.com", "password", "Homer Simpson", "Rh.D.", "United Kingdom");
-//        User bart = new User("bart@simpson.com", "password", "Bart Simpson", "Ph.D.", "United States");
+        User homer = new User("homer@simpson.com", "password".toCharArray(), "Homer Simpson", "Rh.D.", "United Kingdom");
+        User bart = new User("bart@simpson.com", "password".toCharArray(), "Bart Simpson", "Ph.D.", "United States");
         User lisa = new User("lisa@simpson.com", "password".toCharArray(), "Lisa Simpson", "Ph.D.", "United States");
 //        User test = new User("test@simpson.com", "password", "test Simpson", "Ph.D.", "United States");
-//        homer.addFriend(bart);
-//        bart.acceptFriendRequest(homer);
+        homer.addFriend(bart);
+        bart.acceptFriendRequest(homer);
 //
 //        lisa.createGroupChat("theCoolOnes", Set.of(bart.getId(), homer.getId()));
 //
-//        if (homer.getDirectChat(bart.getId()).isPresent()) {
-//            Chat chat = homer.getDirectChat(bart.getId()).get();
-//            homer.sendMessage(chat, new TextContent("Das ist Homer Message test test"), List.of(new Media("hallo.txt", "sdhjgvbfd", 100), new Media("test.txt", "sdhjgvbfd", 100)));
-//            bart.sendMessage(chat, new TextContent("Das ist Bart Message hallo 123 Test"), List.of(new Media("hallo.txt", "sdhjgvbfd", 100)));
-//            homer.viewChat(chat);
-//        }
+        if (homer.getDirectChat(bart.getId()).isPresent()) {
+            Chat chat = homer.getDirectChat(bart.getId()).get();
+            homer.sendMessage(chat, "Das ist Homer Message test test", List.of(new Media("hallo.txt", "sdhjgvbfd", 100), new Media("test.txt", "sdhjgvbfd", 100)));
+            bart.sendMessage(chat,  "Das ist Bart Message hallo 123 Test", List.of(new Media("hallo.txt", "sdhjgvbfd", 100)));
+            homer.viewChat(chat);
+        }
 //
 //        Chat chat = ChatRepository.findByName("theCoolOnes").get(0);
 //        homer.sendMessage(chat, new TextContent("Das ist Homer Message hallo 123 Test"), null);
 //        lisa.viewChat(chat);
 ////        homer.viewChat(chat);
 ////        bart.viewChat(chat);
-        User homer = new User("homer@simpson.com", "password".toCharArray(), "Homer Simpson", "Rh.D.", "United Kingdom");
-        User bart = new User("bart@simpson.com", "password".toCharArray(), "Bart Simpson", "Ph.D.", "United States");
+//        User homer = new User("homer@simpson.com", "password".toCharArray(), "Homer Simpson", "Rh.D.", "United Kingdom");
+//        User bart = new User("bart@simpson.com", "password".toCharArray(), "Bart Simpson", "Ph.D.", "United States");
 //        homer.addFriend(bart);
 //        bart.acceptFriendRequest(homer);
 //        Chat chat = homer.getDirectChat(bart.getId()).get();
@@ -157,21 +180,21 @@ public class Chat extends BaseEntity {
 //            homer.sendMessage(chat.get(), new TextContent("This is a message of Homer"), null);
 //            homer.viewChat(chat.get());
 //        }
-        homer.createMedicalcase("Test");
-        Medicalcase medicalcase = MedicalcaseRepository.findAll().stream().findFirst().get();
-        medicalcase.addVotingOption("aids");
-        medicalcase.addVotingOption("cancer");
-        medicalcase.addVotingOption("idk");
-        medicalcase.publish();
-        medicalcase.addMember(bart);
-        medicalcase.addMember(lisa);
-        medicalcase.castVote(lisa, "aids", 20);
-        medicalcase.castVote(lisa, "cancer", 50);
+//        homer.createMedicalcase("Test");
+//        Medicalcase medicalcase = MedicalcaseRepository.findAll().stream().findFirst().get();
+//        medicalcase.addVotingOption("aids");
+//        medicalcase.addVotingOption("cancer");
+//        medicalcase.addVotingOption("idk");
+//        medicalcase.publish();
+//        medicalcase.addMember(bart);
+//        medicalcase.addMember(lisa);
+//        medicalcase.castVote(lisa, "aids", 20);
+//        medicalcase.castVote(lisa, "cancer", 50);
 //        medicalcase.castVote(bart, "aids", 0);
-        medicalcase.castVote(bart, "cancer", 90);
+//        medicalcase.castVote(bart, "cancer", 90);
 //        medicalcase.viewVotes();
 //        bart.sendMessage(medicalcase.getChat(), "bart message in medicalcase", null);
 //        bart.sendMessage(medicalcase.getChat(), "bart message in medicalcase", null);
-        medicalcase.viewChat();
+//        medicalcase.viewChat();
     }
 }
