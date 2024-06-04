@@ -12,11 +12,19 @@ public class Password {
     private char[] hashedPassword;
 
     public Password(char[] rawPassword) {
-        setHashedPassword(rawPassword);
+        try {
+            setHashedPassword(rawPassword);
+        } finally {
+            Arrays.fill(rawPassword, '\0');
+        }
     }
 
     public void setHashedPassword(char[] rawPassword) {
-        this.hashedPassword = hashPassword(rawPassword);
+        try {
+            this.hashedPassword = hashPassword(rawPassword);
+        } finally {
+            Arrays.fill(rawPassword, '\0');
+        }
     }
 
     public char[] getHashedPassword() {
@@ -31,12 +39,19 @@ public class Password {
     }
 
     public char[] hashPassword(char[] password){
-
-        hashedPassword = BCrypt.withDefaults().hashToChar(12, password);
-        return hashedPassword;
+        try {
+            hashedPassword = BCrypt.withDefaults().hashToChar(12, password);
+            return hashedPassword;
+        } finally {
+            Arrays.fill(password, '\0');
+        }
     }
 
     public boolean checkPasswords(char[] password, char[] hashedPassword){
-        return BCrypt.verifyer().verify(password, hashedPassword).verified;
+        try {
+            return BCrypt.verifyer().verify(password, hashedPassword).verified;
+        } finally {
+            Arrays.fill(password, '\0');
+        }
     }
 }
