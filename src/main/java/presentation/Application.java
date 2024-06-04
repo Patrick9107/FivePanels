@@ -163,16 +163,26 @@ public class Application {
         System.out.println("2 - Friend Requests");
         System.out.println();
         System.out.println("3 - Friend List");
-        if (sc.hasNextLine()){
+        if (sc.hasNextLine()) {
             String input = sc.nextLine();
-            if(input.equals("1"))
-                addFriend();
-            if (input.equals("2"))
-                friendRequests();
-            if (input.equals("3"))
-                friendList();
-            if (input.equalsIgnoreCase("e"))
-                userAction();
+            switch (input) {
+                case "1":
+                    addFriend();
+                    break;
+                case "2":
+                    friendRequests();
+                    break;
+                case "3":
+                    friendList();
+                    break;
+                case "e", "E":
+                    userAction();
+                    break;
+                default:
+                    System.out.println("Invalid Action. Try again");
+                    sleep(1);
+                    friends();
+            }
         }
     }
 
@@ -214,26 +224,33 @@ public class Application {
         if(sc.hasNextLine()){
             String input = sc.nextLine();
             if (input.equalsIgnoreCase("e")){
-
-                friends();//TODO HIER AUCH
+                friends();
             } else {
                 try {
                     if (Integer.parseInt(input) > 0 && Integer.parseInt(input) <= counter.get()){
+                        exitText();
                         System.out.println("1 - accept");
                         System.out.println("2 - decline");
                         if (sc.hasNextLine()){
                             String action = sc.nextLine();
-                            if (action.equals("1")){
-                                loggedInAsUser.acceptFriendRequest(counterWithUser.get(Integer.parseInt(input)));
-                                System.out.println("Friend request from " + counterWithUser.get(Integer.parseInt(input)).getProfile().getTitleAndName() + "was accepted.");
-                                sleep(2);
-                                friends();
-
-                            }else if(action.equals("2")) {
-                                loggedInAsUser.denyFriendRequest(counterWithUser.get(Integer.parseInt(input)));
-                                System.out.println("Friend request from " + counterWithUser.get(Integer.parseInt(input)).getProfile().getTitleAndName() + "was declined.");
-                                sleep(2);
-                                friends();
+                            switch (action) {
+                                case "1":
+                                    loggedInAsUser.acceptFriendRequest(counterWithUser.get(Integer.parseInt(input)));
+                                    System.out.println("Friend request from " + counterWithUser.get(Integer.parseInt(input)).getProfile().getTitleAndName() + "was accepted.");
+                                    sleep(2);
+                                    friends();
+                                    break;
+                                case "2":
+                                    loggedInAsUser.denyFriendRequest(counterWithUser.get(Integer.parseInt(input)));
+                                    System.out.println("Friend request from " + counterWithUser.get(Integer.parseInt(input)).getProfile().getTitleAndName() + "was declined.");
+                                    sleep(2);
+                                    friends();
+                                    break;
+                                case "e", "E":
+                                    friends();
+                                    break;
+                                default:
+                                    System.out.println("Invalid Action. Try again");
                             }
                         }
                     }
@@ -269,11 +286,34 @@ public class Application {
         System.out.println("2 - Title: " +loggedInAsUser.getProfile().getTitle());
         System.out.println("3 - Location: " + loggedInAsUser.getProfile().getLocation());
         System.out.println("4 - Rating: "  + loggedInAsUser.getProfile().getRating());
+        System.out.println();
+        System.out.println("Type in a number if you want to edit your profile data");
 
         if (sc.hasNextLine()){
             String input = sc.nextLine();
-            if(input.equalsIgnoreCase("e"))
-                userAction();
+            switch (input) {
+                case "1":
+                    editProfile();
+                    break;
+                case "e", "E":
+                    userAction();
+                    break;
+            }
+        }
+    }
+
+    private static void editProfile() {
+        // what to edit
+        exitText();
+        System.out.print("New Name: ");
+        if (sc.hasNextLine()) {
+            String input = sc.nextLine();
+            try {
+
+                loggedInAsUser.getProfile().setName(input);
+            } catch {
+
+            }
         }
     }
 
