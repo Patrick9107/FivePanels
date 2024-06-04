@@ -1,3 +1,263 @@
-test
-specialization
-test2
+Abdominal Surgery
+Academic Medicine
+Adhesive Dentistry
+Adolescent Medicine
+Addiction Medicine
+Agada
+Alcohology
+Algesiology
+Allergology
+Anaesthesiology
+Anaplastology
+Anatomical Pathology
+Andrology
+Angiology
+Assessment Medicine
+Aesthetic Medicine
+Aviation Medicine
+Balneology
+Battlefield Medicine
+Behavioral Medicine
+Bone Surgery
+Bronchology
+Burn Surgery
+Bariatric Medicine
+Cardiac Surgery
+Cardiology
+Cardiooncology
+Cardiogeriatrics
+Cardiogenetics
+Child Pulmonology
+Clinical Epidemiology
+Clinical Genetics
+Clinical Immunology
+Clinical Medicine
+Clinical Neurophysiology
+Clinical Nutrition
+Clinical Oncology
+Clinical Pathology
+Clinical Pharmacology
+Clinical Psychology
+Clinical Virology
+Colpocleisis
+Coloproctology
+Colorectal Surgery
+Complementary Medicine
+Community Medicine
+Craniofacial Surgery
+Critical Emergency Medicine
+Dental Medicine
+Dermatology
+Dermatopathology
+Dermatovenerology
+Desmurgy
+Dietetics
+Diagnostic Microbiology
+Diagnostic Neuroradiology
+Diving Medicine
+Ear Surgery
+Emergency Medicine
+Emergency Nursing
+Emetology
+Endocrine Oncology
+Endocrinology
+Endodontics
+Endoscopy
+Environmental Medicine
+Equine Medicine
+Essure
+Family Medicine
+Family Planning
+Family Planning Methods
+Fetal Surgery
+Forensic Medicine
+Foot And Ankle Surgery
+Functional Surgery
+Gastroenterology
+Gastrointestinal Surgery
+General Practice
+General Surgery
+Genetic Counseling
+Genitourinary Medicine
+Genitourinary Oncology
+Geriatrics
+Geriatric Dentistry
+Geriatric Medicine
+Geriatric Psychiatry
+Geriatric Traumatology
+Gerontopsychiatry
+Gynecologic Oncology
+Gynecological Surgery
+Gynaecology
+Hand Surgery
+Haemostasis Specialty
+Head And Neck Surgery
+Hematology
+Hematopathology
+Hepatology
+Hospital Medicine
+Human Dental Medicine
+Immuno-Oncology
+Immunopathology
+Immunotoxicology
+Infection Epidemiology
+Infectious Diseases
+Insurance Medicine
+Integrative Medicine
+Intensive Care Medicine
+Interventional Cardiology
+Interventional Neuroradiology
+Interventional Pain Management
+Interventional Radiology
+Liver Surgery
+Laryngology
+Lifestyle Medicine
+Lipidology
+Lymphology
+Mammology
+Maritime Medicine
+Mass-Gathering Medicine
+Maternal-Fetal Medicine
+Mastology
+Maxillofacial Surgery
+Medical Entomology
+Medical Genetics
+Medical Jurisprudence
+Medical Microbiology
+Medical Oncology
+Medical Parasitology
+Medical Rehabilitation
+Medical Toxicology
+Minimally Invasive Strabismus Surgery
+Military Medicine
+Molecular Immunology
+Molecular Medicine
+Molecular Oncology
+Molecular Virology
+Neonatology
+Nephrology
+Neuroendocrinology
+Neuroembryology
+Neuroimmunology
+Neurointensive Care
+Neurology
+Neuromuscular Medicine
+Neuropathology
+Neuropsychiatry
+Neurotology
+Neuroradiology
+Neuropediatrics
+Neurosurgery
+Nosology
+Nuclear Medicine
+Nutrition Science
+Obstetric Medicine
+Obstetrics
+Obstetrics And Gynaecology
+Occupational Health
+Occupational Medicine
+Oncogenetics
+Oncogenomics
+Oncological Plastic Surgery
+Oncology
+Ophthalmic Pathology
+Ophthalmology
+Oral And Maxillofacial Radiology
+Oral And Maxillofacial Surgery
+Oral Medicine
+Oral Pathology
+Oral Surgery
+Operational Medicine
+Orthognathic Surgery
+Orthopedics
+Orthopedic Surgery
+Orthotics
+Otolaryngology
+Otology
+Pain Management
+Pain Medicine
+Palliative Medicine
+Pathology
+Pathophysiology
+Pedaudiology
+Pediatric Cardiac Surgery
+Pediatric Dentistry
+Pediatric Endocrinology
+Pediatric Gastroenterology
+Pediatric Gynaecology
+Pediatric Nephrology
+Pediatric Neurology
+Pediatric Neurosurgery
+Pediatric Oncology
+Pediatric Ophthalmology
+Pediatric Orthopedic Surgery
+Pediatric Pathology
+Pediatric Plastic Surgery
+Pediatric Radiology
+Pediatric Surgery
+Pediatric Traumatology
+Pediatric Urology
+Pediatrics
+Perinatal Psychiatry
+Pharmaceutical Medicine
+Pharmacology
+Phlebology
+Phoniatrics
+Physical Medicine And Rehabilitation
+Physiology
+Phthisiology
+Plastic Surgery
+Podiatry
+Predictive Medicine
+Pre-Hospital Emergency Medicine
+Preventive Medicine
+Prison Healthcare
+Psychiatry
+Psychiatric Semiology
+Psychosomatic Medicine
+Public Health Physician
+Public Medicine
+Radiation Oncology
+Radiation Therapy
+Radiology
+Reconstructive Surgery
+Refractive Surgery
+Regenerative Medicine
+Renal Pathology
+Reproductive Endocrinology And Infertility
+Reproductive Medicine
+Rhinology
+Rhythmology
+Roentgenology
+Science Of Prosthetics
+Sexual Medicine
+Sleep Medicine
+Social Medicine
+Social Psychiatry
+Speech-Language Pathology
+Spine Surgery
+Sports Chiropractic
+Sports Medicine
+Sports Psychiatry
+Sports Traumatology
+Strabology
+Strabismus Surgery
+Surgical Endocrinology
+Surgical Oncology
+Symptomatology
+Tauro-Traumatology
+Technical Medicine
+Throat Surgery
+Thoracic Oncology
+Thoracic Surgery
+Toxicology
+Trauma Surgery
+Traumatology
+Travel Medicine
+Urogynecology
+Urology
+Veterinary Medicine
+Veterinary Surgery
+Vertebroneurology
+Vascular Surgery
+Venereology

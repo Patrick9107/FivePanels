@@ -2,6 +2,7 @@ package presentation;
 
 import domain.User.User;
 import domain.User.UserException;
+import foundation.AssertException;
 import repository.UserRepository;
 
 import java.util.*;
@@ -15,8 +16,8 @@ public class Application {
     private static User loggedInAsUser = null;
 
     public static void main(String[] args) {
-        new User("jakub@gmail.com","test".toCharArray(), "Jakub", "Dr", "Austria");
-        new User("patrick@gmail.com","test".toCharArray(), "Patrick", "Dr", "Austria");
+        new User("jakub@gmail.com", "test".toCharArray(), "Jakub", "Dr.", "Austria");
+        new User("patrick@gmail.com", "test".toCharArray(), "Patrick", "Dr.", "Austria");
         start();
     }
 
@@ -90,7 +91,7 @@ public class Application {
     //TODO check password strength
     private static void register() {
         String email = null, name = null, title = null, location = null;
-        char[]  password = null;
+        char[] password = null;
         banner("Register");
         System.out.println("Please enter credentials");
         System.out.println();
@@ -120,13 +121,12 @@ public class Application {
             System.out.println();
             System.out.println("User creation successful!");
             System.out.println("You will be redirected shortly");
-            sleep(2);
+            sleep(1);
             userAction();
         } catch (Exception e) {
             System.out.println("User creation unsuccessful. Please try again");
             System.out.println("You will be redirected shortly");
-            e.printStackTrace();
-            sleep(2);
+            sleep(1);
             start();
         }
     }
@@ -134,7 +134,7 @@ public class Application {
     // chats ----------------------------------------------------------
 
     //TODO finish this method after add friend interface and methods!
-    private static void chats(){
+    private static void chats() {
         banner("Chats");
         exitText();
         AtomicInteger counter = new AtomicInteger(1);
@@ -144,9 +144,9 @@ public class Application {
         });
 
         System.out.println("Press C to create a new chat!");
-        if (sc.hasNextLine()){
+        if (sc.hasNextLine()) {
             String input = sc.nextLine();
-            if (input.equalsIgnoreCase("c")){
+            if (input.equalsIgnoreCase("c")) {
                 // new chat
             }
         }
@@ -154,7 +154,7 @@ public class Application {
 
     // friends ----------------------------------------------------------
 
-    private static void friends(){
+    private static void friends() {
         banner("Friends");
         exitText();
         System.out.println("1 - Add a new friend");
@@ -185,42 +185,42 @@ public class Application {
         }
     }
 
-    public static void addFriend(){
+    public static void addFriend() {
         banner("Add Friends");
         exitText();
         System.out.println("Name of the doctor you want to add: ");
         if (sc.hasNextLine()) {
             String input = sc.nextLine();
-            if(input.equalsIgnoreCase("e")){
+            if (input.equalsIgnoreCase("e")) {
                 friends();
-            }else {
+            } else {
                 List<User> userList = UserRepository.findByNameContains(input);
-                if (userList.isEmpty()){
+                if (userList.isEmpty()) {
                     System.out.println("No doctor with such name");
                     sleep(1);
                     addFriend();
-                }else {
+                } else {
                     AtomicInteger counter = new AtomicInteger(1);
                     userList.forEach(user -> System.out.println(counter.getAndIncrement() + " - " + user.getProfile().getTitleAndName() + " (" + user.getEmail().getAddress() + ")"));
                     System.out.println("Which user do you want to add?");
                     if (sc.hasNextLine()) {
                         String action = sc.nextLine();
-                            try {
-                                if (Integer.parseInt(action) > 0 && Integer.parseInt(action) <= counter.get()) {
-                                    loggedInAsUser.addFriend(userList.get(Integer.parseInt(action) - 1));
-                                    System.out.println("User was successfully added as a friend");
-                                    sleep(1);
-                                    friends();
-                                }
-                            } catch (IndexOutOfBoundsException | NumberFormatException e) {
-                                System.out.println("Invalid action. Please try again");
+                        try {
+                            if (Integer.parseInt(action) > 0 && Integer.parseInt(action) <= counter.get()) {
+                                loggedInAsUser.addFriend(userList.get(Integer.parseInt(action) - 1));
+                                System.out.println("User was successfully added as a friend");
                                 sleep(1);
-                                addFriend();
-                            } catch (UserException exc) {
-                                System.out.println("Can not add this user");
-                                sleep(1);
-                                addFriend();
+                                friends();
                             }
+                        } catch (IndexOutOfBoundsException | NumberFormatException e) {
+                            System.out.println("Invalid action. Please try again");
+                            sleep(1);
+                            addFriend();
+                        } catch (UserException e) {
+                            System.out.println("Can not add this user");
+                            sleep(1);
+                            addFriend();
+                        }
                     }
                 }
             }
@@ -232,7 +232,7 @@ public class Application {
         exitText();
 
         AtomicInteger counter = new AtomicInteger(1);
-        Map<Integer,User> counterWithUser = new HashMap<>();
+        Map<Integer, User> counterWithUser = new HashMap<>();
 
         loggedInAsUser.getSocials().getIncomingFriendRequests().forEach(request -> {
             System.out.print(counter.get() + " - ");
@@ -242,17 +242,17 @@ public class Application {
             });
         });
 
-        if(sc.hasNextLine()){
+        if (sc.hasNextLine()) {
             String input = sc.nextLine();
-            if (input.equalsIgnoreCase("e")){
+            if (input.equalsIgnoreCase("e")) {
                 friends();
             } else {
                 try {
-                    if (Integer.parseInt(input) > 0 && Integer.parseInt(input) <= counter.get()){
+                    if (Integer.parseInt(input) > 0 && Integer.parseInt(input) <= counter.get()) {
                         exitText();
                         System.out.println("1 - accept");
                         System.out.println("2 - decline");
-                        if (sc.hasNextLine()){
+                        if (sc.hasNextLine()) {
                             String action = sc.nextLine();
                             switch (action) {
                                 case "1":
@@ -275,7 +275,7 @@ public class Application {
                             }
                         }
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     System.out.println("Invalid input. Please enter the number corresponding to the person you want to handle the friend request.");
                     System.out.println("You will be redirected shortly");
                     sleep(2);
@@ -287,11 +287,11 @@ public class Application {
     }
 
 
-    public static void friendList(){
+    public static void friendList() {
         banner("Friend List");
         exitText();
         loggedInAsUser.getSocials().getFriends().forEach(friend -> UserRepository.findById(friend).ifPresent(user -> System.out.println(user.getProfile().getTitleAndName())));
-        if (sc.hasNextLine()){
+        if (sc.hasNextLine()) {
             String input = sc.nextLine();
             if (input.equalsIgnoreCase("e")) {
                 friends();
@@ -304,39 +304,132 @@ public class Application {
     public static void profile() {
         banner("Profile");
         exitText();
-        System.out.println("1 - Name: "+ loggedInAsUser.getProfile().getName());
-        System.out.println("2 - Title: " +loggedInAsUser.getProfile().getTitle());
+        System.out.println("1 - Name: " + loggedInAsUser.getProfile().getName());
+        System.out.println("2 - Title: " + loggedInAsUser.getProfile().getTitle());
         System.out.println("3 - Location: " + loggedInAsUser.getProfile().getLocation());
-        System.out.println("4 - Rating: "  + loggedInAsUser.getProfile().getRating());
+        System.out.println("4 - Specialization Hashtags: " + loggedInAsUser.getProfile().getTags()); //todo tostring oder so
+        System.out.println("Rating: " + loggedInAsUser.getProfile().getRating());
         System.out.println();
         System.out.println("Type in a number if you want to edit your profile data");
 
-        if (sc.hasNextLine()){
+        if (sc.hasNextLine()) {
             String input = sc.nextLine();
             switch (input) {
-                case "1":
-                    editProfile();
+                case "1", "2", "3":
+                    editProfile(input);
+                    break;
+                case "4":
+                    editSpecializations();
                     break;
                 case "e", "E":
                     userAction();
                     break;
+                default:
+
             }
         }
     }
 
-    private static void editProfile() {
-        // what to edit
-        exitText();
-        System.out.print("New Name: ");
+    private static void editProfile(String edit) {
+        String displayName = switch (edit) {
+            case "1" -> "Name";
+            case "2" -> "Title";
+            case "3" -> "Location";
+            default -> null;
+        };
+        System.out.println("Leave blank if you want to exit");
+        System.out.println();
+        System.out.print("New " + displayName + ": ");
         if (sc.hasNextLine()) {
             String input = sc.nextLine();
-//            try {
-//
-//                loggedInAsUser.getProfile().setName(input);
-//            } catch {
-//
-//            }
+            if (!input.isBlank()) {
+                try {
+                    switch (edit) {
+                        case "1":
+                            loggedInAsUser.getProfile().setName(input);
+                            System.out.println("Successfully set a new " + displayName + "!");
+                            sleep(1);
+                            profile();
+                            break;
+                        case "2":
+                            loggedInAsUser.getProfile().setTitle(input);
+                            System.out.println("Successfully set a new " + displayName + "!");
+                            sleep(1);
+                            profile();
+                            break;
+                        case "3":
+                            loggedInAsUser.getProfile().setLocation(input);
+                            System.out.println("Successfully set a new " + displayName + "!");
+                            sleep(1);
+                            profile();
+                            break;
+                    }
+                } catch (Exception e) {
+                    System.out.println("Invalid action. Please try again");
+                    sleep(1);
+                    profile();
+                }
+            } else {
+                profile();
+            }
         }
+    }
+
+    private static void editSpecializations() {
+        banner("Specialization Hashtags");
+        exitText();
+        System.out.println("1 - Add new tag");
+        System.out.println();
+        System.out.println("2 - Remove existing tag");
+        if (sc.hasNextLine()) {
+            String input = sc.nextLine();
+            switch (input) {
+                case "1":
+                    addTagToProfile();
+                    break;
+                case "2":
+                    removeTagFromProfile();
+                    break;
+                case "e", "E":
+                    profile();
+                    break;
+                default:
+                    System.out.println("Invalid action. Please try again");
+                    editSpecializations();
+            }
+        }
+    }
+
+    private static void addTagToProfile() {
+        System.out.println("Leave blank if you want to exit");
+        System.out.println();
+        // woul've printed all hashtags but there are over 250
+        System.out.print("Enter the name of the new Hashtag: ");
+        if (sc.hasNextLine()) {
+            String input = sc.nextLine();
+            if (!input.isBlank()) {
+                try {
+                    loggedInAsUser.getProfile().addTag(input);
+                    System.out.println("Successfully added " + input + " to your Hashtags!");
+                    sleep(1);
+                    editSpecializations();
+                } catch (UserException e) {
+                    System.out.println("Entered Tag does not exist. Try again");
+                    sleep(1);
+                    addTagToProfile();
+                } catch (Exception e) {
+                    System.out.println("Invalid action. Please try again");
+                    sleep(1);
+                    addTagToProfile();
+                }
+            } else {
+                editSpecializations();
+            }
+        }
+    }
+
+    private static void removeTagFromProfile() {
+
     }
 
     // handle user actions ----------------------------------------------------------
@@ -347,30 +440,36 @@ public class Application {
         System.out.println();
         System.out.println("1 - Logout");
         System.out.println();
-        System.out.println("2 - Chats");
+        System.out.println("2 - Manage Chats");
         System.out.println();
-        System.out.println("3 - Profile");
+        System.out.println("3 - Manage Profile");
         System.out.println();
-        System.out.println("4 - Friends");
+        System.out.println("4 - Manage Friends");
 
         if (sc.hasNextLine()) {
             String input = sc.nextLine();
-            if (input.equals("1")) {
-                loggedInAsUser = null;
-                System.out.println("Successfully logged out!");
-                System.out.println("You will be redirected shortly");
-                sleep(2);
-                start();
+            switch (input) {
+                case "1":
+                    loggedInAsUser = null;
+                    System.out.println("Successfully logged out!");
+                    System.out.println("You will be redirected shortly");
+                    sleep(2);
+                    start();
+                    break;
+                case "2":
+                    chats();
+                    break;
+                case "3":
+                    profile();
+                    break;
+                case "4":
+                    friends();
+                    break;
+                default:
+                    System.out.println("Invalid action. Please try again");
+                    sleep(1);
+                    userAction();
             }
-            if (input.equals("2"))
-                chats();
-
-            if (input.equals("2"))
-                chats();
-
-            if (input.equals("4"))
-                friends();
-            // todo use switch case
         }
     }
 
@@ -386,15 +485,15 @@ public class Application {
     /**
      * @param toDisplay The String that should be displayed
      */
-    private static void banner(String toDisplay){
+    private static void banner(String toDisplay) {
         System.out.println("\n\n\n");
         System.out.println("########################################");
         System.out.println(toDisplay);
         System.out.println("########################################");
-        System.out.println("\n\n\n");
+        System.out.println("\n\n");
     }
 
-    private static void exitText(){
+    private static void exitText() {
         System.out.println("PRESS E TO EXIT!");
         System.out.println();
     }
