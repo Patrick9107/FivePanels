@@ -1,11 +1,10 @@
 package presentation;
 
-import domain.User.Socials;
 import domain.User.User;
-import org.apache.commons.collections.functors.IfClosure;
 import repository.UserRepository;
 
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Optional;
 import java.util.Scanner;
@@ -88,7 +87,8 @@ public class Application {
 
     //TODO check password strength
     private static void register() {
-        String email = null, password = null, name = null, title = null, location = null;
+        String email = null, name = null, title = null, location = null;
+        char[]  password = null;
         banner("Register");
         System.out.println("Please enter credentials");
         System.out.println();
@@ -98,7 +98,7 @@ public class Application {
         }
         System.out.print("Password: ");
         if (sc.hasNextLine()) {
-            password = sc.nextLine();
+            password = sc.nextLine().toCharArray();
         }
         System.out.print("Name: ");
         if (sc.hasNextLine()) {
@@ -156,22 +156,23 @@ public class Application {
         System.out.println();
         System.out.println("2 - friend requests");
         System.out.println();
-        System.out.println("Your Friends:");
-        loggedInAsUser.getSocials().listFriends().forEach(friend -> UserRepository.findById(friend).ifPresent(System.out::println));
+        System.out.println("3 - friend list");
         if (sc.hasNextLine()){
             String input = sc.nextLine();
-            if(input.equals("1")){
-
-            }
+            if(input.equals("1"))
+                addFriend();
 
             if (input.equals("2")){
-
+                friendRequests();
             }
+
+            if (input.equals("3"))
+                friendList();
         }
     }
 
     public static void addFriend(){
-        banner("add friends");
+        banner("Add Friends");
         exitText();
         System.out.println("Doctor you want to add: ");
         if (sc.hasNextLine()) {
@@ -183,14 +184,75 @@ public class Application {
                 if (UserRepository.findByName(input).isEmpty()){
                     System.out.println("Kein Doktor mit diesem Namen gefunden");
                     sleep(3);
-                    //TODO das gleiche hier
-                    addFriend();
+                    addFriend();//TODO HIER AUCH
                 }else {
                     UserRepository.findByName(input).forEach(user -> System.out.println(user.getProfile().getName() + " - " + user.getEmail().getAddress()));
                 }
             }
         }
     }
+
+    private static void friendRequests() {
+        banner("Friend Requests");
+        exitText();
+
+        AtomicInteger counter = new AtomicInteger(1);
+        Map<Integer,User> counterWithUser = new HashMap<>();
+
+        loggedInAsUser.getSocials().getIncomingFriendRequests().forEach(request -> {
+            System.out.println(counter.getAndIncrement() + " - ");
+            UserRepository.findById(request).ifPresent(user -> {
+                System.out.print(user.getProfile().getTitle() + " " + user.getProfile().getName());
+                counterWithUser.put(counter.get(), user);
+            });
+        });
+
+        if(sc.hasNextLine()){
+            String input = sc.nextLine();
+            if (input.equalsIgnoreCase("e")){
+
+                friends();//TODO HIER AUCH
+            } else {
+                try {
+                    if (Integer.parseInt(input) > 0 && Integer.parseInt(input) <= counter.get()){
+                        System.out.println("1 - accept");
+                        System.out.println("2 - decline");
+                        if (sc.hasNextLine()){
+                            String action = sc.nextLine();
+                            if (action.equals("1")){
+                                loggedInAsUser.acceptFriendRequest(counterWithUser.get(Integer.parseInt(input)));
+                                System.out.println("Friend request from " + counterWithUser.get(Integer.parseInt(input)).getProfile().getTitle() + " " + counterWithUser.get(Integer.parseInt(input)).getProfile().getName() + "was accepted.");
+                                sleep(2);
+                                friends();//TODO HIER AUC
+
+                            }else if(action.equals("2")) {
+                                loggedInAsUser.denyFriendRequest(counterWithUser.get(Integer.parseInt(input)));
+                                System.out.println("Friend request from " + counterWithUser.get(Integer.parseInt(input)).getProfile().getTitle() + " " + counterWithUser.get(Integer.parseInt(input)).getProfile().getName() + "was declined.");
+                                sleep(2);
+                                friends();//TODO HIER AUCH
+                            }
+                        }
+                    }
+                }catch (RuntimeException e){
+                    System.out.println("Invalid input: number of friend request is required!");
+                }
+            }
+        }
+
+    }
+
+
+    public static void friendList(){
+        banner("Friend List");
+        exitText();
+        if (sc.hasNextLine()){
+            String input = sc.nextLine();
+            if (input.equalsIgnoreCase("e"))
+                friends();//TODO HIER AUCH
+        }
+        loggedInAsUser.getSocials().getFriends().forEach(friend -> UserRepository.findById(friend).ifPresent(System.out::println));
+    }
+
     private static void userAction() {
         banner("Hello " + loggedInAsUser.getProfile().getTitle() + " " + loggedInAsUser.getProfile().getName() + "!");
         System.out.println("What would you like to do?");

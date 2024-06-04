@@ -3,9 +3,7 @@ package domain.User;
 import domain.Messenger.Chat;
 import repository.ChatRepository;
 
-import java.security.Key;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static foundation.Assert.*;
 
@@ -99,14 +97,14 @@ public class Socials {
                                             .map(Map.Entry::getKey).toList();
     }
 
-    public List<UUID> listIncomingFriendRequests() {
+    public List<UUID> getIncomingFriendRequests() {
         return listRelation(Relation.INCOMING);
     }
 
-    public List<UUID> listFriends() {
+    public List<UUID> getFriends() {
         return listRelation(Relation.FRIENDS);
     }
-    public List<UUID> listOutgoingFriendRequests() {
+    public List<UUID> getOutgoingFriendRequests() {
         return listRelation(Relation.OUTGOING);
     }
 }
