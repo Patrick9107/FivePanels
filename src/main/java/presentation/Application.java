@@ -309,6 +309,7 @@ public class Application {
 
             if (input.equals("4"))
                 friends();
+            // todo use switch case
         }
     }
 
