@@ -15,7 +15,9 @@ public class Password {
         try {
             setHashedPassword(rawPassword);
         } finally {
-            Arrays.fill(rawPassword, '\0');
+            for (int i = 0; i < rawPassword.length; i++) {
+                rawPassword[i] = 0;
+            }
         }
     }
 
@@ -23,7 +25,9 @@ public class Password {
         try {
             this.hashedPassword = hashPassword(rawPassword);
         } finally {
-            Arrays.fill(rawPassword, '\0');
+            for (int i = 0; i < rawPassword.length; i++) {
+                rawPassword[i] = 0;
+            }
         }
     }
 
@@ -31,11 +35,16 @@ public class Password {
         return hashedPassword;
     }
 
-    public boolean isPasswordStrong(String password) { // we have to look into CharSequence
-        // found that CharSequence is not necessarily immutable (which means its internal state, unlike Strings, can change) which makes it a good candidate in this case for the password to not have anyone catch traces of it in the heap space
-        Zxcvbn zxcvbn = new Zxcvbn();
-        Strength strength = zxcvbn.measure(password);
-        return strength.getScore() >= 3;
+    public boolean isPasswordStrong(char[] password) {
+        try {
+            Zxcvbn zxcvbn = new Zxcvbn();
+            Strength strength = zxcvbn.measure(java.nio.CharBuffer.wrap(password));
+            return strength.getScore() >= 3;
+        } finally {
+            for (int i = 0; i < password.length; i++) {
+                password[i] = 0;
+            }
+        }
     }
 
     public char[] hashPassword(char[] password){
@@ -43,7 +52,9 @@ public class Password {
             hashedPassword = BCrypt.withDefaults().hashToChar(12, password);
             return hashedPassword;
         } finally {
-            Arrays.fill(password, '\0');
+            for (int i = 0; i < password.length; i++) {
+                password[i] = 0;
+            }
         }
     }
 
@@ -51,7 +62,9 @@ public class Password {
         try {
             return BCrypt.verifyer().verify(password, hashedPassword).verified;
         } finally {
-            Arrays.fill(password, '\0');
+            for (int i = 0; i < password.length; i++) {
+                password[i] = 0;
+            }
         }
     }
 }

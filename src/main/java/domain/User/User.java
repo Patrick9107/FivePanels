@@ -269,6 +269,7 @@ public class User extends BaseEntity {
 
 
     public void castVote(Medicalcase medicalcase, String answer, int percentage) {
+        isNotNull(medicalcase, "medicalcase");
         if (!(medicalcases.get(Ownership.MEMBER).contains(medicalcase)))
             throw new MedicalcaseException(STR."castVote(): user is not a member of this medicalcase");
         medicalcase.castVote(this, answer, percentage);
@@ -311,6 +312,7 @@ public class User extends BaseEntity {
     }
 
     public void react(Medicalcase medicalcase) {
+        isNotNull(medicalcase, "medicalcase");
         if (!(medicalcases.get(Ownership.MEMBER).contains(medicalcase)))
             throw new MedicalcaseException(STR."react(): user is not a member of this medicalcase");
         medicalcase.react(this);
@@ -347,6 +349,7 @@ public class User extends BaseEntity {
     }
 
     private void isOwner(Medicalcase medicalcase) {
+        isNotNull(medicalcase, "medicalcase");
         if (!(medicalcase.getOwner().equals(this)))
             throw new MedicalcaseException(STR."action failed: user is not the owner of the medicalcase");
     }
