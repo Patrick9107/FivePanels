@@ -24,27 +24,17 @@ public class Profile {
     //not null
     private Image avatar;
 
-    // TODO NUR ZUM TESTEN KANN WIEDER GELÖSCHT WERDEN
-    public Profile() {
-        name = "admin";
-        title = null;
-        location = null;
-        tags = null;
-        rating = null;
-        avatar = null;
-    }
-
-    public void setRating(Integer rating) {
-        isNotNull(rating, "rating");
-        this.rating += rating;
-    }
-
     public Profile(String name, String title, String location, String... tags) {
         setName(name);
         setTitle(title);
         setLocation(location);
         setTags(tags);
         this.rating = 0;
+    }
+
+    public void setRating(Integer rating) {
+        isNotNull(rating, "rating");
+        this.rating += rating;
     }
 
     public void setName(String name) {
@@ -91,7 +81,13 @@ public class Profile {
         return name;
     }
 
+    public String getTitleAndName() {
+        return STR."\{getTitle()} \{getName()}";
+    }
+
     public void addRating(int rating) {
+        if (rating < 0)
+            throw new UserException(STR."addRating(): can not add negative rating");
         this.rating += rating;
     }
 
@@ -103,13 +99,6 @@ public class Profile {
     // TODO rewrite
     @Override
     public String toString() {
-        return "Profile{" +
-                "name='" + name + '\'' +
-                ", title='" + title + '\'' +
-                ", location=" + location +
-                ", tags=" + tags +
-                ", rating=" + rating +
-                ", avatar=" + avatar +
-                '}';
+        return STR."Profile{name='\{name}\{'\''}, title='\{title}\{'\''}, location=\{location}, tags=\{tags}, rating=\{rating}, avatar=\{avatar}\{'}'}";
     }
 }

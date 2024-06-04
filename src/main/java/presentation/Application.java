@@ -34,6 +34,8 @@ public class Application {
         }
     }
 
+    // login and register ----------------------------------------------------------
+
     private static void loginOrRegister() {
         if (sc.hasNextLine()) {
             String input = sc.nextLine();
@@ -129,6 +131,7 @@ public class Application {
         }
     }
 
+    // chats ----------------------------------------------------------
 
     //TODO finish this method after add friend interface and methods!
     private static void chats(){
@@ -144,19 +147,21 @@ public class Application {
         if (sc.hasNextLine()){
             String input = sc.nextLine();
             if (input.equalsIgnoreCase("c")){
-
+                // new chat
             }
         }
     }
 
+    // friends ----------------------------------------------------------
+
     private static void friends(){
         banner("Friends");
         exitText();
-        System.out.println("1 - add friends");
+        System.out.println("1 - Add a new friend");
         System.out.println();
-        System.out.println("2 - friend requests");
+        System.out.println("2 - Friend Requests");
         System.out.println();
-        System.out.println("3 - friend list");
+        System.out.println("3 - Friend List");
         if (sc.hasNextLine()){
             String input = sc.nextLine();
             if(input.equals("1"))
@@ -174,7 +179,7 @@ public class Application {
     public static void addFriend(){
         banner("Add Friends");
         exitText();
-        System.out.println("Doctor you want to add: ");
+        System.out.println("Name of the doctor you want to add: ");
         if (sc.hasNextLine()) {
             String input = sc.nextLine();
             if(input.equalsIgnoreCase("e")){
@@ -182,8 +187,8 @@ public class Application {
                 //TODO wenz fragen wie man die addFriend methode beendet, da nach dem friends aufgerufen wird, die addFriend methode weiter läuft und nicht beendet ist
             }else {
                 if (UserRepository.findByName(input).isEmpty()){
-                    System.out.println("Kein Doktor mit diesem Namen gefunden");
-                    sleep(3);
+                    System.out.println("No doctor with such name");
+                    sleep(2);
                     addFriend();//TODO HIER AUCH
                 }else {
                     UserRepository.findByName(input).forEach(user -> System.out.println(user.getProfile().getName() + " - " + user.getEmail().getAddress()));
@@ -202,7 +207,7 @@ public class Application {
         loggedInAsUser.getSocials().getIncomingFriendRequests().forEach(request -> {
             System.out.println(counter.getAndIncrement() + " - ");
             UserRepository.findById(request).ifPresent(user -> {
-                System.out.print(user.getProfile().getTitle() + " " + user.getProfile().getName());
+                System.out.print(user.getProfile().getTitleAndName());
                 counterWithUser.put(counter.get(), user);
             });
         });
@@ -221,20 +226,23 @@ public class Application {
                             String action = sc.nextLine();
                             if (action.equals("1")){
                                 loggedInAsUser.acceptFriendRequest(counterWithUser.get(Integer.parseInt(input)));
-                                System.out.println("Friend request from " + counterWithUser.get(Integer.parseInt(input)).getProfile().getTitle() + " " + counterWithUser.get(Integer.parseInt(input)).getProfile().getName() + "was accepted.");
+                                System.out.println("Friend request from " + counterWithUser.get(Integer.parseInt(input)).getProfile().getTitleAndName() + "was accepted.");
                                 sleep(2);
                                 friends();//TODO HIER AUC
 
                             }else if(action.equals("2")) {
                                 loggedInAsUser.denyFriendRequest(counterWithUser.get(Integer.parseInt(input)));
-                                System.out.println("Friend request from " + counterWithUser.get(Integer.parseInt(input)).getProfile().getTitle() + " " + counterWithUser.get(Integer.parseInt(input)).getProfile().getName() + "was declined.");
+                                System.out.println("Friend request from " + counterWithUser.get(Integer.parseInt(input)).getProfile().getTitleAndName() + "was declined.");
                                 sleep(2);
                                 friends();//TODO HIER AUCH
                             }
                         }
                     }
-                }catch (RuntimeException e){
-                    System.out.println("Invalid input: number of friend request is required!");
+                }catch (Exception e){
+                    System.out.println("Invalid input. Please enter the number corresponding to the person you want to handle the friend request.");
+                    System.out.println("You will be redirected shortly");
+                    sleep(2);
+                    friendRequests();
                 }
             }
         }
@@ -253,8 +261,16 @@ public class Application {
         loggedInAsUser.getSocials().getFriends().forEach(friend -> UserRepository.findById(friend).ifPresent(System.out::println));
     }
 
+    // profile ----------------------------------------------------------
+
+    public static void profile() {
+
+    }
+
+    // handle user actions ----------------------------------------------------------
+
     private static void userAction() {
-        banner("Hello " + loggedInAsUser.getProfile().getTitle() + " " + loggedInAsUser.getProfile().getName() + "!");
+        banner("Hello " + loggedInAsUser.getProfile().getTitleAndName() + "!");
         System.out.println("What would you like to do?");
         System.out.println();
         System.out.println("1 - Logout");
@@ -279,12 +295,17 @@ public class Application {
                 chats();
             }
 
+            if (input.equals("2")){
+                chats();
+            }
+
             if (input.equals("4")){
                 friends();
             }
         }
-
     }
+
+    // helper methods ----------------------------------------------------------
 
     private static void sleep(int seconds) {
         try {

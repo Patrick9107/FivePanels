@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 public class CaseTag {
 
     // not null
-    private static Set<String> caseTags;
+    private static final Set<String> caseTags;
 
     private String tag;
 

@@ -12,7 +12,7 @@ import static foundation.Assert.*;
 public class Specialization {
 
     // not null
-    private static Set<String> specializations;
+    private static final Set<String> specializations;
 
     // not null, has to be in specializations set
     private String tag;
