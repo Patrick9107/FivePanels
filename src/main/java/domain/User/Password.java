@@ -11,12 +11,12 @@ public class Password {
     // max 100 characters
     private char[] hashedPassword;
 
-    public Password(String rawPassword) {
+    public Password(char[] rawPassword) {
         setHashedPassword(rawPassword);
     }
 
-    public void setHashedPassword(String rawPassword) {
-        this.hashedPassword = hashPassword(rawPassword.toCharArray());
+    public void setHashedPassword(char[] rawPassword) {
+        this.hashedPassword = hashPassword(rawPassword);
     }
 
     public char[] getHashedPassword() {

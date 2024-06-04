@@ -46,7 +46,7 @@ public class User extends BaseEntity {
      * @param title the user's title
      * @param location the user's location
      */
-    public User(String email, String password, String name, String title, String location) {
+    public User(String email, char[] password, String name, String title, String location) {
         this.email = new Email(email);
         this.hashedPassword = new Password(password);
         this.profile = new Profile(name, title, location);
