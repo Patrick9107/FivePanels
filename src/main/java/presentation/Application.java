@@ -166,13 +166,12 @@ public class Application {
             String input = sc.nextLine();
             if(input.equals("1"))
                 addFriend();
-
-            if (input.equals("2")){
+            if (input.equals("2"))
                 friendRequests();
-            }
-
             if (input.equals("3"))
                 friendList();
+            if (input.equalsIgnoreCase("e"))
+                userAction();
         }
     }
 
@@ -264,7 +263,18 @@ public class Application {
     // profile ----------------------------------------------------------
 
     public static void profile() {
+        banner("Profile");
+        exitText();
+        System.out.println("1 - Name: "+ loggedInAsUser.getProfile().getName());
+        System.out.println("2 - Title: " +loggedInAsUser.getProfile().getTitle());
+        System.out.println("3 - Location: " + loggedInAsUser.getProfile().getLocation());
+        System.out.println("4 - Rating: "  + loggedInAsUser.getProfile().getRating());
 
+        if (sc.hasNextLine()){
+            String input = sc.nextLine();
+            if(input.equalsIgnoreCase("e"))
+                userAction();//TODO HIER AUCH
+        }
     }
 
     // handle user actions ----------------------------------------------------------
@@ -291,17 +301,14 @@ public class Application {
                 start();
             }
 
-            if (input.equals("2")){
+            if (input.equals("2"))
                 chats();
-            }
 
-            if (input.equals("2")){
+            if (input.equals("2"))
                 chats();
-            }
 
-            if (input.equals("4")){
+            if (input.equals("4"))
                 friends();
-            }
         }
     }
 

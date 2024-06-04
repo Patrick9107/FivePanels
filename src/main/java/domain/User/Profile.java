@@ -24,6 +24,18 @@ public class Profile {
     //not null
     private Image avatar;
 
+    public Country getLocation() {
+        return location;
+    }
+
+    public Set<Specialization> getTags() {
+        return tags;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
     public Profile(String name, String title, String location, String... tags) {
         setName(name);
         setTitle(title);
