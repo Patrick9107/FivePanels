@@ -17,6 +17,7 @@ public class Application {
     private static User loggedInAsUser = null;
 
     public static void main(String[] args) {
+        User testUser = new User("Jakubwachal@gmail.com","test".toCharArray(), "Jakub", "Dr", "Austria");
         start();
     }
 
@@ -183,12 +184,11 @@ public class Application {
             String input = sc.nextLine();
             if(input.equalsIgnoreCase("e")){
                 friends();
-                //TODO wenz fragen wie man die addFriend methode beendet, da nach dem friends aufgerufen wird, die addFriend methode weiter läuft und nicht beendet ist
             }else {
                 if (UserRepository.findByName(input).isEmpty()){
                     System.out.println("No doctor with such name");
                     sleep(2);
-                    addFriend();//TODO HIER AUCH
+                    addFriend();
                 }else {
                     UserRepository.findByName(input).forEach(user -> System.out.println(user.getProfile().getName() + " - " + user.getEmail().getAddress()));
                 }
@@ -227,13 +227,13 @@ public class Application {
                                 loggedInAsUser.acceptFriendRequest(counterWithUser.get(Integer.parseInt(input)));
                                 System.out.println("Friend request from " + counterWithUser.get(Integer.parseInt(input)).getProfile().getTitleAndName() + "was accepted.");
                                 sleep(2);
-                                friends();//TODO HIER AUC
+                                friends();
 
                             }else if(action.equals("2")) {
                                 loggedInAsUser.denyFriendRequest(counterWithUser.get(Integer.parseInt(input)));
                                 System.out.println("Friend request from " + counterWithUser.get(Integer.parseInt(input)).getProfile().getTitleAndName() + "was declined.");
                                 sleep(2);
-                                friends();//TODO HIER AUCH
+                                friends();
                             }
                         }
                     }
@@ -255,7 +255,7 @@ public class Application {
         if (sc.hasNextLine()){
             String input = sc.nextLine();
             if (input.equalsIgnoreCase("e"))
-                friends();//TODO HIER AUCH
+                friends();
         }
         loggedInAsUser.getSocials().getFriends().forEach(friend -> UserRepository.findById(friend).ifPresent(System.out::println));
     }
@@ -273,7 +273,7 @@ public class Application {
         if (sc.hasNextLine()){
             String input = sc.nextLine();
             if(input.equalsIgnoreCase("e"))
-                userAction();//TODO HIER AUCH
+                userAction();
         }
     }
 
