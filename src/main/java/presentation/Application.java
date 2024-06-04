@@ -116,8 +116,7 @@ public class Application {
             location = sc.nextLine();
         }
         try {
-            User user = new User(email, password, name, title, location);
-            loggedInAsUser = user;
+            loggedInAsUser = new User(email, password, name, title, location);
             System.out.println();
             System.out.println("User creation successful!");
             System.out.println("You will be redirected shortly");
@@ -188,7 +187,7 @@ public class Application {
     public static void addFriend() {
         banner("Add Friends");
         exitText();
-        System.out.println("Name of the doctor you want to add: ");
+        System.out.println("Search for the doctor you want to add: ");
         if (sc.hasNextLine()) {
             String input = sc.nextLine();
             if (input.equalsIgnoreCase("e")) {
@@ -251,6 +250,7 @@ public class Application {
                     if (Integer.parseInt(input) > 0 && Integer.parseInt(input) <= counter.get()) {
                         exitText();
                         System.out.println("1 - accept");
+                        System.out.println();
                         System.out.println("2 - decline");
                         if (sc.hasNextLine()) {
                             String action = sc.nextLine();
@@ -290,7 +290,7 @@ public class Application {
     public static void friendList() {
         banner("Friend List");
         exitText();
-        loggedInAsUser.getSocials().getFriends().forEach(friend -> UserRepository.findById(friend).ifPresent(user -> System.out.println(user.getProfile().getTitleAndName())));
+        loggedInAsUser.getSocials().getFriends().forEach(friend -> UserRepository.findById(friend).ifPresent(user -> System.out.println(user.getProfile().getTitleAndName() + " (" + user.getEmail().getAddress() + ")")));
         if (sc.hasNextLine()) {
             String input = sc.nextLine();
             if (input.equalsIgnoreCase("e")) {
@@ -337,6 +337,7 @@ public class Application {
             case "3" -> "Location";
             default -> null;
         };
+        System.out.println();
         System.out.println("Leave blank if you want to exit");
         System.out.println();
         System.out.print("New " + displayName + ": ");
@@ -414,7 +415,7 @@ public class Application {
                     sleep(1);
                     editSpecializations();
                 } catch (UserException e) {
-                    System.out.println("Entered Tag does not exist. Try again");
+                    System.out.println("Entered tag does not exist or you already have this tag. Try again");
                     sleep(1);
                     addTagToProfile();
                 } catch (Exception e) {

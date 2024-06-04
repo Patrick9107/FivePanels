@@ -3,6 +3,7 @@ package domain.User;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,6 +41,19 @@ public class Specialization {
         } catch (IOException e) {
             throw new UserException(e.getMessage() + STR."error reading file \{path}");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Specialization that = (Specialization) o;
+        return Objects.equals(tag, that.tag);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tag);
     }
 
     @Override

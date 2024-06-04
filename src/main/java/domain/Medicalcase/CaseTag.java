@@ -5,6 +5,7 @@ import domain.User.UserException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -39,6 +40,19 @@ public class CaseTag {
         } catch (IOException e) {
             throw new MedicalcaseException(e.getMessage() + STR."error reading file \{path}");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CaseTag caseTag = (CaseTag) o;
+        return Objects.equals(tag, caseTag.tag);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tag);
     }
 
     @Override

@@ -1,13 +1,12 @@
 package domain.User;
 
 import domain.common.Image;
+
 import static foundation.Assert.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Profile {
 
@@ -81,7 +80,10 @@ public class Profile {
 
     public void addTag(String tag) {
         isNotNull(tag, "tag");
-        tags.add(new Specialization(tag));
+        Specialization specialization = new Specialization(tag);
+        if (tags.contains(specialization))
+            throw new UserException(STR."addTag(): User already has this tag");
+        tags.add(specialization);
     }
 
     public void removeTag(String tag) {
@@ -94,7 +96,7 @@ public class Profile {
     }
 
     public String getTitleAndName() {
-        return STR."\{getTitle()} \{getName()}";
+        return STR. "\{ getTitle() } \{ getName() }" ;
     }
 
     public void addRating(int rating) {
@@ -111,6 +113,6 @@ public class Profile {
     // TODO rewrite
     @Override
     public String toString() {
-        return STR."Profile{name='\{name}\{'\''}, title='\{title}\{'\''}, location=\{location}, tags=\{tags}, rating=\{rating}, avatar=\{avatar}\{'}'}";
+        return STR. "Profile{name='\{ name }\{ '\'' }, title='\{ title }\{ '\'' }, location=\{ location }, tags=\{ tags }, rating=\{ rating }, avatar=\{ avatar }\{ '}' }" ;
     }
 }
