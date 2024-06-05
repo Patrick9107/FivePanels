@@ -105,10 +105,13 @@ public class User extends BaseEntity {
         isNotBlank(name, "name");
         isNotEmpty(members, "members");
         // todo user that creates the groupchat has to be friends with the members
+//        if (members.stream().allMatch(uuid -> UserRepository.findById(uuid).ifPresent(user -> user.getSocials().getFriends().contains(getId())))) {
+//
+//        }
         HashSet<UUID> set = new HashSet<>(members);
         set.add(getId());
         Chat chat = new Chat(name, set, true);
-        members.forEach(uuid -> UserRepository.findById(uuid).ifPresent(user -> user.getChats().add(chat)));
+        set.forEach(uuid -> UserRepository.findById(uuid).ifPresent(user -> user.getChats().add(chat)));
         return chat;
     }
 

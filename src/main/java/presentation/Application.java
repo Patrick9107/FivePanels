@@ -3,6 +3,8 @@ package presentation;
 import domain.User.User;
 import domain.User.UserException;
 import foundation.AssertException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import repository.UserRepository;
 
 import java.util.*;
@@ -12,16 +14,30 @@ import java.util.concurrent.TimeUnit;
 public class Application {
 
     private static final Scanner sc = new Scanner(System.in);
+    private static final Log log = LogFactory.getLog(Application.class);
 
     private static User loggedInAsUser = null;
 
     public static void main(String[] args) {
-        new User("jakub@gmail.com", "test".toCharArray(), "Jakub", "Dr.", "Austria");
-        new User("patrick@gmail.com", "test".toCharArray(), "Patrick", "Dr.", "Austria");
-        start();
+        try {
+            User user1 = new User("jakub@gmail.com", "test".toCharArray(), "Jakub", "Dr.", "Austria");
+            User user2 = new User("patrick@gmail.com", "test".toCharArray(), "Patrick", "Dr.", "Austria");
+            user1.addFriend(user2);
+            user2.acceptFriendRequest(user1);
+            start();
+        } catch (Exception e) {
+            System.out.println("Oops. Something went wrong");
+            System.out.println("You will now be logged out");
+            // debugging
+            System.out.println("Unhandled Exception");
+            e.printStackTrace();
+            loggedInAsUser = null;
+            start();
+        }
     }
 
     private static void start() {
+        clear();
         if (loggedInAsUser == null) {
             banner("Welcome to FivePanels");
             System.out.println("Pick an action");
@@ -146,8 +162,9 @@ public class Application {
         banner("Chats");
         AtomicInteger counter = new AtomicInteger(1);
 
+        // wenn man neuen chat macht wird er nicht angezeigt
         loggedInAsUser.getChats().forEach(chat -> {
-            System.out.println(counter.getAndIncrement() + " - " + chat.getName());
+            System.out.println(counter.getAndIncrement() + " - " + chat.displayName(loggedInAsUser));
         });
 
         System.out.println();
@@ -160,14 +177,22 @@ public class Application {
             String input = sc.nextLine();
             switch (input) {
                 case "c", "C":
-                    createChat(new HashSet<>());
+                    createChat();
                     break;
+                case "e", "E":
+                    userAction();
+                    break;
+                default:
+                    System.out.println("Invalid action");
+                    sleep(1);
+                    chats();
             }
         }
     }
 
-    private static void createChat(Set<UUID> members) {
+    private static void createChat() {
         String name = null;
+        Set<UUID> members = new HashSet<>();
         banner("Create new Chat");
         System.out.println();
         System.out.println("Leave blank if you want to exit");
@@ -180,7 +205,25 @@ public class Application {
                 chats();
             }
         }
-        System.out.print("Invite your friends to the chat!");
+        System.out.println();
+        System.out.println("Invite your friends to the chat!");
+        members = addMemberToChat(members);
+        try {
+            loggedInAsUser.createGroupChat(name, members);
+            System.out.println("Chat was successfully created");
+            sleep(1);
+            chats();
+        } catch (Exception e) {
+            System.out.println("Something went wrong creating your chat. Please try again");
+            sleep(1);
+            createChat();
+        }
+    }
+
+    private static Set<UUID> addMemberToChat(Set<UUID> members) {
+        System.out.print("Pick a member from the list below:");
+        System.out.println();
+        System.out.println();
         friendListWithNumber();
         System.out.println();
         System.out.println("Leave blank if you are done.");
@@ -188,33 +231,38 @@ public class Application {
             String input = sc.nextLine();
             if (!input.isBlank()) {
                 try {
-                    members.add(loggedInAsUser.getSocials().getFriends().get(Integer.parseInt(input)-1));
-                } catch (IndexOutOfBoundsException | NumberFormatException e) {
-                    System.out.println("Invalid action. Please try again");
-                    createChat(members);
+                    UUID newMember = loggedInAsUser.getSocials().getFriends().get(Integer.parseInt(input) - 1);
+                    if (!members.contains(newMember)) {
+                        members.add(newMember);
+                        StringBuilder sb = new StringBuilder("Added ");
+                        UserRepository.findById(newMember).ifPresent(user -> sb.append(user.getProfile().getTitleAndName()));
+                        sb.append(" to members list");
+                        System.out.println(sb.toString());
+                        System.out.println();
+                        addMemberToChat(members);
+                    } else {
+                        System.out.println("This User is already in the members list");
+                        sleep(1);
+                        addMemberToChat(members);
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Try again");
+                    sleep(1);
+                    addMemberToChat(members);
+                } catch (UserException e) {
+                    System.out.println("Member is already part of the members. Try again");
+                    sleep(1);
+                    addMemberToChat(members);
                 }
             } else {
                 if (members.isEmpty()) {
                     System.out.println("Failed creating chat. Your chat has to have at least one other member");
                     sleep(1);
-                    createChat(members);
-                } else {
-                    try {
-                        loggedInAsUser.createGroupChat(name, members);
-                        System.out.println("Chat was successfully created");
-                    } catch (Exception e) {
-                        System.out.println("Something went wrong creating your chat. Please try again");
-                        sleep(1);
-                    } finally {
-                        chats();
-                    }
+                    addMemberToChat(members);
                 }
             }
         }
-    }
-
-    private static void addMemberToChat() {
-
+        return members;
     }
 
     // friends ----------------------------------------------------------
@@ -250,7 +298,7 @@ public class Application {
         }
     }
 
-    public static void addFriend() {
+    private static void addFriend() {
         banner("Add Friends");
         exitText();
         System.out.println("Search for the doctor you want to add: ");
@@ -353,7 +401,7 @@ public class Application {
     }
 
 
-    public static void friendList() {
+    private static void friendList() {
         // todo maybe have the option to open direct chat with friend from here
         banner("Friend List");
         exitText();
@@ -373,7 +421,7 @@ public class Application {
 
     // profile ----------------------------------------------------------
 
-    public static void profile() {
+    private static void profile() {
         banner("Profile");
         exitText();
         System.out.println("1 - Name: " + loggedInAsUser.getProfile().getName());
@@ -567,6 +615,12 @@ public class Application {
     }
 
     // helper methods ----------------------------------------------------------
+
+    private static void clear() {
+        for (int i = 0; i < 30; i++) {
+            System.out.println("\n");
+        }
+    }
 
     private static void sleep(int seconds) {
         try {

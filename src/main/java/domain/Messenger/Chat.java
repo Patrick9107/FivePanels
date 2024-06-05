@@ -9,6 +9,7 @@ import repository.UserRepository;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static foundation.Assert.*;
 
@@ -103,14 +104,19 @@ public class Chat extends BaseEntity {
         isNotNull(user, "user");
         if (!(members.contains(user.getId())))
             throw new MessengerException(STR."viewChat(): user is not part of this chat");
-        if (!(groupChat)) {
-            members.stream().filter(uuid ->
-                    user.getId() != uuid).findFirst().flatMap(UserRepository::findById).ifPresent(user1 ->
-                    System.out.println(user1.getProfile().getName()));
-        } else {
-            System.out.println(name);
-        }
+        System.out.println(displayName(user));
         history.forEach(System.out::println);
+    }
+
+    public String displayName(User user) {
+        if (groupChat) {
+            return name;
+        }
+        AtomicReference<String> displayName = new AtomicReference<>();
+        members.stream().filter(uuid ->
+                user.getId() != uuid).findFirst().flatMap(UserRepository::findById).ifPresent(user1 ->
+                displayName.set(user1.getProfile().getName()));
+        return displayName.get();
     }
 
     public String getName() {
