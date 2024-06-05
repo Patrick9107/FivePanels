@@ -3,6 +3,7 @@ package presentation;
 import domain.Messenger.Chat;
 import domain.User.User;
 import domain.User.UserException;
+import domain.common.TextContent;
 import foundation.AssertException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -164,6 +165,7 @@ public class Application {
         AtomicInteger counter = new AtomicInteger(1);
 
         // wenn man neuen chat macht wird er nicht angezeigt
+        List<Chat> chats = loggedInAsUser.getChats().stream().toList();
         loggedInAsUser.getChats().forEach(chat -> {
             System.out.println(counter.getAndIncrement() + " - " + chat.displayName(loggedInAsUser));
         });
@@ -184,9 +186,14 @@ public class Application {
                     userAction();
                     break;
                 default:
-                    System.out.println("Invalid action");
-                    sleep(1);
-                    chats();
+                    try {
+                        if(Integer.parseInt(input) > 0 && Integer.parseInt(input) <= counter.get()){
+                            viewChat(chats.get(Integer.parseInt(input) -1 ));
+                        }
+
+                    }catch (NumberFormatException e){
+
+                    };
             }
         }
     }
@@ -274,7 +281,24 @@ public class Application {
         return members;
     }
     private static void viewChat(Chat chat){
-        banner("C");
+        System.out.println("\r");
+        banner("Chat: " + chat.displayName(loggedInAsUser));
+        chat.viewChat(loggedInAsUser);
+        if (sc.hasNextLine()){
+            try{
+                String input = sc.nextLine();
+                if(input.length() < 1024){
+                    loggedInAsUser.sendMessage(chat,input,null);
+                    viewChat(chat);
+                }else {
+                    System.out.println("Ihre Nachricht ist zu lange");
+                    viewChat(chat);
+                }
+            }catch (Exception e){
+
+            }
+
+        }
     }
     // friends ----------------------------------------------------------
 

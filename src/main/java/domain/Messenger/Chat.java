@@ -104,7 +104,6 @@ public class Chat extends BaseEntity {
         isNotNull(user, "user");
         if (!(members.contains(user.getId())))
             throw new MessengerException(STR."viewChat(): user is not part of this chat");
-        System.out.println(displayName(user));
         history.forEach(System.out::println);
     }
 
