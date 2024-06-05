@@ -260,4 +260,27 @@ public class Medicalcase extends BaseEntity {
     public void viewChat(User user) {
         chat.viewChat(user);
     }
+
+    public static void main(String[] args) {
+        User homer = new User("homer@simpson.com","spengergasse".toCharArray(), "Homer Simpson", "Rh.D.", "United Kingdom");
+        User bart = new User("bart@simpson.com",  "spengergasse".toCharArray(), "Bart Simpson", "Ph.D.", "United States");
+        User lisa = new User("lisa@simpson.com",  "spengergasse".toCharArray(), "Lisa Simpson", "Ph.D.", "United States");
+        User test = new User("test@simpson.com",  "spengergasse".toCharArray(), "test Simpson", "Ph.D.", "United States");
+        homer.addFriend(bart);
+        bart.acceptFriendRequest(homer);
+
+        homer.createMedicalcase("Test");
+        Medicalcase medicalcase = MedicalcaseRepository.findAll().stream().findFirst().get();
+        medicalcase.addVotingOption("aids");
+        medicalcase.addVotingOption("cancer");
+        medicalcase.addVotingOption("idk");
+        medicalcase.publish();
+        medicalcase.addMember(bart);
+        medicalcase.addMember(lisa);
+        medicalcase.castVote(lisa, "aids", 20);
+        medicalcase.castVote(lisa, "cancer", 50);
+        medicalcase.castVote(bart, "aids", 0);
+        medicalcase.castVote(bart, "cancer", 90);
+        medicalcase.viewAvgVotesPerAnswer();
+    }
 }
