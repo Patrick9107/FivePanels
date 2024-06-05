@@ -40,6 +40,7 @@ public class Chat extends BaseEntity {
 
     public void setMembers(Set<UUID> members) {
         hasMaxSize(members, 513, "members");
+        allNotNull(members, "members");
         this.members = new HashSet<>(members);
     }
 
@@ -52,7 +53,9 @@ public class Chat extends BaseEntity {
             StringBuilder sb = new StringBuilder();
             members.forEach(uuid -> UserRepository.findById(uuid).ifPresent(user1 -> sb.append(user1.getProfile().getName()).append(", ")));
             sb.append(user.getProfile().getName());
-            Chat chat = new Chat(sb.toString(), new HashSet<UUID>(members), true);
+            Set<UUID> newMembers = new HashSet<>(members);
+            newMembers.add(user.getId());
+            Chat chat = new Chat(sb.toString(), newMembers, true);
             user.getChats().add(chat);
             members.forEach(uuid -> UserRepository.findById(uuid).ifPresent(user1 -> user1.getChats().add(chat)));
             return chat;
@@ -82,13 +85,11 @@ public class Chat extends BaseEntity {
         history.add(message);
     }
 
-    public void sendMessage(User user, Chat chat, TextContent content, List<Media> attachments) {
-        // isnotnull assert in message class for the remaining parameters
-        isNotNull(chat, "chat");
+    public void sendMessage(User user, TextContent content, List<Media> attachments) {
 
         if (!(members.contains(user.getId())))
             throw new MessengerException("sendMessage(): User is not a member of this chat");
-        chat.addToHistory(new Message(user, Instant.now(), content, attachments, Status.SENT));
+        addToHistory(new Message(user, Instant.now(), content, attachments, Status.SENT));
     }
 
     /**
@@ -143,9 +144,9 @@ public class Chat extends BaseEntity {
 
     //Test for sending Messages between 2 Users (it actually works) pls dont delete i need this code
 //    public static void main(String[] args) {
-//        User homer = new User("homer@simpson.com", "password".toCharArray(), "Homer Simpson", "Rh.D.", "United Kingdom");
-//        User bart = new User("bart@simpson.com", "password".toCharArray(), "Bart Simpson", "Ph.D.", "United States");
-//        User lisa = new User("lisa@simpson.com", "password".toCharArray(), "Lisa Simpson", "Ph.D.", "United States");
+//        User homer = new User("homer@simpson.com", "spengergasse".toCharArray(), "Homer Simpson", "Rh.D.", "United Kingdom");
+//        User bart = new User("bart@simpson.com", "spengergasse".toCharArray(), "Bart Simpson", "Ph.D.", "United States");
+//        User lisa = new User("lisa@simpson.com", "spengergasse".toCharArray(), "Lisa Simpson", "Ph.D.", "United States");
 //        User test = new User("test@simpson.com", "password", "test Simpson", "Ph.D.", "United States");
 //        homer.addFriend(bart);
 //        bart.acceptFriendRequest(homer);

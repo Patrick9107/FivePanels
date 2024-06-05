@@ -20,18 +20,15 @@ public class Image extends Media {
 
     public void setWidth(int width) {
         isGreaterThanOrEqual(width, "width", 0, "0");
-        isLowerThanOrEqual(width, "width", 1920, "1920");
-        this.width = width;
+        this.width = isLowerThanOrEqual(width, "width", 1920, "1920");
     }
 
     public void setHeight(int height) {
         isGreaterThanOrEqual(height, "height", 0, "0");
-        isLowerThanOrEqual(height, "height", 1080, "1080");
-        this.height = height;
+        this.height = isLowerThanOrEqual(height, "height", 1080, "1080");
     }
 
     public void setAlternativeText(String alternativeText) {
-        hasMaxLength(alternativeText, 256, "alternativeText");
-        this.alternativeText = alternativeText;
+        this.alternativeText = hasMaxLength(alternativeText, 256, "alternativeText");
     }
 }

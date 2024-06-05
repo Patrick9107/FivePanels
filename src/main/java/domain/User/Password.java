@@ -27,7 +27,7 @@ public class Password {
                 throw new UserException("setHashedPassword(): Password is not strong enough");
             }
         } finally {
-            // finally block is not neccessary but if an exception occurs during isPasswordStrong it is coming in handy
+            // finally block is not neccessary but if an exception occurs during isPasswordStrong (which it shouldn't) it's coming in handy
             for (int i = 0; i < rawPassword.length; i++) {
                 rawPassword[i] = 0;
             }
@@ -38,7 +38,7 @@ public class Password {
         return hashedPassword;
     }
 
-    public boolean isPasswordStrong(char[] password) {
+    public static boolean isPasswordStrong(char[] password) {
             Zxcvbn zxcvbn = new Zxcvbn();
             Strength strength = zxcvbn.measure(java.nio.CharBuffer.wrap(password));
             return strength.getScore() >= 3;
@@ -55,7 +55,7 @@ public class Password {
         }
     }
 
-    public boolean checkPasswords(char[] password, char[] hashedPassword) {
+    public static boolean checkPasswords(char[] password, char[] hashedPassword) {
         try {
             return BCrypt.verifyer().verify(password, hashedPassword).verified;
         } finally {

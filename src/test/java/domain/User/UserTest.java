@@ -4,17 +4,14 @@ import domain.Medicalcase.Medicalcase;
 import domain.Medicalcase.MedicalcaseException;
 import domain.Messenger.Chat;
 import domain.Messenger.MessengerException;
-import domain.Messenger.Status;
-import domain.common.TextContent;
 import foundation.AssertException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import repository.ChatRepository;
+import repository.UserRepository;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,6 +27,13 @@ class UserTest {
         bart = new User("bart@simpson.com", "spengergasse".toCharArray(), "Bart Simpson", "Ph.D.", "United States");
     }
 
+    @AfterEach
+    void deleteFromRepo() {
+        if (homer != null)
+            UserRepository.deleteById(homer.getId());
+        if (bart != null)
+            UserRepository.deleteById(bart.getId());
+    }
     @Test
     void verify_shouldSetVerifiedTrue_WhenNotAlreadyVerified() {
         try {
@@ -51,7 +55,113 @@ class UserTest {
             assertFalse(homer.isVerified());
             homer.verify();
             // Then
-            assertThrowsExactly(UserException.class, () -> homer.verify(), STR."verify(): user is already verified");
+            assertThrowsExactly(UserException.class, () -> homer.verify());
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void createGroupChat_shouldThrow_WhenMembersIsNull() {
+        try {
+            // When
+            homer.addFriend(bart);
+            bart.acceptFriendRequest(homer);
+            // Then
+            assertThrowsExactly(AssertException.class, () -> homer.createGroupChat("test", null));
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void createGroupChat_shouldThrow_WhenOneOfTheMembersIsNull() {
+        try {
+            // When
+            User lisa = new User("lisa@simpson.com", "spengergasse".toCharArray(), "Lisa Simpson", "Ph.D.", "United States");
+            homer.addFriend(lisa);
+            homer.addFriend(bart);
+            bart.acceptFriendRequest(homer);
+            lisa.acceptFriendRequest(homer);
+            Set<UUID> set = new HashSet<>();
+            set.add(bart.getId());
+            set.add(null);
+            // Then
+            assertThrowsExactly(AssertException.class, () -> homer.createGroupChat("test", set));
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void sendMessage_shouldCallSendMessageInChat_WhenChatIsPresentInOptional() {
+        try {
+            // When
+            homer.addFriend(bart);
+            bart.acceptFriendRequest(homer);
+            Chat chat = homer.getDirectChat(bart.getId()).get();
+            assertNotNull(chat);
+            bart.sendMessage(chat, "Test Message in Direct Chat between Homer and Bart", null);
+            // Then
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void sendMessage_shouldThrow_WhenChatIsNotPresent() {
+        try {
+            // When
+            homer.addFriend(bart);
+            assertTrue(homer.getDirectChat(bart.getId()).isEmpty());
+            assertThrowsExactly(NoSuchElementException.class, () -> bart.sendMessage(homer.getDirectChat(bart.getId()).get(), "Test Message in Direct Chat between Homer and Bart", null));
+            // Then
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void createGroupChat_shouldThrow_WhenNameIsNull() {
+        try {
+            // When
+            homer.addFriend(bart);
+            bart.acceptFriendRequest(homer);
+            // Then
+            assertThrowsExactly(AssertException.class, () -> homer.createGroupChat(null, Set.of(bart.getId())));
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void createGroupChat_shouldThrow_WhenNameIsBlank() {
+        try {
+            // When
+            homer.addFriend(bart);
+            bart.acceptFriendRequest(homer);
+            // Then
+            assertThrowsExactly(AssertException.class, () -> homer.createGroupChat("", Set.of(bart.getId())));
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void createGroupChat_shouldThrow_WhenMembersIsEmpty() {
+        try {
+            // When
+            homer.addFriend(bart);
+            bart.acceptFriendRequest(homer);
+            // Then
+            assertThrowsExactly(AssertException.class, () -> homer.createGroupChat("test", Set.of()));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -112,19 +222,19 @@ class UserTest {
 
 
     @Test
-    void viewChat_shouldPrintChatDetailsAndChatName_WhenChatIsGroupChat() {
+    void viewChat_shouldPrintChatDetails_WhenChatIsGroupChat() {
         try {
             // Given
             ByteArrayOutputStream outContent = new ByteArrayOutputStream();
             System.setOut(new PrintStream(outContent));
             homer.addFriend(bart);
             bart.acceptFriendRequest(homer);
-            homer.createGroupChat("homer and bart", Set.of(bart.getId()));
+            Chat chat = homer.createGroupChat("homer and bart", Set.of(bart.getId()));
 
-            Optional<Chat> chat = ChatRepository.findByName("homer and bart").stream().findFirst();
+//            Optional<Chat> chat = ChatRepository.findByName("homer and bart").stream().findFirst();
             //When
-            homer.sendMessage(chat.get(), "This is a message of Homer", null);
-            homer.viewChat(chat.get());
+            homer.sendMessage(chat, "This is a message of Homer", null);
+            homer.viewChat(chat);
             // Then
             assertTrue(outContent.toString().contains(homer.getProfile().getName()));
             assertTrue(outContent.toString().contains("This is a message of Homer"));
@@ -135,7 +245,7 @@ class UserTest {
     }
 
     @Test
-    void viewChat_shouldPrintOtherMemberNameAndChatDetails_WhenChatIsDirectChat() {
+    void viewChat_shouldPrintChatDetails_WhenChatIsDirectChat() {
         try {
             // Given
             ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -170,7 +280,72 @@ class UserTest {
             // bart sends a message
             bart.sendMessage(chat, "This is a message of bart", null);
             chat.removeMember(bart);
-            assertThrowsExactly(MessengerException.class, () -> bart.viewChat(chat), STR."viewChat(): user is not part of this chat");
+            assertThrowsExactly(MessengerException.class, () -> bart.viewChat(chat));
+            // Then
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void viewChat_shouldPrintChatDetails_WhenGivenIdIsDirectChat() {
+        try {
+            // Given
+            ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(outContent));
+            homer.addFriend(bart);
+            bart.acceptFriendRequest(homer);
+            //When
+            Chat chat = homer.getDirectChat(bart.getId()).get();
+            // bart sends a message
+            bart.sendMessage(chat, "This is a message of bart", null);
+            homer.viewChat(chat.getId());
+            // Then
+            // homer views the chat, therefore he should see the other user's name (bart) as the chat name
+            assertTrue(outContent.toString().contains(bart.getProfile().getName()));
+            // homer should not see his own name because he did not send a message nor does bart view the chat (which should display homer's name)
+            assertFalse(outContent.toString().contains(homer.getProfile().getName()));
+            assertTrue(outContent.toString().contains("This is a message of bart"));
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void viewChat_shouldPrintChatDetails_WhenGivenIdIsGroupChat() {
+        try {
+            // Given
+            ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(outContent));
+            homer.addFriend(bart);
+            bart.acceptFriendRequest(homer);
+            Chat chat = homer.createGroupChat("homer and bart", Set.of(bart.getId()));
+            //When
+            homer.sendMessage(chat, "This is a message of Homer", null);
+            homer.viewChat(chat.getId());
+            // Then
+            assertTrue(outContent.toString().contains(homer.getProfile().getName()));
+            assertTrue(outContent.toString().contains("This is a message of Homer"));
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void viewChat_shouldThrow_WhenUserIsNotAMemberOfGivenChatById() {
+        try {
+            // Given
+            homer.addFriend(bart);
+            bart.acceptFriendRequest(homer);
+            //When
+            Chat chat = homer.createGroupChat("test", Set.of(bart.getId()));
+            // bart sends a message
+            bart.sendMessage(chat, "This is a message of bart", null);
+            chat.removeMember(bart);
+            assertThrowsExactly(MessengerException.class, () -> bart.viewChat(chat.getId()));
             // Then
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
@@ -240,7 +415,7 @@ class UserTest {
             assertTrue(homer.getMedicalcases().get(Ownership.OWNER).contains(medicalcase));
             assertTrue(homer.getMedicalcases().get(Ownership.OWNER).contains(medicalcase2));
             assertTrue(bart.getMedicalcases().get(Ownership.OWNER).contains(medicalcase3));
-            // homer should not be a member of a medicalcase
+            // homer and bart should not be a member of any medicalcase
             assertTrue(homer.getMedicalcases().get(Ownership.MEMBER).isEmpty());
             assertTrue(bart.getMedicalcases().get(Ownership.MEMBER).isEmpty());
         } catch (Exception e) {
@@ -254,7 +429,19 @@ class UserTest {
         try {
             // When
             // Then
-            assertThrowsExactly(AssertException.class, () -> homer.createMedicalcase(null), STR."title is null");
+            assertThrowsExactly(AssertException.class, () -> homer.createMedicalcase(null));
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void createMedicalcase_shouldThrow_WhenTitleIsBlank() {
+        try {
+            // When
+            // Then
+            assertThrowsExactly(AssertException.class, () -> homer.createMedicalcase(""));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -266,7 +453,7 @@ class UserTest {
         try {
             // When
             // Then
-            assertThrowsExactly(AssertException.class, () -> homer.createMedicalcase("test", "Addiction Medicine", null), STR."tag is null");
+            assertThrowsExactly(AssertException.class, () -> homer.createMedicalcase("test", "Addiction Medicine", null));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -278,7 +465,7 @@ class UserTest {
         try {
             // When
             // Then
-            assertThrowsExactly(AssertException.class, () -> homer.createMedicalcase("test", null), STR."tags is null");
+            assertThrowsExactly(AssertException.class, () -> homer.createMedicalcase("test", null));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -290,7 +477,7 @@ class UserTest {
         try {
             // When
             // Then
-            assertThrowsExactly(MedicalcaseException.class, () -> homer.createMedicalcase("test", "foobar"), STR."setTag(): tag does not exist");
+            assertThrowsExactly(MedicalcaseException.class, () -> homer.createMedicalcase("test", "foobar"));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();

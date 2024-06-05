@@ -104,10 +104,17 @@ public class User extends BaseEntity {
     public Chat createGroupChat(String name, Set<UUID> members) {
         isNotBlank(name, "name");
         isNotEmpty(members, "members");
-//        user that creates the groupchat has to be friends with the members
-//        if (members.stream().allMatch(uuid -> UserRepository.findById(uuid).ifPresent(user -> user.getSocials().getFriends().contains(getId())))) {
-//
-//        }
+        allNotNull(members, "members");
+
+        // If all members are friends or not
+        boolean allFriends = members.stream()
+                .allMatch(uuid -> UserRepository.findById(uuid)
+                        .map(user -> user.getSocials().getFriends().contains(getId()))
+                        .orElse(false));
+
+        if (!allFriends)
+            throw new MessengerException("createGroupChat(): The user must be friends with all members.");
+
         HashSet<UUID> set = new HashSet<>(members);
         set.add(getId());
         Chat chat = new Chat(name, set, true);
@@ -125,7 +132,7 @@ public class User extends BaseEntity {
      */
     public void sendMessage(Chat chat, String content, List<Media> attachments) {
         isNotNull(chat, "chat");
-        chat.sendMessage(this, chat, new TextContent(content), attachments);
+        chat.sendMessage(this, new TextContent(content), attachments);
     }
 
     /**

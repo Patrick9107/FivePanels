@@ -1,8 +1,11 @@
 package domain.User;
 
 import foundation.AssertException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import repository.ChatRepository;
+import repository.UserRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,8 +18,17 @@ class SocialsTest {
     void setup() {
         // Given
         // TODO Tests brauchen viel zu lange weil das Passwort Verfahren solange dauert
+        //  -> Lösung: Bevor man testet cost bei hashpassword in password klasse von 12 auf 4 (minimum) machen
         homer = new User("homer@simpson.com", "spengergasse".toCharArray(), "Homer Simpson", "Rh.D.", "United Kingdom");
         bart = new User("bart@simpson.com", "spengergasse".toCharArray(), "Bart Simpson", "Ph.D.", "United States");
+    }
+
+    @AfterEach
+    void deleteFromRepo() {
+        if (homer != null)
+            UserRepository.deleteById(homer.getId());
+        if (bart != null)
+            UserRepository.deleteById(bart.getId());
     }
 
     @Test
@@ -39,7 +51,7 @@ class SocialsTest {
         try {
             // When
             // Then
-            assertThrowsExactly(UserException.class, () -> homer.addFriend(homer), STR."addFriend(): User can not add himself");
+            assertThrowsExactly(UserException.class, () -> homer.addFriend(homer));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -51,8 +63,7 @@ class SocialsTest {
             // When
             homer.addFriend(bart);
             // Then
-            assertThrowsExactly(UserException.class, () -> homer.addFriend(bart),
-                    STR."addFriend(): User already has a Relation with \{bart}");
+            assertThrowsExactly(UserException.class, () -> homer.addFriend(bart));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -63,8 +74,7 @@ class SocialsTest {
         try {
             // When
             // Then
-            assertThrowsExactly(AssertException.class, () -> homer.addFriend(null),
-                    STR."userToAdd is null");
+            assertThrowsExactly(AssertException.class, () -> homer.addFriend(null));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -79,8 +89,7 @@ class SocialsTest {
             assertEquals(Relation.FRIENDS, homer.getSocials().getRelation().get(bart.getId()));
             assertEquals(Relation.FRIENDS, bart.getSocials().getRelation().get(homer.getId()));
             // Then
-            assertThrowsExactly(UserException.class, () -> homer.addFriend(bart),
-                    STR."addFriend(): User already has a Relation with \{bart}");
+            assertThrowsExactly(UserException.class, () -> homer.addFriend(bart));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -119,8 +128,7 @@ class SocialsTest {
         try {
             // When
             // Then
-            assertThrowsExactly(UserException.class, () -> homer.acceptFriendRequest(homer),
-                    STR."acceptFriendRequest(): User can not accept a friend request from himself");
+            assertThrowsExactly(UserException.class, () -> homer.acceptFriendRequest(homer));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -131,8 +139,7 @@ class SocialsTest {
         try {
             // When
             // Then
-            assertThrowsExactly(AssertException.class, () -> homer.acceptFriendRequest(null),
-                    STR."userToAccept is null");
+            assertThrowsExactly(AssertException.class, () -> homer.acceptFriendRequest(null));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -144,8 +151,7 @@ class SocialsTest {
             // When
             bart.addFriend(homer);
             // Then
-            assertThrowsExactly(UserException.class, () -> bart.acceptFriendRequest(homer),
-                    STR."acceptFriendRequest(): User does not have an incoming friend request from \{homer}");
+            assertThrowsExactly(UserException.class, () -> bart.acceptFriendRequest(homer));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -158,8 +164,7 @@ class SocialsTest {
             bart.addFriend(homer);
             homer.acceptFriendRequest(bart);
             // Then
-            assertThrowsExactly(UserException.class, () -> bart.acceptFriendRequest(homer),
-                    STR."acceptFriendRequest(): User does not have an incoming friend request from \{homer}");
+            assertThrowsExactly(UserException.class, () -> bart.acceptFriendRequest(homer));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -170,8 +175,7 @@ class SocialsTest {
         try {
             // When
             // Then
-            assertThrowsExactly(UserException.class, () -> bart.acceptFriendRequest(homer),
-                    STR."acceptFriendRequest(): User does not have an incoming friend request from \{homer}");
+            assertThrowsExactly(UserException.class, () -> bart.acceptFriendRequest(homer));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -196,8 +200,7 @@ class SocialsTest {
         try {
             // When
             // Then
-            assertThrowsExactly(UserException.class, () -> homer.denyFriendRequest(homer),
-                    STR."denyFriendRequest(): User can not deny a friend request from himself");
+            assertThrowsExactly(UserException.class, () -> homer.denyFriendRequest(homer));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -208,8 +211,7 @@ class SocialsTest {
         try {
             // When
             // Then
-            assertThrowsExactly(AssertException.class, () -> homer.denyFriendRequest(null),
-                    STR."userToDeny is null");
+            assertThrowsExactly(AssertException.class, () -> homer.denyFriendRequest(null));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -221,8 +223,7 @@ class SocialsTest {
             // When
             bart.addFriend(homer);
             // Then
-            assertThrowsExactly(UserException.class, () -> bart.denyFriendRequest(homer),
-                    STR."denyFriendRequest(): User does not have an incoming friend request from \{homer}");
+            assertThrowsExactly(UserException.class, () -> bart.denyFriendRequest(homer));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -235,8 +236,7 @@ class SocialsTest {
             bart.addFriend(homer);
             homer.acceptFriendRequest(bart);
             // Then
-            assertThrowsExactly(UserException.class, () -> bart.denyFriendRequest(homer),
-                    STR."denyFriendRequest(): User does not have an incoming friend request from \{homer}");
+            assertThrowsExactly(UserException.class, () -> bart.denyFriendRequest(homer));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -247,8 +247,7 @@ class SocialsTest {
         try {
             // When
             // Then
-            assertThrowsExactly(UserException.class, () -> bart.denyFriendRequest(homer),
-                    STR."denyFriendRequest(): User does not have an incoming friend request from \{homer}");
+            assertThrowsExactly(UserException.class, () -> bart.denyFriendRequest(homer));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -274,8 +273,7 @@ class SocialsTest {
         try {
             // When
             // Then
-            assertThrowsExactly(UserException.class, () -> homer.removeFriend(homer),
-                    STR."removeFriend(): User can not remove himself");
+            assertThrowsExactly(UserException.class, () -> homer.removeFriend(homer));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -286,8 +284,7 @@ class SocialsTest {
         try {
             // When
             // Then
-            assertThrowsExactly(AssertException.class, () -> homer.removeFriend(null),
-                    STR."userToRemove is null");
+            assertThrowsExactly(AssertException.class, () -> homer.removeFriend(null));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -299,8 +296,7 @@ class SocialsTest {
             // When
             bart.addFriend(homer);
             // Then
-            assertThrowsExactly(UserException.class, () -> bart.removeFriend(homer),
-                    STR."removeFriend(): User is not friends with \{homer}");
+            assertThrowsExactly(UserException.class, () -> bart.removeFriend(homer));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -312,8 +308,7 @@ class SocialsTest {
             // When
             bart.addFriend(homer);
             // Then
-            assertThrowsExactly(UserException.class, () -> homer.removeFriend(bart),
-                    STR."removeFriend(): User is not friends with \{bart}");
+            assertThrowsExactly(UserException.class, () -> homer.removeFriend(bart));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
@@ -324,8 +319,7 @@ class SocialsTest {
         try {
             // When
             // Then
-            assertThrowsExactly(UserException.class, () -> bart.denyFriendRequest(homer),
-                    STR."removeFriend(): User is not friends with \{homer}");
+            assertThrowsExactly(UserException.class, () -> bart.denyFriendRequest(homer));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();

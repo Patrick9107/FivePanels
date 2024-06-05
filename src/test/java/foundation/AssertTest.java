@@ -25,7 +25,7 @@ class AssertTest {
     void isNotNull_shouldThrow_WhenNullIsPassed() {
         try {
             String value = null;
-            assertThrows(AssertException.class,() -> isNotNull(value, "testString"));
+            assertThrowsExactly(AssertException.class,() -> isNotNull(value, "testString"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -38,7 +38,7 @@ class AssertTest {
 
         try {
             String value = "        ";
-            assertThrows(AssertException.class, () -> isNotBlank(value, "testString"));
+            assertThrowsExactly(AssertException.class, () -> isNotBlank(value, "testString"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -49,7 +49,7 @@ class AssertTest {
     void isNotBlank_shouldThrow_WhenValueIsEmpty() {
         try {
             String value = "";
-            assertThrows(AssertException.class, () -> isNotBlank(value, "testString"));
+            assertThrowsExactly(AssertException.class, () -> isNotBlank(value, "testString"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -60,7 +60,7 @@ class AssertTest {
     void isNotBlank_shouldThrow_WhenValueIsNull() {
         try {
             String value = null;
-            assertThrows(AssertException.class, () -> isNotBlank(value, "testString"));
+            assertThrowsExactly(AssertException.class, () -> isNotBlank(value, "testString"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -93,7 +93,7 @@ class AssertTest {
     void hasMaxLength_shouldThrow_WhenValueLengthIsGreaterThanMaxLength() {
         try {
             String value = "123456789";
-            assertThrows(AssertException.class, () -> hasMaxLength(value, 8, "testString"));
+            assertThrowsExactly(AssertException.class, () -> hasMaxLength(value, 8, "testString"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -115,7 +115,7 @@ class AssertTest {
     void hasMaxLength_shouldThrow_WhenNullIsPassed() {
         try {
             String value = null;
-            assertThrows(AssertException.class, () -> hasMaxLength(value, 8, "testString"));
+            assertThrowsExactly(AssertException.class, () -> hasMaxLength(value, 8, "testString"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -154,7 +154,7 @@ class AssertTest {
             int value = 3;
             int value2 = 5;
 
-            assertThrows(AssertException.class, () -> isGreaterThanOrEqual(value, "value", value2, "value2"));
+            assertThrowsExactly(AssertException.class, () -> isGreaterThanOrEqual(value, "value", value2, "value2"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -206,7 +206,7 @@ class AssertTest {
             int value = 5;
             int value2 = 3;
 
-            assertThrows(AssertException.class, () -> isLowerThanOrEqual(value, "value", value2, "value2"));
+            assertThrowsExactly(AssertException.class, () -> isLowerThanOrEqual(value, "value", value2, "value2"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -245,7 +245,7 @@ class AssertTest {
             double value = 5.122149;
             double value2 = 5.122148;
 
-            assertThrows(AssertException.class, () -> isEqualTo(value, "value", value2, "value2"));
+            assertThrowsExactly(AssertException.class, () -> isEqualTo(value, "value", value2, "value2"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -268,7 +268,7 @@ class AssertTest {
     void isTrue_shouldThrow_WhenExpressionPassedIsFalse() {
         try {
             boolean bool = false;
-            assertThrows(AssertException.class, () -> isTrue(bool, STR."\{bool} is not true"));
+            assertThrowsExactly(AssertException.class, () -> isTrue(bool, STR."\{bool} is not true"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -290,7 +290,7 @@ class AssertTest {
     void isFalse_shouldThrow_WhenExpressionPassedIsTrue() {
         try {
             boolean bool = true;
-            assertThrows(AssertException.class, () -> isFalse(bool, STR."\{bool} is is not false"));
+            assertThrowsExactly(AssertException.class, () -> isFalse(bool, STR."\{bool} is is not false"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -303,7 +303,7 @@ class AssertTest {
             int value = 5;
             int value2 = 5;
 
-            assertThrows(AssertException.class, () -> isGreaterThan(value, "value", value2, "value2"));
+            assertThrowsExactly(AssertException.class, () -> isGreaterThan(value, "value", value2, "value2"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -329,7 +329,7 @@ class AssertTest {
             int value = 4;
             int value2 = 5;
 
-            assertThrows(AssertException.class, () -> isGreaterThan(value, "value", value2, "value2"));
+            assertThrowsExactly(AssertException.class, () -> isGreaterThan(value, "value", value2, "value2"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -342,7 +342,7 @@ class AssertTest {
             Double value = null;
             int value2 = 5;
 
-            assertThrows(AssertException.class, () -> isGreaterThan(value, "value", value2, "value2"));
+            assertThrowsExactly(AssertException.class, () -> isGreaterThan(value, "value", value2, "value2"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -355,7 +355,7 @@ class AssertTest {
             int value = 5;
             int value2 = 5;
 
-            assertThrows(AssertException.class, () -> isLowerThan(value, "value", value2, "value2"));
+            assertThrowsExactly(AssertException.class, () -> isLowerThan(value, "value", value2, "value2"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -381,7 +381,7 @@ class AssertTest {
             int value = 6;
             int value2 = 3;
 
-            assertThrows(AssertException.class, () -> isLowerThan(value, "value", value2, "value2"));
+            assertThrowsExactly(AssertException.class, () -> isLowerThan(value, "value", value2, "value2"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -394,7 +394,7 @@ class AssertTest {
             Double value = null;
             int value2 = 5;
 
-            assertThrows(AssertException.class, () -> isLowerThan(value, "value", value2, "value2"));
+            assertThrowsExactly(AssertException.class, () -> isLowerThan(value, "value", value2, "value2"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -412,7 +412,7 @@ class AssertTest {
             value.add(5);
             value.add(6);
 
-            assertThrows(AssertException.class, () -> hasMaxSize(value, 5, "hashset"));
+            assertThrowsExactly(AssertException.class, () -> hasMaxSize(value, 5, "hashset"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -424,7 +424,7 @@ class AssertTest {
         try {
             HashSet<Integer> value = null;
 
-            assertThrows(AssertException.class, () -> hasMaxSize(value, 5, "hashset"));
+            assertThrowsExactly(AssertException.class, () -> hasMaxSize(value, 5, "hashset"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -481,7 +481,7 @@ class AssertTest {
         try {
             HashSet<Integer> values = new HashSet<>();
 
-            assertThrowsExactly(AssertException.class , () -> isNotEmpty(null, "values"), STR."values is null");
+            assertThrowsExactly(AssertException.class , () -> isNotEmpty(null, "values"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -495,7 +495,7 @@ class AssertTest {
 
             values.add(2);
 
-            assertThrowsExactly(AssertException.class , () -> isNotEmpty(null, "values"), STR."values is null");
+            assertThrowsExactly(AssertException.class , () -> isNotEmpty(null, "values"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -507,7 +507,7 @@ class AssertTest {
         try {
             HashSet<Integer> values = new HashSet<>();
 
-            assertThrowsExactly(AssertException.class , () -> isNotEmpty(values, "values"), STR."values is empty");
+            assertThrowsExactly(AssertException.class , () -> isNotEmpty(values, "values"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();

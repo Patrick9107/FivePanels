@@ -18,8 +18,7 @@ public class Answer {
     }
 
     public void setAnswer(String answer) {
-        hasMaxLength(answer, 256, "answer");
-        this.answer = answer;
+        this.answer = hasMaxLength(answer, 256, "answer");
     }
 
     @Override

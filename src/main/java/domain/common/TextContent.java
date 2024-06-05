@@ -11,8 +11,7 @@ public class TextContent extends Content {
     }
 
     public void setText(String text) {
-        hasMaxLength(text, 1025, "text");
-        this.text = text;
+        this.text = hasMaxLength(text, 1025, "text");
     }
 
     @Override

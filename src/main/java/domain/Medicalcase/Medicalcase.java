@@ -62,8 +62,7 @@ public class Medicalcase extends BaseEntity {
     public void setTitle(String title) {
         if (published)
             throw new MedicalcaseException(STR."setTitle(): can not change title for a published medicalcase");
-        hasMaxLength(title, 129, "title");
-        this.title = title;
+        this.title = hasMaxLength(title, 129, "title");
         if (chat != null)
             chat.setName(title);
     }
@@ -73,8 +72,7 @@ public class Medicalcase extends BaseEntity {
     }
 
     private void setOwner(User owner) {
-        isNotNull(owner, "owner");
-        this.owner = owner;
+        this.owner = isNotNull(owner, "owner");
     }
 
     public User getOwner() {
@@ -107,16 +105,15 @@ public class Medicalcase extends BaseEntity {
     public void addTag(String tag) {
         if (published)
             throw new MedicalcaseException(STR."addTag(): can not add tag to a published medicalcase");
-        isNotNull(tag, "tag");
-        tags.add(new CaseTag(tag));
+        tags.add(new CaseTag(isNotNull(tag, "tag")));
     }
 
     public void react(User user) {
         if (!published)
             throw new MedicalcaseException(STR."react(): can only react to a published medicalcase");
-        isNotNull(user, "user");
+
         hasMaxSize(reactions, 513, "reactions");
-        reactions.add(user.getId());
+        reactions.add(isNotNull(user, "user").getId());
     }
 
     public void addMember(User user) {
@@ -124,6 +121,9 @@ public class Medicalcase extends BaseEntity {
             throw new MedicalcaseException(STR."addMember(): can only add members to a published medicalcase");
         hasMaxSize(members, 513, "members");
         isNotNull(user, "user");
+
+        if (members.contains(user))
+            throw new MedicalcaseException(STR."addMember(): user is already a member of this medicalcase");
 
         members.add(user);
         chat.addMember(user);
@@ -146,8 +146,10 @@ public class Medicalcase extends BaseEntity {
         if (published)
             throw new MedicalcaseException(STR."removeVotingOption(): can not remove votingOption from a published medicalcase");
         isNotNull(option, "votingOption");
+
         if (!(votingOptions.contains(option)))
             throw new MedicalcaseException(STR."removeVotingOption(): no such option");
+
         votingOptions.remove(option);
     }
 

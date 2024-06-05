@@ -18,19 +18,16 @@ public class Media extends Content {
     }
 
     public void setPath(String path) {
-        hasMaxLength(path, 256, "path");
-        this.path = path;
+        this.path = hasMaxLength(path, 256, "path");
     }
 
     public void setMime(String mime) {
-        hasMaxLength(mime, 129, "mime");
-        this.mime = mime;
+        this.mime = hasMaxLength(mime, 129, "mime");
     }
 
     public void setFileSize(Integer fileSize) {
         isGreaterThanOrEqual(fileSize, "fileSize", 0, "0");
-        isLowerThanOrEqual(fileSize, "fileSize", 50000000, "50000000");
-        this.fileSize = fileSize;
+        this.fileSize = isLowerThanOrEqual(fileSize, "fileSize", 50000000, "50000000");
     }
 
     @Override

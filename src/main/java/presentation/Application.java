@@ -1,6 +1,7 @@
 package presentation;
 
 import domain.Messenger.Chat;
+import domain.User.Password;
 import domain.User.User;
 import domain.User.UserException;
 import org.apache.commons.logging.Log;
@@ -85,7 +86,7 @@ public class Application {
 
         Optional<User> user = UserRepository.findByEmail(email);
         if (user.isPresent()) {
-            if (user.get().getPassword().checkPasswords(password.toCharArray(), user.get().getPassword().getHashedPassword())) {
+            if (Password.checkPasswords(password.toCharArray(), user.get().getPassword().getHashedPassword())) {
                 loggedInAsUser = user.get();
                 System.out.println("Successfully logged in");
                 userAction();
@@ -521,7 +522,7 @@ public class Application {
         System.out.println("Rating: " + loggedInAsUser.getProfile().getRating());
         System.out.println();
         System.out.println("Type in a number to edit your profile data");
-
+// todo option to change password
         if (sc.hasNextLine()) {
             String input = sc.nextLine();
             switch (input) {
@@ -678,7 +679,6 @@ public class Application {
         System.out.println("4 - Manage Friends");
         System.out.println();
         System.out.println("5 - Manage Medicalcases");
-
         if (sc.hasNextLine()) {
             String input = sc.nextLine();
             switch (input) {

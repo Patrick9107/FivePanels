@@ -3,6 +3,7 @@ package foundation;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -246,6 +247,14 @@ public abstract class Assert {
         isNotNull(values, valueName);
         if (values.isEmpty())
             throw new AssertException(STR."\{valueName} is empty");
+        return values;
+    }
+
+    // todo java docs and tests
+    public static <T extends Collection<?>> T allNotNull(T values, String valueName) {
+        isNotNull(values, valueName);
+        if (values.stream().anyMatch(Objects::isNull))
+            throw new AssertException(STR."An element in \{valueName} is null");
         return values;
     }
 
