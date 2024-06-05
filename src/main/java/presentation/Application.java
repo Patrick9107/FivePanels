@@ -1,5 +1,6 @@
 package presentation;
 
+import domain.Messenger.Chat;
 import domain.User.User;
 import domain.User.UserException;
 import foundation.AssertException;
@@ -272,7 +273,9 @@ public class Application {
         }
         return members;
     }
-
+    private static void viewChat(Chat chat){
+        banner("C");
+    }
     // friends ----------------------------------------------------------
 
     private static void friends() {
