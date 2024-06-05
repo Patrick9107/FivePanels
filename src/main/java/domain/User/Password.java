@@ -21,7 +21,11 @@ public class Password {
 
     public void setHashedPassword(char[] rawPassword) {
         try {
-            this.hashedPassword = hashPassword(rawPassword);
+            if (isPasswordStrong(rawPassword)) {
+                this.hashedPassword = hashPassword(rawPassword);
+            } else {
+                throw new UserException("setHashedPassword(): Password is not strong enough");
+            }
         } finally {
             for (int i = 0; i < rawPassword.length; i++) {
                 rawPassword[i] = 0;

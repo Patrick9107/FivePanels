@@ -22,8 +22,8 @@ public class Application {
 
     public static void main(String[] args) {
         try {
-            User user1 = new User("jakub@gmail.com", "test".toCharArray(), "Jakub", "Dr.", "Austria");
-            User user2 = new User("patrick@gmail.com", "test".toCharArray(), "Patrick", "Dr.", "Austria");
+            User user1 = new User("jakub@gmail.com", "spengergasse".toCharArray(), "Jakub", "Dr.", "Austria");
+            User user2 = new User("patrick@gmail.com", "spengergasse".toCharArray(), "Patrick", "Dr.", "Austria");
             user1.addFriend(user2);
             user2.acceptFriendRequest(user1);
             start();
@@ -106,7 +106,6 @@ public class Application {
         }
     }
 
-    //TODO check password strength
     private static void register() {
         String email = null, name = null, title = null, location = null;
         char[] password = null;
@@ -145,6 +144,58 @@ public class Application {
             System.out.println("You will be redirected shortly");
             sleep(1);
             start();
+        }
+    }
+
+    // medicalcase ----------------------------------------------------------
+
+    private static void medicalcases() {
+        clear();
+        banner("Medicalcases");
+        exitText();
+        System.out.println("1 - List Medicalcases");
+        System.out.println();
+        System.out.println("2 - Create new Medicalcase");
+        if (sc.hasNextLine()) {
+            String input = sc.nextLine();
+            switch (input) {
+                case "1":
+                    listMedicalcases();
+                    break;
+                case "2":
+                    createMedicalcase();
+                    break;
+                case "e", "E":
+                    userAction();
+                    break;
+                default:
+                    System.out.println("Invalid action. Try again");
+                    medicalcases();
+            }
+        }
+    }
+
+    private static void listMedicalcases() {
+        banner("Medicalcases");
+        exitText();
+        if (sc.hasNextLine()) {
+            String input = sc.nextLine();
+
+            switch (input) {
+                default -> medicalcases();
+            }
+        }
+    }
+
+    private static void createMedicalcase() {
+        banner("Create new Medicalcases");
+        exitText();
+        if (sc.hasNextLine()) {
+            String input = sc.nextLine();
+
+            switch (input) {
+                default -> medicalcases();
+            }
         }
     }
 
@@ -628,6 +679,8 @@ public class Application {
         System.out.println("3 - Manage Profile");
         System.out.println();
         System.out.println("4 - Manage Friends");
+        System.out.println();
+        System.out.println("5 - Manage Medicalcases");
 
         if (sc.hasNextLine()) {
             String input = sc.nextLine();
@@ -647,6 +700,9 @@ public class Application {
                     break;
                 case "4":
                     friends();
+                    break;
+                case "5":
+                    medicalcases();
                     break;
                 default:
                     System.out.println("Invalid action. Please try again");

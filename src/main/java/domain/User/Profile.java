@@ -107,7 +107,6 @@ public class Profile {
         this.avatar = avatar;
     }
 
-    // TODO rewrite
     @Override
     public String toString() {
         return STR."Profile{name='\{name}\{'\''}, title='\{title}\{'\''}, location=\{location}, tags=\{tags}, rating=\{rating}, avatar=\{avatar}\{'}'}";
