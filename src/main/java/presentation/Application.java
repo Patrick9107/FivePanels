@@ -221,6 +221,14 @@ public class Application {
     }
 
     private static Set<UUID> addMemberToChat(Set<UUID> members) {
+        clear();
+        banner("Add a member");
+
+        System.out.println("People currently in member list:");
+        System.out.println("-------------------------------");
+        members.forEach(uuid -> UserRepository.findById(uuid).ifPresent(user -> System.out.println(user.getProfile().getTitleAndName() + " (" + user.getEmail().getAddress() + ")")));
+        System.out.println("-------------------------------");
+        System.out.println();
         System.out.print("Pick a member from the list below:");
         System.out.println();
         System.out.println();
