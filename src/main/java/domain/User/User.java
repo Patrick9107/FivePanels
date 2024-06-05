@@ -188,6 +188,11 @@ public class User extends BaseEntity {
         return email;
     }
 
+    /**
+     * Returns the {@link Password} of the user
+     *
+     * @return the  {@link Password} of the user
+     */
     public Password getPassword() {
         return hashedPassword;
     }

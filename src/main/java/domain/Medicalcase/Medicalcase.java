@@ -37,6 +37,14 @@ public class Medicalcase extends BaseEntity {
     // not null, all members of medicalcase are automatically in this chat
     private Chat chat;
 
+    /**
+     * Constructs a new {@link Medicalcase} instance with the specified title, owner, name, and tags.
+     * Also initializes the medicalcase's content, member, reaction, votingOptions, votes, chat and correctAnswer.
+     *
+     * @param title    the medicalcase's titles
+     * @param owner    the medicalcase's owner
+     * @param tags     the medicalcase's tags
+     */
     public Medicalcase(String title, User owner, String... tags) {
         setTitle(title);
         setOwner(owner);
