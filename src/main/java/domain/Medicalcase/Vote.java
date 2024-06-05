@@ -1,10 +1,8 @@
 package domain.Medicalcase;
 
-import java.util.UUID;
 
 public class Vote {
 
-    // not null, max entries = number of voting options on that medicalcase
     private int percentage;
 
     private Answer answer;

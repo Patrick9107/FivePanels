@@ -1,6 +1,6 @@
 package domain.common;
 
-import foundation.Assert;
+import static foundation.Assert.*;
 
 public class TextContent extends Content {
     // not null, not blank, max 1024 characters
@@ -11,9 +11,7 @@ public class TextContent extends Content {
     }
 
     public void setText(String text) {
-        Assert.isNotNull(text, "text");
-        Assert.isNotBlank(text, "text");
-        Assert.hasMaxLength(text,1025, "text");
+        hasMaxLength(text, 1025, "text");
         this.text = text;
     }
 

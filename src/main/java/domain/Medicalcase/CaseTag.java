@@ -1,7 +1,5 @@
 package domain.Medicalcase;
 
-import domain.User.UserException;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -28,7 +26,6 @@ public class CaseTag {
     }
 
     public static Set<String> getCaseTags() {
-
         return caseTags;
     }
 

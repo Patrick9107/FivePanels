@@ -27,13 +27,14 @@ public class Socials {
         if (user.equals(userToAdd))
             throw new UserException(STR."addFriend(): User can not add himself");
 
+        // if one user added another user and the other user tries to add him back, they become friends
         if (relation.get(userToAdd.getId()) == Relation.INCOMING) {
             acceptFriendRequest(user, userToAdd);
             return;
         }
 
         if (relation.containsKey(userToAdd.getId()))
-            throw new UserException(STR. "addFriend(): User already has a Relation with \{ userToAdd }" );
+            throw new UserException(STR."addFriend(): User already has a Relation with \{userToAdd}");
 
         relation.put(userToAdd.getId(), Relation.OUTGOING);
         userToAdd.getSocials().relation.put(user.getId(), Relation.INCOMING);
@@ -47,7 +48,7 @@ public class Socials {
             throw new UserException(STR."acceptFriendRequest(): User can not accept a friend request from himself");
 
         if (!(relation.get(userToAccept.getId()) == Relation.INCOMING))
-            throw new UserException(STR. "acceptFriendRequest(): User does not have an incoming friend request from \{ userToAccept }" );
+            throw new UserException(STR."acceptFriendRequest(): User does not have an incoming friend request from \{userToAccept}");
 
         relation.put(userToAccept.getId(), Relation.FRIENDS);
         userToAccept.getSocials().relation.put(user.getId(), Relation.FRIENDS);
@@ -65,7 +66,7 @@ public class Socials {
             throw new UserException(STR."denyFriendRequest(): User can not deny a friend request from himself");
 
         if (!(relation.get(userToDeny.getId()) == Relation.INCOMING))
-            throw new UserException(STR. "denyFriendRequest(): User does not have an incoming friend request from \{ userToDeny }" );
+            throw new UserException(STR."denyFriendRequest(): User does not have an incoming friend request from \{userToDeny}");
 
         relation.remove(userToDeny.getId());
         userToDeny.getSocials().relation.remove(user.getId());
@@ -87,7 +88,7 @@ public class Socials {
             throw new UserException(STR."removeFriend(): User can not remove himself");
 
         if (!(relation.get(userToRemove.getId()) == Relation.FRIENDS))
-            throw new UserException(STR. "removeFriend(): User is not friends with \{ userToRemove }" );
+            throw new UserException(STR."removeFriend(): User is not friends with \{userToRemove}");
         relation.remove(userToRemove.getId());
         userToRemove.getSocials().getRelation().remove(user.getId());
 
@@ -100,7 +101,7 @@ public class Socials {
         });
     }
 
-    public List<UUID> listRelation(Relation relation) {
+    private List<UUID> listRelation(Relation relation) {
         return this.relation.entrySet().stream().filter(uuidRelationEntry -> uuidRelationEntry.getValue().equals(relation))
                 .map(Map.Entry::getKey).toList();
     }

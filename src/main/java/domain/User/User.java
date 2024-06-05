@@ -40,10 +40,10 @@ public class User extends BaseEntity {
      * Constructs a new {@link User} instance with the specified email, password, name, title, and location.
      * Also initializes the user's socials, chats, and medicalcases.
      *
-     * @param email the user's email address
+     * @param email    the user's email address
      * @param password the user's password
-     * @param name the user's name
-     * @param title the user's title
+     * @param name     the user's name
+     * @param title    the user's title
      * @param location the user's location
      */
     public User(String email, char[] password, String name, String title, String location) {
@@ -79,7 +79,7 @@ public class User extends BaseEntity {
      * This method sets up the {@code medicalcases} HashMap with keys for {@link Ownership#OWNER} and
      * {@link Ownership#MEMBER}, each associated with an empty {@link HashSet} of medicalcases.
      */
-    public void setMedicalcases() {
+    private void setMedicalcases() {
         medicalcases = new HashMap<>();
         medicalcases.put(Ownership.OWNER, new HashSet<>());
         medicalcases.put(Ownership.MEMBER, new HashSet<>());
@@ -87,6 +87,7 @@ public class User extends BaseEntity {
 
     /**
      * Returns a {@link Set} of chats where the user is a part of
+     *
      * @return a {@link Set} of chats
      */
     public Set<Chat> getChats() {
@@ -96,7 +97,7 @@ public class User extends BaseEntity {
     /**
      * Creates a new group chat with the specified name and members.
      *
-     * @param name the name of the group chat
+     * @param name    the name of the group chat
      * @param members a set of UUIDs representing the members to be added to the group chat
      * @return the chat that has been created
      */
@@ -106,7 +107,7 @@ public class User extends BaseEntity {
         // todo user that creates the groupchat has to be friends with the members
         HashSet<UUID> set = new HashSet<>(members);
         set.add(getId());
-        Chat chat = new Chat(name, set,true);
+        Chat chat = new Chat(name, set, true);
         members.forEach(uuid -> UserRepository.findById(uuid).ifPresent(user -> user.getChats().add(chat)));
         return chat;
     }
@@ -115,8 +116,8 @@ public class User extends BaseEntity {
      * Sends a message to the specified chat.
      * This method calls the {@code sendMessage} method on the given chat.
      *
-     * @param chat the chat to which the message is to be sent
-     * @param content the text content of the message
+     * @param chat        the chat to which the message is to be sent
+     * @param content     the text content of the message
      * @param attachments a list of media attachments to be included with the message
      */
     public void sendMessage(Chat chat, String content, List<Media> attachments) {
@@ -159,6 +160,7 @@ public class User extends BaseEntity {
 
     /**
      * Returns the {@link Socials} of the user
+     *
      * @return the {@link Socials} of the user
      */
     public Socials getSocials() {
@@ -167,6 +169,7 @@ public class User extends BaseEntity {
 
     /**
      * Returns the {@link Profile} of the user
+     *
      * @return the {@link Profile} of the user
      */
     public Profile getProfile() {
@@ -175,6 +178,7 @@ public class User extends BaseEntity {
 
     /**
      * Returns the {@link Email} of the user
+     *
      * @return the {@link Email} of the user
      */
     public Email getEmail() {

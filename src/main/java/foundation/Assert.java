@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 /**
  * Assertion utility class that assists in validating arguments.
- *
+ * <p>
  * We wil use it for ints, longs, Strings, Objects, Collections, etc.
  */
 
@@ -22,8 +22,8 @@ public abstract class Assert {
     /**
      * Checks if the given value is not null.
      *
-     * @param <T> the type of the value to be checked
-     * @param value the value to be checked for nullity
+     * @param <T>       the type of the value to be checked
+     * @param value     the value to be checked for nullity
      * @param paramName the name of the parameter to be included in the exception message if the value is null
      * @return the provided value if it is not null
      * @throws AssertException if the provided value is null
@@ -37,8 +37,8 @@ public abstract class Assert {
     /**
      * Checks if the given value is null.
      *
-     * @param <T> the type of the value to be checked
-     * @param value the value to be checked for nullity
+     * @param <T>       the type of the value to be checked
+     * @param value     the value to be checked for nullity
      * @param paramName the name of the parameter to be included in the exception message if the value is not null
      * @return the provided value if it is null
      * @throws AssertException if the provided value is not null
@@ -101,10 +101,10 @@ public abstract class Assert {
      * Checks if a given value is greater than another specified value.
      * Throws an exception if the value is not greater.
      *
-     * @param value      the value to be checked
-     * @param valueName  the name of the value, used for the exception message
+     * @param value        the value to be checked
+     * @param valueName    the name of the value, used for the exception message
      * @param valueToProof the value to compare against
-     * @param proofName  the name of the value to compare against, used for the exception message
+     * @param proofName    the name of the value to compare against, used for the exception message
      * @return the original value if it is greater than the value to compare against
      * @throws AssertException if the value is equal to or less than the value to compare against or if any of the values are null
      */
@@ -128,10 +128,10 @@ public abstract class Assert {
      * Checks if a given value is lower than another specified value.
      * Throws an exception if the value is not lower.
      *
-     * @param value      the value to be checked
-     * @param valueName  the name of the value, used for the exception message
+     * @param value        the value to be checked
+     * @param valueName    the name of the value, used for the exception message
      * @param valueToProof the value to compare against
-     * @param proofName  the name of the value to compare against, used for the exception message
+     * @param proofName    the name of the value to compare against, used for the exception message
      * @return the original value if it is lower than the value to compare against
      * @throws AssertException if the value is equal to or greater than the value to compare against or if any of the values are null
      */
@@ -155,10 +155,10 @@ public abstract class Assert {
      * Checks if a given value is equal to another specified value.
      * Throws an exception if the values are not equal.
      *
-     * @param value       the value to be checked
-     * @param valueName   the name of the value, used for the exception message
+     * @param value        the value to be checked
+     * @param valueName    the name of the value, used for the exception message
      * @param valueToProof the value to compare against
-     * @param proofName   the name of the value to compare against, used for the exception message
+     * @param proofName    the name of the value to compare against, used for the exception message
      * @return the original value if it is equal to the value to compare against
      * @throws AssertException if the value is not equal to the value to compare against or if any of the values are null
      */
@@ -176,10 +176,10 @@ public abstract class Assert {
      * Checks if a given value is greater than or equal to another specified value.
      * Throws an exception if the value is not greater or equal.
      *
-     * @param value      the value to be checked
-     * @param valueName  the name of the value, used for the exception message
+     * @param value        the value to be checked
+     * @param valueName    the name of the value, used for the exception message
      * @param valueToProof the value to compare against
-     * @param proofName  the name of the value to compare against, used for the exception message
+     * @param proofName    the name of the value to compare against, used for the exception message
      * @return the original value if it is greater than or equal to the value to compare against
      * @throws AssertException if the value is less than the value to compare against or if any of the values are null
      */
@@ -197,10 +197,10 @@ public abstract class Assert {
      * Checks if a given value is lower than or equal to another specified value.
      * Throws an exception if the value is not lower or equal.
      *
-     * @param value      the value to be checked
-     * @param valueName  the name of the value, used for the exception message
+     * @param value        the value to be checked
+     * @param valueName    the name of the value, used for the exception message
      * @param valueToProof the value to compare against
-     * @param proofName  the name of the value to compare against, used for the exception message
+     * @param proofName    the name of the value to compare against, used for the exception message
      * @return the original value if it is lower than or equal to the value to compare against
      * @throws AssertException if the value is greater than the value to compare against or if any of the values are null
      */
@@ -219,9 +219,9 @@ public abstract class Assert {
      * Checks if a given collection does not exceed the specified maximum size.
      * Throws an exception if the collection size is greater than the specified maximum size.
      *
-     * @param values     the collection to be checked
-     * @param maxSize    the maximum allowable size for the collection
-     * @param valueName  the name of the collection, used for the exception message
+     * @param values    the collection to be checked
+     * @param maxSize   the maximum allowable size for the collection
+     * @param valueName the name of the collection, used for the exception message
      * @return the original collection if its size is within the maximum size
      * @throws AssertException if the collection size is greater than the specified maximum size or if the value is null
      */
@@ -237,8 +237,8 @@ public abstract class Assert {
      * Checks if a given collection is not empty.
      * Throws an exception if the collection is empty.
      *
-     * @param values     the collection to be checked
-     * @param valueName  the name of the collection, used for the exception message
+     * @param values    the collection to be checked
+     * @param valueName the name of the collection, used for the exception message
      * @return the original collection if it is not empty
      * @throws AssertException if the collection is empty or if the value is null
      */

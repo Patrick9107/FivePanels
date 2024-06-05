@@ -18,7 +18,7 @@ public class Country {
     }
 
     public void setCountry(String country) {
-        if(!countries.contains(country))
+        if (!countries.contains(country))
             throw new UserException("setCountries(): country does not exist");
         this.country = country;
     }

@@ -4,11 +4,9 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.nulabinc.zxcvbn.Strength;
 import com.nulabinc.zxcvbn.Zxcvbn;
 
-import java.util.Arrays;
 
 public class Password {
 
-    // max 100 characters
     private char[] hashedPassword;
 
     public Password(char[] rawPassword) {
@@ -47,7 +45,7 @@ public class Password {
         }
     }
 
-    public char[] hashPassword(char[] password){
+    public char[] hashPassword(char[] password) {
         try {
             hashedPassword = BCrypt.withDefaults().hashToChar(12, password);
             return hashedPassword;
@@ -58,7 +56,7 @@ public class Password {
         }
     }
 
-    public boolean checkPasswords(char[] password, char[] hashedPassword){
+    public boolean checkPasswords(char[] password, char[] hashedPassword) {
         try {
             return BCrypt.verifyer().verify(password, hashedPassword).verified;
         } finally {

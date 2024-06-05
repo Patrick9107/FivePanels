@@ -3,12 +3,13 @@ package domain.Messenger;
 import domain.User.User;
 import domain.common.Media;
 import domain.common.TextContent;
-import foundation.Assert;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
+
+import static foundation.Assert.*;
 
 public class Message {
 
@@ -32,17 +33,16 @@ public class Message {
     }
 
     public void setSender(User sender) {
-        Assert.isNotNull(sender, "sender");
+        isNotNull(sender, "sender");
         this.sender = sender;
     }
 
     public void setTimestamp(Instant timestamp) {
-        Assert.isNotNull(timestamp, "timestamp");
         this.timestamp = timestamp;
     }
 
     public void setContent(TextContent content) {
-        Assert.isNotNull(content, "content");
+        isNotNull(content, "content");
         this.content = content;
 
     }
@@ -76,7 +76,7 @@ public class Message {
         if (attachments != null) {
             attachments.forEach(media -> sb.append(media).append(", "));
             for (int i = 0; i < 2; i++) {
-                sb.deleteCharAt(sb.length()-1);
+                sb.deleteCharAt(sb.length() - 1);
             }
             sb.append("\n");
         }

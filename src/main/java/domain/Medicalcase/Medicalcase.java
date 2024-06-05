@@ -37,8 +37,6 @@ public class Medicalcase extends BaseEntity {
     // not null, all members of medicalcase are automatically in this chat
     private Chat chat;
 
-    // TODO irgendwie speichern welcher chat zu welchem medicalcase gehört, probably im repository
-
     public Medicalcase(String title, User owner, String... tags) {
         setTitle(title);
         setOwner(owner);
@@ -86,8 +84,8 @@ public class Medicalcase extends BaseEntity {
     public void setCorrectAnswer(Answer correctAnswer) {
         if (!published)
             throw new MedicalcaseException(STR."setCorrectAnswer(): can not set correctAnswer in non public medicalcase");
-        isNotNull(correctAnswer,"correctAnswer");
-        if(!(votingOptions.contains(correctAnswer))) {
+        isNotNull(correctAnswer, "correctAnswer");
+        if (!(votingOptions.contains(correctAnswer))) {
             throw new MedicalcaseException(STR."setCorrectAnswer(): correctAnswer has to be in the votingOption!");
         }
         this.correctAnswer = correctAnswer;
@@ -108,7 +106,7 @@ public class Medicalcase extends BaseEntity {
     public void react(User user) {
         if (!published)
             throw new MedicalcaseException(STR."react(): can only react to a published medicalcase");
-        isNotNull(user , "user");
+        isNotNull(user, "user");
         hasMaxSize(reactions, 513, "reactions");
         reactions.add(user.getId());
     }
@@ -116,7 +114,7 @@ public class Medicalcase extends BaseEntity {
     public void addMember(User user) {
         if (!published)
             throw new MedicalcaseException(STR."addMember(): can only add members to a published medicalcase");
-        hasMaxSize(members, 513 , "members");
+        hasMaxSize(members, 513, "members");
         isNotNull(user, "user");
 
         members.add(user);
@@ -167,9 +165,11 @@ public class Medicalcase extends BaseEntity {
     public void removeContent(int index) {
         if (published)
             throw new MedicalcaseException(STR."removeContent(): can not remove content from a published medicalcase");
-        if (content.size() <= index || index < 0)
-            throw new MedicalcaseException(STR."removeContent(): Index out of bound");
-        content.remove(index);
+        try {
+            content.remove(index);
+        } catch (IndexOutOfBoundsException e) {
+            throw new MedicalcaseException(STR."removeContent(): Index out of bounds (\{index})");
+        }
     }
 
     public void removeContent(Content contentToRemove) {
@@ -180,19 +180,19 @@ public class Medicalcase extends BaseEntity {
         content.stream().filter(content1 -> content1.equals(contentToRemove)).findFirst().ifPresent(content1 -> content.remove(content1));
     }
 
-    public void viewAvgVotesPerAnswer(){
+    public void viewAvgVotesPerAnswer() {
         // mit votes.values() bekommt man eine collection mit allen listen von votes
         //gibt dir alle Votes zurück
         List<Vote> allVotes = votes.values().stream()
-                                            .flatMap(Set::stream)
-                                            .toList();
+                .flatMap(Set::stream)
+                .toList();
 
 
         double percentSum = allVotes.stream().mapToDouble(Vote::getPercentage).sum();
 
         //addiert alle percentages und grupperit sie nach antworten
         Map<String, Double> voteCounts = allVotes.stream()
-                                                .collect(Collectors.groupingBy(vote -> vote.getAnswer().getAnswer(), Collectors.averagingDouble(Vote::getPercentage)));
+                .collect(Collectors.groupingBy(vote -> vote.getAnswer().getAnswer(), Collectors.averagingDouble(Vote::getPercentage)));
 
 //        Map<String, Double> votePercentagePerVote =  voteCounts.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue() / members.size()));
 
@@ -207,7 +207,7 @@ public class Medicalcase extends BaseEntity {
         voteCounts.forEach((option, count) -> System.out.println(STR."\{option}: \{count}"));
     }
 
-    public Set<User> getMembers(){
+    public Set<User> getMembers() {
         return members;
     }
 
@@ -234,19 +234,19 @@ public class Medicalcase extends BaseEntity {
         votes.get(user.getId()).add(new Vote(percentage, newAnswer));
     }
 
-    public void evaluateVotes(){
+    public void evaluateVotes() {
         //gibt die User zurück die für die richtige antwort gevotet haben.
-      Map<UUID, Vote> userAndCorrectAnswer= votes.entrySet().stream()
-                                                            .flatMap(entry -> entry.getValue().stream()
-                                                                    .filter(vote -> correctAnswer.getAnswer().equals(vote.getAnswer().getAnswer()))
-                                                                    .map(vote -> Map.entry(entry.getKey(), vote)))
-                                                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        Map<UUID, Vote> userAndCorrectAnswer = votes.entrySet().stream()
+                .flatMap(entry -> entry.getValue().stream()
+                        .filter(vote -> correctAnswer.getAnswer().equals(vote.getAnswer().getAnswer()))
+                        .map(vote -> Map.entry(entry.getKey(), vote)))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-      //addiert die Prozentzahl die der user für die richtige antwort angegeben hat zu seinem rating.
-      // was ich gemacht habe:
-      //userAndCorrectAnswer.entrySet().forEach(value -> UserRepository.findById(value.getKey()).ifPresent(user -> user.getProfile().setRating(value.getValue().getPercentage())));
+        //addiert die Prozentzahl die der user für die richtige antwort angegeben hat zu seinem rating.
+        // was ich gemacht habe:
+        //userAndCorrectAnswer.entrySet().forEach(value -> UserRepository.findById(value.getKey()).ifPresent(user -> user.getProfile().setRating(value.getValue().getPercentage())));
         //Verbessert durch IDE
-      userAndCorrectAnswer.forEach((key, value1) -> UserRepository.findById(key).ifPresent(user -> user.getProfile().addRating(value1.getPercentage())));
+        userAndCorrectAnswer.forEach((key, value1) -> UserRepository.findById(key).ifPresent(user -> user.getProfile().addRating(value1.getPercentage())));
     }
 
     public void viewChat(User user) {

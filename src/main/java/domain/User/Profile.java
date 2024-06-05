@@ -49,14 +49,12 @@ public class Profile {
     }
 
     public void setName(String name) {
-        isNotNull(name, "name");
         isGreaterThanOrEqual(name.length(), "name", 1, "1");
         hasMaxLength(name, 129, "name");
         this.name = name;
     }
 
     public void setTitle(String title) {
-        isNotNull(title, "title");
         isGreaterThanOrEqual(title.length(), "title", 1, "1");
         hasMaxLength(title, 129, "title");
         this.title = title;
@@ -67,7 +65,6 @@ public class Profile {
     }
 
     public void setLocation(String location) {
-        isNotNull(location, "location");
         isNotBlank(location, "location");
 
         this.location = new Country(location);
@@ -96,7 +93,7 @@ public class Profile {
     }
 
     public String getTitleAndName() {
-        return STR. "\{ getTitle() } \{ getName() }" ;
+        return STR."\{title} \{name}";
     }
 
     public void addRating(int rating) {
@@ -113,6 +110,6 @@ public class Profile {
     // TODO rewrite
     @Override
     public String toString() {
-        return STR. "Profile{name='\{ name }\{ '\'' }, title='\{ title }\{ '\'' }, location=\{ location }, tags=\{ tags }, rating=\{ rating }, avatar=\{ avatar }\{ '}' }" ;
+        return STR."Profile{name='\{name}\{'\''}, title='\{title}\{'\''}, location=\{location}, tags=\{tags}, rating=\{rating}, avatar=\{avatar}\{'}'}";
     }
 }

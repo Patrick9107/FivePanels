@@ -1,12 +1,10 @@
 package domain.Messenger;
 
-import domain.Medicalcase.Medicalcase;
 import domain.User.User;
 import domain.common.BaseEntity;
 import domain.common.Media;
 import domain.common.TextContent;
 import repository.ChatRepository;
-import repository.MedicalcaseRepository;
 import repository.UserRepository;
 
 import java.time.Instant;
@@ -16,7 +14,7 @@ import static foundation.Assert.*;
 
 public class Chat extends BaseEntity {
 
-    // can be null if groupchat false - not null otherwise, not blank, max 64 characters
+    // can be null if groupchat is false - not null otherwise, not blank, max 64 characters
     private String name;
     private final boolean groupChat;
     // not null, max 512 members, not empty
@@ -34,16 +32,13 @@ public class Chat extends BaseEntity {
 
     public void setName(String name) {
         if (groupChat) {
-            isNotNull(name, "name");
             hasMaxLength(name, 513, "name");
-            isNotBlank(name, "name");
             this.name = name;
         }
     }
 
     public void setMembers(Set<UUID> members) {
-        isNotNull(members, "members");
-        hasMaxSize(members,513, "members");
+        hasMaxSize(members, 513, "members");
         this.members = new HashSet<>(members);
     }
 
@@ -81,17 +76,16 @@ public class Chat extends BaseEntity {
         user.getChats().remove(this);
     }
 
-    public void addToHistory(Message message){
-        isNotNull(message,"message");
+    public void addToHistory(Message message) {
+        isNotNull(message, "message");
         history.add(message);
     }
 
-    public void sendMessage(User user, Chat chat, TextContent content, List<Media> attachments){
+    public void sendMessage(User user, Chat chat, TextContent content, List<Media> attachments) {
+        // isnotnull assert in message class for the remaining parameters
         isNotNull(chat, "chat");
-        isNotNull(content, "content");
-        isNotNull(user, "user");
 
-        if(!(members.contains(user.getId())))
+        if (!(members.contains(user.getId())))
             throw new MessengerException("sendMessage(): User is not a member of this chat");
         chat.addToHistory(new Message(user, Instant.now(), content, attachments, Status.SENT));
     }
@@ -142,29 +136,29 @@ public class Chat extends BaseEntity {
         return sb.toString();
     }
 
- //Test for sending Messages between 2 Users (it actually works) pls dont delete i need this code
-    public static void main(String[] args) {
-        User homer = new User("homer@simpson.com", "password".toCharArray(), "Homer Simpson", "Rh.D.", "United Kingdom");
-        User bart = new User("bart@simpson.com", "password".toCharArray(), "Bart Simpson", "Ph.D.", "United States");
-        User lisa = new User("lisa@simpson.com", "password".toCharArray(), "Lisa Simpson", "Ph.D.", "United States");
+    //Test for sending Messages between 2 Users (it actually works) pls dont delete i need this code
+//    public static void main(String[] args) {
+//        User homer = new User("homer@simpson.com", "password".toCharArray(), "Homer Simpson", "Rh.D.", "United Kingdom");
+//        User bart = new User("bart@simpson.com", "password".toCharArray(), "Bart Simpson", "Ph.D.", "United States");
+//        User lisa = new User("lisa@simpson.com", "password".toCharArray(), "Lisa Simpson", "Ph.D.", "United States");
 //        User test = new User("test@simpson.com", "password", "test Simpson", "Ph.D.", "United States");
-        homer.addFriend(bart);
-        bart.acceptFriendRequest(homer);
+//        homer.addFriend(bart);
+//        bart.acceptFriendRequest(homer);
 //
 //        lisa.createGroupChat("theCoolOnes", Set.of(bart.getId(), homer.getId()));
 //
-        if (homer.getDirectChat(bart.getId()).isPresent()) {
-            Chat chat = homer.getDirectChat(bart.getId()).get();
-            homer.sendMessage(chat, "Das ist Homer Message test test", List.of(new Media("hallo.txt", "sdhjgvbfd", 100), new Media("test.txt", "sdhjgvbfd", 100)));
-            bart.sendMessage(chat,  "Das ist Bart Message hallo 123 Test", List.of(new Media("hallo.txt", "sdhjgvbfd", 100)));
-            homer.viewChat(chat);
-        }
+//        if (homer.getDirectChat(bart.getId()).isPresent()) {
+//            Chat chat = homer.getDirectChat(bart.getId()).get();
+//            homer.sendMessage(chat, "Das ist Homer Message test test", List.of(new Media("hallo.txt", "sdhjgvbfd", 100), new Media("test.txt", "sdhjgvbfd", 100)));
+//            bart.sendMessage(chat,  "Das ist Bart Message hallo 123 Test", List.of(new Media("hallo.txt", "sdhjgvbfd", 100)));
+//            homer.viewChat(chat);
+//        }
 //
 //        Chat chat = ChatRepository.findByName("theCoolOnes").get(0);
 //        homer.sendMessage(chat, new TextContent("Das ist Homer Message hallo 123 Test"), null);
 //        lisa.viewChat(chat);
-////        homer.viewChat(chat);
-////        bart.viewChat(chat);
+//        homer.viewChat(chat);
+//        bart.viewChat(chat);
 //        User homer = new User("homer@simpson.com", "password".toCharArray(), "Homer Simpson", "Rh.D.", "United Kingdom");
 //        User bart = new User("bart@simpson.com", "password".toCharArray(), "Bart Simpson", "Ph.D.", "United States");
 //        homer.addFriend(bart);
@@ -196,5 +190,5 @@ public class Chat extends BaseEntity {
 //        bart.sendMessage(medicalcase.getChat(), "bart message in medicalcase", null);
 //        bart.sendMessage(medicalcase.getChat(), "bart message in medicalcase", null);
 //        medicalcase.viewChat();
-    }
+//    }
 }

@@ -1,6 +1,6 @@
 package domain.common;
 
-import foundation.Assert;
+import static foundation.Assert.*;
 
 public class Image extends Media {
 
@@ -19,21 +19,19 @@ public class Image extends Media {
     }
 
     public void setWidth(int width) {
-        Assert.isGreaterThanOrEqual(width,"width",0 , "0");
-        Assert.isLowerThanOrEqual(width, "width", 1920, "1920");
+        isGreaterThanOrEqual(width, "width", 0, "0");
+        isLowerThanOrEqual(width, "width", 1920, "1920");
         this.width = width;
     }
 
     public void setHeight(int height) {
-        Assert.isGreaterThanOrEqual(height,"height",0 , "0");
-        Assert.isLowerThanOrEqual(height, "height", 1080, "1080");
+        isGreaterThanOrEqual(height, "height", 0, "0");
+        isLowerThanOrEqual(height, "height", 1080, "1080");
         this.height = height;
     }
 
     public void setAlternativeText(String alternativeText) {
-        Assert.isNotNull(alternativeText, "alternativeText");
-        Assert.isNotBlank(alternativeText, "alternativeText");
-        Assert.hasMaxLength(alternativeText, 256, "alternativeText");
+        hasMaxLength(alternativeText, 256, "alternativeText");
         this.alternativeText = alternativeText;
     }
 }

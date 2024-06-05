@@ -297,7 +297,7 @@ public class Application {
 
 
     public static void friendList() {
-        // todo maybe have the option to open direct chat with friend
+        // todo maybe have the option to open direct chat with friend from here
         banner("Friend List");
         exitText();
         loggedInAsUser.getSocials().getFriends().forEach(friend -> UserRepository.findById(friend).ifPresent(user -> System.out.println(user.getProfile().getTitleAndName() + " (" + user.getEmail().getAddress() + ")")));
@@ -317,7 +317,7 @@ public class Application {
         System.out.println("1 - Name: " + loggedInAsUser.getProfile().getName());
         System.out.println("2 - Title: " + loggedInAsUser.getProfile().getTitle());
         System.out.println("3 - Location: " + loggedInAsUser.getProfile().getLocation());
-        System.out.println("4 - Specialization Hashtags: " + loggedInAsUser.getProfile().getTags()); //todo tostring oder so
+        System.out.println("4 - Specialization Hashtags: " + loggedInAsUser.getProfile().getTags()); //todo bessere darstellung vielleicht
         System.out.println("Rating: " + loggedInAsUser.getProfile().getRating());
         System.out.println();
         System.out.println("Type in a number if you want to edit your profile data");
@@ -444,16 +444,16 @@ public class Application {
         exitText();
         AtomicInteger counter = new AtomicInteger(1);
         loggedInAsUser.getProfile().getTags().forEach(tag -> System.out.println(counter.getAndIncrement() + " - " + tag.toString()));
-        if (sc.hasNextLine()){
+        if (sc.hasNextLine()) {
             String input = sc.nextLine();
             try {
                 if (Integer.parseInt(input) > 0 && Integer.parseInt(input) <= counter.get()) {
                     //Um gottes willen frag nicht
-                   loggedInAsUser.getProfile().removeTag(loggedInAsUser.getProfile().getTags().stream().toList().get(Integer.parseInt(input) - 1).toString());
+                    loggedInAsUser.getProfile().removeTag(loggedInAsUser.getProfile().getTags().stream().toList().get(Integer.parseInt(input) - 1).toString());
                     System.out.println("Tag was removed from your profile!");
                     editSpecializations();
                 }
-            } catch(NumberFormatException | IndexOutOfBoundsException e){
+            } catch (NumberFormatException | IndexOutOfBoundsException e) {
                 System.out.println("Invalid action. Please try again");
                 sleep(1);
                 removeTagFromProfile();
