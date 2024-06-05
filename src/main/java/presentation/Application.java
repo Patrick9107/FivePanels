@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import repository.UserRepository;
 
+import javax.sound.midi.Soundbank;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +18,6 @@ public class Application {
 
     private static final Scanner sc = new Scanner(System.in);
     private static final Log log = LogFactory.getLog(Application.class);
-
     private static User loggedInAsUser = null;
 
     public static void main(String[] args) {
@@ -192,7 +192,9 @@ public class Application {
                         }
 
                     }catch (NumberFormatException e){
-
+                        System.out.println("Pick a number from " + 1 + " to " + input);
+                        sleep(1);
+                        chats();
                     };
             }
         }
@@ -281,19 +283,24 @@ public class Application {
         return members;
     }
     private static void viewChat(Chat chat){
-        System.out.println("\r");
+        clear();
         banner("Chat: " + chat.displayName(loggedInAsUser));
         chat.viewChat(loggedInAsUser);
         if (sc.hasNextLine()){
             try{
                 String input = sc.nextLine();
-                if(input.length() < 1024){
-                    loggedInAsUser.sendMessage(chat,input,null);
-                    viewChat(chat);
-                }else {
-                    System.out.println("Ihre Nachricht ist zu lange");
-                    viewChat(chat);
+                if(!input.isBlank()){
+                    if(input.length() < 1024){
+                        loggedInAsUser.sendMessage(chat,input,null);
+                        viewChat(chat);
+                    }else {
+                        System.out.println("Ihre Nachricht ist zu lange");
+                        viewChat(chat);
+                    }
+                }else{
+                    chats();
                 }
+
             }catch (Exception e){
 
             }
