@@ -144,20 +144,77 @@ public class Application {
             leave chat (removeMember dafür nutzen)
          */
         banner("Chats");
-        exitText();
         AtomicInteger counter = new AtomicInteger(1);
 
         loggedInAsUser.getChats().forEach(chat -> {
             System.out.println(counter.getAndIncrement() + " - " + chat.getName());
         });
 
-        System.out.println("Press C to create a new chat!");
+        System.out.println();
+        System.out.println("Type in a number to view a chat");
+        System.out.println();
+        System.out.println("C - Create a new chat");
+        System.out.println();
+        System.out.println("E - Exit");
         if (sc.hasNextLine()) {
             String input = sc.nextLine();
-            if (input.equalsIgnoreCase("c")) {
-                // new chat
+            switch (input) {
+                case "c", "C":
+                    createChat(new HashSet<>());
+                    break;
             }
         }
+    }
+
+    private static void createChat(Set<UUID> members) {
+        String name = null;
+        banner("Create new Chat");
+        System.out.println();
+        System.out.println("Leave blank if you want to exit");
+        System.out.print("Name: ");
+        if (sc.hasNextLine()) {
+            String input = sc.nextLine();
+            if (!input.isBlank()) {
+                name = input;
+            } else {
+                chats();
+            }
+        }
+        System.out.print("Invite your friends to the chat!");
+        friendListWithNumber();
+        System.out.println();
+        System.out.println("Leave blank if you are done.");
+        if (sc.hasNextLine()) {
+            String input = sc.nextLine();
+            if (!input.isBlank()) {
+                try {
+                    members.add(loggedInAsUser.getSocials().getFriends().get(Integer.parseInt(input)-1));
+                } catch (IndexOutOfBoundsException | NumberFormatException e) {
+                    System.out.println("Invalid action. Please try again");
+                    createChat(members);
+                }
+            } else {
+                if (members.isEmpty()) {
+                    System.out.println("Failed creating chat. Your chat has to have at least one other member");
+                    sleep(1);
+                    createChat(members);
+                } else {
+                    try {
+                        loggedInAsUser.createGroupChat(name, members);
+                        System.out.println("Chat was successfully created");
+                    } catch (Exception e) {
+                        System.out.println("Something went wrong creating your chat. Please try again");
+                        sleep(1);
+                    } finally {
+                        chats();
+                    }
+                }
+            }
+        }
+    }
+
+    private static void addMemberToChat() {
+
     }
 
     // friends ----------------------------------------------------------
@@ -309,6 +366,11 @@ public class Application {
         }
     }
 
+    private static void friendListWithNumber() {
+        AtomicInteger counter = new AtomicInteger(1);
+        loggedInAsUser.getSocials().getFriends().forEach(friend -> UserRepository.findById(friend).ifPresent(user -> System.out.println(counter.getAndIncrement() + " - " + user.getProfile().getTitleAndName() + " (" + user.getEmail().getAddress() + ")")));
+    }
+
     // profile ----------------------------------------------------------
 
     public static void profile() {
@@ -320,7 +382,7 @@ public class Application {
         System.out.println("4 - Specialization Hashtags: " + loggedInAsUser.getProfile().getTags()); //todo bessere darstellung vielleicht
         System.out.println("Rating: " + loggedInAsUser.getProfile().getRating());
         System.out.println();
-        System.out.println("Type in a number if you want to edit your profile data");
+        System.out.println("Type in a number to edit your profile data");
 
         if (sc.hasNextLine()) {
             String input = sc.nextLine();
@@ -335,7 +397,9 @@ public class Application {
                     userAction();
                     break;
                 default:
-
+                    System.out.println("Invalid action. Please try again");
+                    sleep(1);
+                    profile();
             }
         }
     }
