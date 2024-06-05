@@ -660,7 +660,7 @@ public class Application {
     private static void sleep(int seconds) {
         try {
             TimeUnit.SECONDS.sleep(seconds);
-        } catch (InterruptedException _) {
+        } catch (InterruptedException e) {
         }
     }
 

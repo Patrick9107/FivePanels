@@ -1,9 +1,7 @@
 package domain.Messenger;
 
-import domain.Medicalcase.MedicalcaseException;
 import domain.User.User;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import repository.ChatRepository;
 import repository.UserRepository;
 
