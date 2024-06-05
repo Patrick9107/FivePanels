@@ -3,13 +3,10 @@ package presentation;
 import domain.Messenger.Chat;
 import domain.User.User;
 import domain.User.UserException;
-import domain.common.TextContent;
-import foundation.AssertException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import repository.UserRepository;
 
-import javax.sound.midi.Soundbank;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.TimeUnit;
