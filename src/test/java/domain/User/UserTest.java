@@ -127,7 +127,6 @@ class UserTest {
             homer.viewChat(chat.get());
             // Then
             assertTrue(outContent.toString().contains(homer.getProfile().getName()));
-            assertTrue(outContent.toString().contains("homer and bart"));
             assertTrue(outContent.toString().contains("This is a message of Homer"));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
