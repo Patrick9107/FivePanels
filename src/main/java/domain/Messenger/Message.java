@@ -3,6 +3,7 @@ package domain.Messenger;
 import domain.User.User;
 import domain.common.Media;
 import domain.common.TextContent;
+import foundation.AssertException;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -38,6 +39,7 @@ public class Message {
     }
 
     public void setTimestamp(Instant timestamp) {
+        isNotNull(timestamp, "timestamp");
         this.timestamp = timestamp;
     }
 
@@ -48,6 +50,9 @@ public class Message {
     }
 
     public void setAttachments(List<Media> attachments) {
+        //TODO List size assertion
+        if(attachments.size() > 8)
+            throw new AssertException("setAttachments: to many attachments");
         this.attachments = attachments;
     }
 
@@ -82,5 +87,25 @@ public class Message {
         }
 //        sb.append(status.toString()).append("\n");
         return sb.toString();
+    }
+
+    public User getSender() {
+        return sender;
+    }
+
+    public Instant getTimestamp() {
+        return timestamp;
+    }
+
+    public TextContent getContent() {
+        return content;
+    }
+
+    public List<Media> getAttachments() {
+        return attachments;
+    }
+
+    public Status getStatus() {
+        return status;
     }
 }
