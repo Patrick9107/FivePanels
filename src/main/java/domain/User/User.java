@@ -122,6 +122,10 @@ public class User extends BaseEntity {
         return chat;
     }
 
+    public Chat addChatMember(Chat chat, User userToAdd) {
+        return chat.addMember(this, userToAdd);
+    }
+
     /**
      * Sends a message to the specified chat.
      * This method calls the {@code sendMessage} method on the given chat.

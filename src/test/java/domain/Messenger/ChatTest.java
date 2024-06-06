@@ -30,8 +30,7 @@ public class ChatTest {
 
     @AfterEach
     void deleteFromRepo() {
-        if (chat != null)
-            ChatRepository.deleteById(chat.getId());
+        ChatRepository.findAll().forEach(chat1 -> ChatRepository.deleteById(chat1.getId()));
         if (homer != null)
             UserRepository.deleteById(homer.getId());
         if (bart != null)
@@ -93,10 +92,14 @@ public class ChatTest {
         try {
             // When
             assertEquals(1, ChatRepository.count());
+            // homer has to have both as friends
             homer.addFriend(bart);
             bart.acceptFriendRequest(homer);
+
+            homer.addFriend(lisa);
+            lisa.acceptFriendRequest(homer);
             // Then
-            assertEquals(2, ChatRepository.count());
+            assertEquals(3, ChatRepository.count());
             Chat chat;
             if (homer.getDirectChat(bart.getId()).isPresent()) {
                 chat = homer.getDirectChat(bart.getId()).get();
@@ -104,9 +107,67 @@ public class ChatTest {
                 chat = null;
             }
             assertNotNull(chat);
-            Chat newGroupChat = chat.addMember(lisa);
-            assertEquals(3, ChatRepository.count());
+            Chat newGroupChat = homer.addChatMember(chat, lisa);
+            assertEquals(4, ChatRepository.count());
             assertEquals(3, newGroupChat.getMembers().size());
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    // MEGA TEST, only execute if you would like to test EVERYTHING
+    // this tests creates over 500 Users and takes a while
+    // todo? to mark
+//    @Test
+//    void addMember_shouldThrow_WhenMembersExceed512Entries() {
+//        try {
+//            // When
+//            assertEquals(1, ChatRepository.count());
+//            homer.addFriend(bart);
+//            bart.acceptFriendRequest(homer);
+//            assertEquals(2, ChatRepository.count());
+//            homer.addFriend(lisa);
+//            lisa.acceptFriendRequest(homer);
+//            assertEquals(3, ChatRepository.count());
+//            Set<UUID> set = new HashSet<>();
+//            set.add(bart.getId());
+//            set.add(lisa.getId());
+//            Chat chat2 = homer.createGroupChat("test", set);
+//            assertEquals(4, ChatRepository.count());
+//            assertEquals(chat2, ChatRepository.findByName("test").stream().findFirst().get());
+//            // Then
+//            Set<UUID> set2 = new HashSet<>();
+//            for (int i = 0; i < 511; i++) {
+//                User user = new User(i+"email@gmail.com", "spengergasse".toCharArray(), "Bernd", "Dr.", "Austria");
+//                user.addFriend(homer);
+//                homer.acceptFriendRequest(user);
+//                set2.add(user.getId());
+//            }
+//            User user = new User("test@gmail.com", "spengergasse".toCharArray(), "Bernd", "Dr.", "Austria");
+//            Chat megaChat = homer.createGroupChat("mega chat", set2);
+//            User user2 = new User("email2@gmail.com", "spengergasse".toCharArray(), "Bernd", "Dr.", "Austria");
+//            assertThrowsExactly(AssertException.class, () -> megaChat.addMember(user2));
+//        } catch (Exception e) {
+//            System.out.println("Unexpected Exception: " + e.getMessage());
+//            fail();
+//        }
+//    }
+
+    @Test
+    void addMember_shouldThrow_WhenNotEveryMemberIsFriendsWithCreatorOfGroupChat() {
+        try {
+            // When
+            assertEquals(1, ChatRepository.count());
+            homer.addFriend(bart);
+            bart.acceptFriendRequest(homer);
+            assertEquals(2, ChatRepository.count());
+            Set<UUID> set = new HashSet<>();
+            set.add(bart.getId());
+            set.add(lisa.getId());
+            assertThrowsExactly(MessengerException.class, () -> homer.createGroupChat("test", set));
+            assertEquals(2, ChatRepository.count());
+            // Then
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();

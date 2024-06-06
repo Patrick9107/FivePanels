@@ -44,26 +44,33 @@ public class Chat extends BaseEntity {
         this.members = new HashSet<>(members);
     }
 
-    public Chat addMember(User user) {
-        isNotNull(user, "user");
-        hasMaxSize(members, 513, "members");
+    public Chat addMember(User user, User userToAdd) {
+        isNotNull(userToAdd, "userToAdd");
+        isNotNull(user, "userToAdd");
+        hasMaxSize(members, 511, "members");
 
         // if the chat is a direct chat (non-groupchat), create a new groupchat
         if (!groupChat) {
             StringBuilder sb = new StringBuilder();
             members.forEach(uuid -> UserRepository.findById(uuid).ifPresent(user1 -> sb.append(user1.getProfile().getName()).append(", ")));
-            sb.append(user.getProfile().getName());
+            sb.append(userToAdd.getProfile().getName());
             Set<UUID> newMembers = new HashSet<>(members);
-            newMembers.add(user.getId());
-            Chat chat = new Chat(sb.toString(), newMembers, true);
-            user.getChats().add(chat);
+            newMembers.remove(user.getId());
+            newMembers.add(userToAdd.getId());
+            Chat chat = user.createGroupChat(sb.toString(), newMembers);
+            userToAdd.getChats().add(chat);
             members.forEach(uuid -> UserRepository.findById(uuid).ifPresent(user1 -> user1.getChats().add(chat)));
             return chat;
         }
-        if (members.contains(user.getId()))
+
+        if (members.contains(userToAdd.getId()))
             throw new MessengerException(STR."addMember(): user is already a member of this chat");
-        members.add(user.getId());
-        user.getChats().add(this);
+
+        if (!(user.getSocials().getFriends().contains(userToAdd.getId())))
+            throw new MessengerException("addMember(): user is not friends with userToAdd");
+
+        members.add(userToAdd.getId());
+        userToAdd.getChats().add(this);
         return this;
     }
 

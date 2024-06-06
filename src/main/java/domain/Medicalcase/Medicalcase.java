@@ -126,7 +126,7 @@ public class Medicalcase extends BaseEntity {
             throw new MedicalcaseException(STR."addMember(): user is already a member of this medicalcase");
 
         members.add(user);
-        chat.addMember(user);
+        chat.addMember(owner, user);
     }
 
     public void publish() {
