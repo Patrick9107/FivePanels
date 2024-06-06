@@ -246,7 +246,7 @@ public class Medicalcase extends BaseEntity {
 
     public void evaluateVotes() {
         //gibt die User zurück die für die richtige antwort gevotet haben.
-        Map<UUID, Vote> userAndCorrectAnswer = votes.entrySet().stream()
+        Map<UUID, Vote> userWithCorrectAnswer = votes.entrySet().stream()
                 .flatMap(entry -> entry.getValue().stream()
                         .filter(vote -> correctAnswer.getAnswer().equals(vote.getAnswer().getAnswer()))
                         .map(vote -> Map.entry(entry.getKey(), vote)))
@@ -256,7 +256,7 @@ public class Medicalcase extends BaseEntity {
         // was ich gemacht habe:
         //userAndCorrectAnswer.entrySet().forEach(value -> UserRepository.findById(value.getKey()).ifPresent(user -> user.getProfile().setRating(value.getValue().getPercentage())));
         //Verbessert durch IDE
-        userAndCorrectAnswer.forEach((key, value1) -> UserRepository.findById(key).ifPresent(user -> user.getProfile().addRating(value1.getPercentage())));
+        userWithCorrectAnswer.forEach((key, value1) -> UserRepository.findById(key).ifPresent(user -> user.getProfile().addRating(value1.getPercentage())));
     }
 
     public void viewChat(User user) {
@@ -281,8 +281,9 @@ public class Medicalcase extends BaseEntity {
         medicalcase.addMember(lisa);
         medicalcase.castVote(lisa, "aids", 20);
         medicalcase.castVote(lisa, "cancer", 50);
-        medicalcase.castVote(bart, "aids", 0);
+        //medicalcase.castVote(bart, "aids", 0);
         medicalcase.castVote(bart, "cancer", 90);
+        // summe von votes per User muss 100% ergeben
         medicalcase.viewAvgVotesPerAnswer();
     }
 }
