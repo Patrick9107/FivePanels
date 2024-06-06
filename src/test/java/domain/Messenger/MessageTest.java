@@ -97,8 +97,13 @@ class MessageTest {
 
     //TODO
     @Test
-    void setAttachments_shouldSetAttachments_WhenPassingListOfMedia(){
-
+    void setAttachments_shouldThrow_WhenPassingAListBiggerThan8(){
+        try {
+            assertThrowsExactly(AssertException.class, () -> message.setAttachments(List.of(new Media("path", "mime type", 123), new Media("path", "mime type", 1234),new Media("path", "mime type", 123), new Media("path", "mime type", 1234),new Media("path", "mime type", 123), new Media("path", "mime type", 1234),new Media("path", "mime type", 123), new Media("path", "mime type", 1234),new Media("path", "mime type", 123), new Media("path", "mime type", 1234))));
+        }catch (Exception e){
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
     }
 
 }
