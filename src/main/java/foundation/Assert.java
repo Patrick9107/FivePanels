@@ -91,6 +91,8 @@ public abstract class Assert {
         return value;
     }
 
+    // Number Assertions -----------------------------------------------------------
+
     private static <T extends Number, V extends Number> int compare(T value, V valueToProof) {
 
         BigDecimal newValueToProof = new BigDecimal(valueToProof.toString());
@@ -211,6 +213,29 @@ public abstract class Assert {
 
         if ((compare(value, valueToProof) > 0))
             throw new AssertException(STR."\{valueName} is greater than \{proofName}");
+        return value;
+    }
+
+    /**
+     * Checks if a given value is between the specified lower and higher bounds, inclusive.
+     *
+     * This method ensures that the provided {@code value} is greater than or equal to {@code lowerValue}
+     * and less than or equal to {@code higherValue}. If the value is not within the specified range,
+     * it throws an AssertException.
+     *
+     * @param value the value to check
+     * @param valueName the name of the value to check, used for exception messages
+     * @param lowerValue the lower bound to compare against
+     * @param lowerName the name of the lower bound value, used for exception messages
+     * @param higherValue the higher bound to compare against
+     * @param higherName the name of the higher bound value, used for exception messages
+     * @return the {@code value} if it is within the specified range
+     * @throws AssertException if {@code value} is less than {@code lowerValue} or greater than {@code higherValue}
+     */
+    public static <T extends Number, V extends Number, K extends Number> T isBetween(T value, String valueName, V lowerValue, String lowerName, K higherValue, String higherName) {
+        isLowerThan(lowerValue, lowerName, higherValue, higherName);
+        isGreaterThanOrEqual(value, valueName, lowerValue, lowerName);
+        isLowerThanOrEqual(value, valueName, higherValue, higherName);
         return value;
     }
 

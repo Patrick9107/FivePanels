@@ -25,7 +25,7 @@ class AssertTest {
     void isNotNull_shouldThrow_WhenNullIsPassed() {
         try {
             String value = null;
-            assertThrowsExactly(AssertException.class,() -> isNotNull(value, "testString"));
+            assertThrowsExactly(AssertException.class, () -> isNotNull(value, "testString"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -82,7 +82,7 @@ class AssertTest {
     void hasMaxLength_shouldReturnValue_WhenValueLengthIsEqualToMaxLength() {
         try {
             String value = "123456789";
-            assertEquals(value,hasMaxLength(value, 9, "testString"));
+            assertEquals(value, hasMaxLength(value, 9, "testString"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -250,7 +250,152 @@ class AssertTest {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
         }
+    }
 
+    @Test
+    void isBetween_shouldThrow_WhenValueIsNull() {
+        try {
+            String valueName = "value";
+            double lowerValue = 0;
+            String lowerName = "lowerValue";
+            double higherValue = 100;
+            String higherName = "higherValue";
+
+            assertThrowsExactly(AssertException.class, () -> isBetween(null, valueName, lowerValue, lowerName, higherValue, higherName));
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void isBetween_shouldThrow_WhenLowerValueIsNull() {
+        try {
+            double value = 15;
+            String valueName = "value";
+            String lowerName = "lowerValue";
+            double higherValue = 100;
+            String higherName = "higherValue";
+
+            assertThrowsExactly(AssertException.class, () -> isBetween(value, valueName, null, lowerName, higherValue, higherName));
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void isBetween_shouldThrow_WhenHigherValueIsNull() {
+        try {
+            double value = 15;
+            String valueName = "value";
+            double lowerValue = 0;
+            String lowerName = "lowerValue";
+            String higherName = "higherValue";
+
+            assertThrowsExactly(AssertException.class, () -> isBetween(value, valueName, null, lowerName, null, higherName));
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void isBetween_shouldThrow_WhenValueIsLowerThanLowerValue() {
+        try {
+            double value = -0.0000001;
+            String valueName = "value";
+            double lowerValue = 0;
+            String lowerName = "lowerValue";
+            double higherValue = 100;
+            String higherName = "higherValue";
+
+            assertThrowsExactly(AssertException.class, () -> isBetween(value, valueName, lowerValue, lowerName, higherValue, higherName));
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void isBetween_shouldThrow_WhenValueIsHigherThanHigherValue() {
+        try {
+            double value = 100.000000001;
+            String valueName = "value";
+            double lowerValue = 0;
+            String lowerName = "lowerValue";
+            double higherValue = 100;
+            String higherName = "higherValue";
+
+            assertThrowsExactly(AssertException.class, () -> isBetween(value, valueName, lowerValue, lowerName, higherValue, higherName));
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void isBetween_shouldReturnValue_WhenValueIsEqualToHigherValue() {
+        try {
+            double value = 100.00000000;
+            String valueName = "value";
+            double lowerValue = 0;
+            String lowerName = "lowerValue";
+            double higherValue = 100;
+            String higherName = "higherValue";
+            assertEquals(value, isBetween(value, valueName, lowerValue, lowerName, higherValue, higherName));
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void isBetween_shouldReturnValue_WhenValueIsEqualToLowerValue() {
+        try {
+            double value = 0.00000000000;
+            String valueName = "value";
+            double lowerValue = 0;
+            String lowerName = "lowerValue";
+            double higherValue = 100;
+            String higherName = "higherValue";
+            assertEquals(value, isBetween(value, valueName, lowerValue, lowerName, higherValue, higherName));
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void isBetween_shouldReturnValue_WhenValueIsAnyNumberBetweenLowerValueAndHigherValue() {
+        try {
+            float value = 37.1284f;
+            String valueName = "value";
+            double lowerValue = 0;
+            String lowerName = "lowerValue";
+            double higherValue = 100;
+            String higherName = "higherValue";
+            assertEquals(value, isBetween(value, valueName, lowerValue, lowerName, higherValue, higherName));
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void isBetween_shouldThrow_WhenLowerValueIsGreaterThanHigherValue() {
+        try {
+            double value = 100;
+            String valueName = "value";
+            double lowerValue = 100.00000001;
+            String lowerName = "lowerValue";
+            double higherValue = 100;
+            String higherName = "higherValue";
+            assertThrowsExactly(AssertException.class, () -> isBetween(value, valueName, lowerValue, lowerName, higherValue, higherName));
+        } catch (Exception ex) {
+            System.out.println("Unexpected Exception: " + ex.getMessage());
+            fail();
+        }
     }
 
     @Test
@@ -481,7 +626,7 @@ class AssertTest {
         try {
             HashSet<Integer> values = new HashSet<>();
 
-            assertThrowsExactly(AssertException.class , () -> isNotEmpty(null, "values"));
+            assertThrowsExactly(AssertException.class, () -> isNotEmpty(null, "values"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -495,7 +640,7 @@ class AssertTest {
 
             values.add(2);
 
-            assertThrowsExactly(AssertException.class , () -> isNotEmpty(null, "values"));
+            assertThrowsExactly(AssertException.class, () -> isNotEmpty(null, "values"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
@@ -507,7 +652,7 @@ class AssertTest {
         try {
             HashSet<Integer> values = new HashSet<>();
 
-            assertThrowsExactly(AssertException.class , () -> isNotEmpty(values, "values"));
+            assertThrowsExactly(AssertException.class, () -> isNotEmpty(values, "values"));
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             fail();
