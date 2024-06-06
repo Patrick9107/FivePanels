@@ -34,10 +34,7 @@ class MessageTest {
     @AfterEach
     void deleteFromRepo() {
         ChatRepository.findAll().forEach(chat1 -> ChatRepository.deleteById(chat1.getId()));
-        if (homer != null)
-            UserRepository.deleteById(homer.getId());
-        if(bart != null)
-            UserRepository.deleteById(bart.getId());
+        UserRepository.findAll().forEach(user -> UserRepository.deleteById(user.getId()));
     }
 
 

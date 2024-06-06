@@ -29,11 +29,9 @@ class UserTest {
 
     @AfterEach
     void deleteFromRepo() {
-        if (homer != null)
-            UserRepository.deleteById(homer.getId());
-        if (bart != null)
-            UserRepository.deleteById(bart.getId());
+        UserRepository.findAll().forEach(user -> UserRepository.deleteById(user.getId()));
     }
+
     @Test
     void verify_shouldSetVerifiedTrue_WhenNotAlreadyVerified() {
         try {

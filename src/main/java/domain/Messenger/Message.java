@@ -50,9 +50,8 @@ public class Message {
     }
 
     public void setAttachments(List<Media> attachments) {
-        //TODO List size assertion
-        if(attachments.size() > 8)
-            throw new AssertException("setAttachments: to many attachments");
+        if (attachments != null)
+            hasMaxSize(attachments, 9, "attachments");
         this.attachments = attachments;
     }
 

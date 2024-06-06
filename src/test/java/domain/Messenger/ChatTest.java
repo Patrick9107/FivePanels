@@ -7,6 +7,7 @@ import repository.ChatRepository;
 import repository.UserRepository;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,12 +32,7 @@ public class ChatTest {
     @AfterEach
     void deleteFromRepo() {
         ChatRepository.findAll().forEach(chat1 -> ChatRepository.deleteById(chat1.getId()));
-        if (homer != null)
-            UserRepository.deleteById(homer.getId());
-        if (bart != null)
-            UserRepository.deleteById(bart.getId());
-        if (lisa != null)
-            UserRepository.deleteById(lisa.getId());
+        UserRepository.findAll().forEach(user -> UserRepository.deleteById(user.getId()));
     }
 
     @Test
@@ -168,6 +164,28 @@ public class ChatTest {
             assertThrowsExactly(MessengerException.class, () -> homer.createGroupChat("test", set));
             assertEquals(2, ChatRepository.count());
             // Then
+        } catch (Exception e) {
+            System.out.println("Unexpected Exception: " + e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    void addMember_shouldHaveEveryMemberInChatName_WhenCreatingNewGroupChatOutOfDirectChat() {
+        try {
+            // When
+            assertEquals(1, ChatRepository.count());
+            homer.addFriend(bart);
+            bart.acceptFriendRequest(homer);
+            assertEquals(2, ChatRepository.count());
+            homer.addFriend(lisa);
+            lisa.acceptFriendRequest(homer);
+            assertEquals(3, ChatRepository.count());
+            Chat chat = homer.getDirectChat(bart.getId()).get();
+            Chat groupChat = homer.addChatMember(chat, lisa);
+            assertEquals(4, ChatRepository.count());
+            // Then
+            groupChat.getMembers().forEach(uuid -> assertTrue(groupChat.getName().contains(UserRepository.findById(uuid).get().getProfile().getName())));
         } catch (Exception e) {
             System.out.println("Unexpected Exception: " + e.getMessage());
             fail();
