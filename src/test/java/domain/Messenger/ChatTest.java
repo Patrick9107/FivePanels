@@ -147,7 +147,7 @@ public class ChatTest {
 //            User user = new User("test@gmail.com", "spengergasse".toCharArray(), "Bernd", "Dr.", "Austria");
 //            Chat megaChat = homer.createGroupChat("mega chat", set2);
 //            User user2 = new User("email2@gmail.com", "spengergasse".toCharArray(), "Bernd", "Dr.", "Austria");
-//            assertThrowsExactly(AssertException.class, () -> megaChat.addMember(user2));
+//            assertThrowsExactly(AssertException.class, () -> homer.addChatMember(megaChat, user2));
 //        } catch (Exception e) {
 //            System.out.println("Unexpected Exception: " + e.getMessage());
 //            fail();
